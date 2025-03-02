@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState } from 'react';
@@ -6,7 +5,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { Menu, X } from 'lucide-react';
+import { Menu } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -22,23 +21,34 @@ export default function Navigation() {
   const t = useTranslations();
   const pathname = usePathname();
   const locale = useLocale();
+
+  console.log('locale in navigation');
+  console.log(locale);
   const [isOpen, setIsOpen] = useState(false);
 
   // Function to get the path without the locale prefix
   const getPathWithoutLocale = () => {
+    // Special case for root pages like "/en", "/ku", etc.
+    if (pathname.split('/').length <= 2) {
+      return '/';
+    }
+
     const pathSegments = pathname.split('/');
     // Remove the first empty segment and the locale segment
-    return '/' + pathSegments.slice(2).join('/');
+    const path = '/' + pathSegments.slice(2).join('/');
+    return path;
   };
 
   // Function to create a link with a different locale
   const createLocaleLink = (newLocale: string) => {
-    return `/${newLocale}${getPathWithoutLocale()}`;
+    const currentPath = getPathWithoutLocale();
+    return `/${newLocale}${currentPath}`;
   };
 
   // Function to determine if a link is active
   const isActive = (path: string) => {
-    return pathname === `/${locale}${path}`;
+    const fullPath = path === '' ? `/${locale}` : `/${locale}${path}`;
+    return pathname === fullPath;
   };
 
   const navItems = [
@@ -64,7 +74,7 @@ export default function Navigation() {
           {navItems.map((item) => (
             <Link
               key={item.href}
-              href={`/${locale}${item.href}`}
+              href={item.href === '' ? `/${locale}` : `/${locale}${item.href}`}
               className={`text-sm font-medium transition-colors hover:text-primary ${
                 isActive(item.href) 
                   ? "text-primary border-b-2 border-primary" 
@@ -85,18 +95,26 @@ export default function Navigation() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => window.location.href = createLocaleLink('en')}>
-                  {t('language.english')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.location.href = createLocaleLink('ku')}>
-                  {t('language.kurdish')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.location.href = createLocaleLink('ar')}>
-                  {t('language.arabic')}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => window.location.href = createLocaleLink('fa')}>
-                  {t('language.persian')}
-                </DropdownMenuItem>
+                <Link href={createLocaleLink('en')} locale="en">
+                  <DropdownMenuItem>
+                    {t('language.english')}
+                  </DropdownMenuItem>
+                </Link>
+                <Link href={createLocaleLink('ku')} locale="ku">
+                  <DropdownMenuItem>
+                    {t('language.kurdish')}
+                  </DropdownMenuItem>
+                </Link>
+                <Link href={createLocaleLink('ar')} locale="ar">
+                  <DropdownMenuItem>
+                    {t('language.arabic')}
+                  </DropdownMenuItem>
+                </Link>
+                <Link href={createLocaleLink('fa')} locale="fa">
+                  <DropdownMenuItem>
+                    {t('language.persian')}
+                  </DropdownMenuItem>
+                </Link>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -118,7 +136,7 @@ export default function Navigation() {
               {navItems.map((item) => (
                 <Link
                   key={item.href}
-                  href={`/${locale}${item.href}`}
+                  href={item.href === '' ? `/${locale}` : `/${locale}${item.href}`}
                   className={`text-lg font-medium transition-colors hover:text-primary ${
                     isActive(item.href) ? "text-primary" : "text-muted-foreground"
                   }`}
@@ -133,46 +151,46 @@ export default function Navigation() {
                   {t('language.select')}
                 </p>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant={locale === 'en' ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
-                      window.location.href = createLocaleLink('en');
-                      setIsOpen(false);
-                    }}
-                  >
-                    {t('language.english')}
-                  </Button>
-                  <Button
-                    variant={locale === 'ku' ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
-                      window.location.href = createLocaleLink('ku');
-                      setIsOpen(false);
-                    }}
-                  >
-                    {t('language.kurdish')}
-                  </Button>
-                  <Button
-                    variant={locale === 'ar' ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
-                      window.location.href = createLocaleLink('ar');
-                      setIsOpen(false);
-                    }}
-                  >
-                    {t('language.arabic')}
-                  </Button>
-                  <Button
-                    variant={locale === 'fa' ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => {
-                      window.location.href = createLocaleLink('fa');
-                      setIsOpen(false);
-                    }}
-                  >
-                    {t('language.persian')}
-                  </Button>
+                  <Link href={createLocaleLink('en')} locale="en">
+                    <Button
+                      variant={locale === 'en' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full"
+                    >
+                      {t('language.english')}
+                    </Button>
+                  </Link>
+                  <Link href={createLocaleLink('ku')} locale="ku">
+                    <Button
+                      variant={locale === 'ku' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full"
+                    >
+                      {t('language.kurdish')}
+                    </Button>
+                  </Link>
+                  <Link href={createLocaleLink('ar')} locale="ar">
+                    <Button
+                      variant={locale === 'ar' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full"
+                    >
+                      {t('language.arabic')}
+                    </Button>
+                  </Link>
+                  <Link href={createLocaleLink('fa')} locale="fa">
+                    <Button
+                      variant={locale === 'fa' ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setIsOpen(false)}
+                      className="w-full"
+                    >
+                      {t('language.persian')}
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,8 +6,18 @@ import { format } from 'date-fns';
 
 interface Holiday {
   date: string;
-  event: string;
-  note?: string;
+  event: {
+    en: string;
+    ku: string;
+    ar: string;
+    fa: string;
+  };
+  note?: {
+    en: string;
+    ku: string;
+    ar: string;
+    fa: string;
+  };
 }
 
 export default function EventsListClient({ locale }: { locale: string }) {
@@ -29,6 +38,13 @@ export default function EventsListClient({ locale }: { locale: string }) {
         setLoading(false);
       });
   }, []);
+
+  // Helper function to get localized text based on locale
+  const getLocalizedText = (textObj: { [key: string]: string } | undefined, defaultText: string = ''): string => {
+    if (!textObj) return defaultText;
+    // Use the current locale if available, otherwise fall back to English
+    return textObj[locale as keyof typeof textObj] || textObj.en || defaultText;
+  };
 
   if (loading) {
     return (
@@ -54,14 +70,14 @@ export default function EventsListClient({ locale }: { locale: string }) {
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
               <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">
-                {holiday.event}
+                {getLocalizedText(holiday.event)}
               </p>
               <p className="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
                 <span>{format(new Date(holiday.date), "MMMM d, yyyy")}</span>
               </p>
-              {holiday.note && (
+              {holiday.note && getLocalizedText(holiday.note) && (
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-medium">{t('events.note')}:</span> {holiday.note}
+                  <span className="font-medium">{t('events.note')}:</span> {getLocalizedText(holiday.note)}
                 </p>
               )}
             </div>

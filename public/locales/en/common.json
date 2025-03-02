@@ -21,7 +21,12 @@
     "title": "Events",
     "noEvents": "No events for this day",
     "holiday": "Holiday",
-    "note": "Note"
+    "note": "Note",
+    "more": "more"
+  },
+  "time": {
+    "title": "City Times",
+    "localTime": "Local Time"
   },
   "months": {
     "january": "January",
@@ -44,12 +49,21 @@
     "thursday": "Thursday",
     "friday": "Friday",
     "saturday": "Saturday",
-    "sunday": "Sunday"
+    "sunday": "Sunday",
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
   },
   "language": {
     "english": "English",
     "kurdish": "Kurdish",
     "arabic": "Arabic",
-    "persian": "Persian"
+    "persian": "Persian",
+    "en": "English",
+    "select": "Select Language"
   }
 } 

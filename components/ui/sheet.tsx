@@ -6,6 +6,15 @@ import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+// Create a context to share title ID between SheetContent and SheetTitle
+const SheetTitleContext = React.createContext<{
+  id: string | undefined
+  setId: React.Dispatch<React.SetStateAction<string | undefined>>
+}>({
+  id: undefined,
+  setId: () => undefined,
+})
+
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
 }
@@ -52,6 +61,8 @@ function SheetContent({
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left"
 }) {
+  const [titleId, setTitleId] = React.useState<string | undefined>(undefined)
+  
   return (
     <SheetPortal>
       <SheetOverlay />
@@ -69,9 +80,12 @@ function SheetContent({
             "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
           className
         )}
+        aria-labelledby={titleId}
         {...props}
       >
-        {children}
+        <SheetTitleContext.Provider value={{ id: titleId, setId: setTitleId }}>
+          {children}
+        </SheetTitleContext.Provider>
         <SheetPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
           <XIcon className="size-4" />
           <span className="sr-only">Close</span>
@@ -103,10 +117,24 @@ function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
 
 function SheetTitle({
   className,
+  id,
   ...props
 }: React.ComponentProps<typeof SheetPrimitive.Title>) {
+  const { setId } = React.useContext(SheetTitleContext)
+  
+  // Generate a stable ID for this title
+  const generatedId = React.useId()
+  const titleId = id || `sheet-title-${generatedId}`
+  
+  // Update the context with our title ID
+  React.useEffect(() => {
+    setId(titleId)
+    return () => setId(undefined)
+  }, [setId, titleId])
+  
   return (
     <SheetPrimitive.Title
+      id={titleId}
       data-slot="sheet-title"
       className={cn("text-foreground font-semibold", className)}
       {...props}
