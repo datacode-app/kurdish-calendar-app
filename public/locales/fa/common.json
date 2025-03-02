@@ -1,0 +1,55 @@
+{
+  "app": {
+    "title": "تقویم کردی",
+    "description": "یک برنامه مدرن تقویم کردی با تعطیلات و رویدادها"
+  },
+  "nav": {
+    "home": "خانه",
+    "calendar": "تقویم",
+    "events": "رویدادها",
+    "about": "درباره ما"
+  },
+  "calendar": {
+    "today": "امروز",
+    "month": "ماه",
+    "week": "هفته",
+    "day": "روز",
+    "previous": "قبلی",
+    "next": "بعدی"
+  },
+  "events": {
+    "title": "رویدادها",
+    "noEvents": "هیچ رویدادی برای امروز وجود ندارد",
+    "holiday": "تعطیلی",
+    "note": "یادداشت"
+  },
+  "months": {
+    "january": "ژانویه",
+    "february": "فوریه",
+    "march": "مارس",
+    "april": "آوریل",
+    "may": "مه",
+    "june": "ژوئن",
+    "july": "ژوئیه",
+    "august": "اوت",
+    "september": "سپتامبر",
+    "october": "اکتبر",
+    "november": "نوامبر",
+    "december": "دسامبر"
+  },
+  "days": {
+    "monday": "دوشنبه",
+    "tuesday": "سه‌شنبه",
+    "wednesday": "چهارشنبه",
+    "thursday": "پنج‌شنبه",
+    "friday": "جمعه",
+    "saturday": "شنبه",
+    "sunday": "یکشنبه"
+  },
+  "language": {
+    "english": "انگلیسی",
+    "kurdish": "کردی",
+    "arabic": "عربی",
+    "persian": "فارسی"
+  }
+} 

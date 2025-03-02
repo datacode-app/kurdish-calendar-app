@@ -1,0 +1,55 @@
+{
+  "app": {
+    "title": "Kurdish Calendar",
+    "description": "A modern Kurdish calendar app with holidays and events"
+  },
+  "nav": {
+    "home": "Home",
+    "calendar": "Calendar",
+    "events": "Events",
+    "about": "About"
+  },
+  "calendar": {
+    "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "previous": "Previous",
+    "next": "Next"
+  },
+  "events": {
+    "title": "Events",
+    "noEvents": "No events for this day",
+    "holiday": "Holiday",
+    "note": "Note"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "language": {
+    "english": "English",
+    "kurdish": "Kurdish",
+    "arabic": "Arabic",
+    "persian": "Persian"
+  }
+} 

@@ -1,0 +1,104 @@
+{
+  "holidays": [
+    {
+      "date": "2025-01-01",
+      "event": "New Year's Day"
+    },
+    {
+      "date": "2025-03-05",
+      "event": "Uprising Day (against Saddam Hussein's regime)"
+    },
+    {
+      "date": "2025-03-11",
+      "event": "Anniversary of 11 March Agreement (1970)"
+    },
+    {
+      "date": "2025-03-14",
+      "event": "Birthday of Mustafa Barzani"
+    },
+    {
+      "date": "2025-03-21",
+      "event": "Nawroz Kurdish New Year"
+    },
+    {
+      "date": "2025-04-01",
+      "event": "Assyrian New Year"
+    },
+    {
+      "date": "2025-04-09",
+      "event": "Baghdad Liberation Day (fall of Saddam Hussein's regime)"
+    },
+    {
+      "date": "2025-03-30",
+      "event": "Eid-al-Fitr (End of Ramadan)",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-03-31",
+      "event": "Eid-al-Fitr (End of Ramadan)",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-04-01",
+      "event": "Eid-al-Fitr (End of Ramadan)",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-04-02",
+      "event": "Eid-al-Fitr (End of Ramadan)",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-04-16",
+      "event": "Yazidi New Year (Charshema Sor)",
+      "note": "First Wednesday after April 13 (Yazidi tradition)"
+    },
+    {
+      "date": "2025-05-01",
+      "event": "International Labour Day"
+    },
+    {
+      "date": "2025-06-06",
+      "event": "Eid al-Qurban",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-06-07",
+      "event": "Eid al-Qurban",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-06-08",
+      "event": "Eid al-Qurban",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-06-09",
+      "event": "Eid al-Qurban",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-06-26",
+      "event": "Muharram (Islamic New Year)",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-07-14",
+      "event": "Republic Day of Iraq"
+    },
+    {
+      "date": "2025-07-05",
+      "event": "Ashura",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-09-04",
+      "event": "Birthday of Prophet Mohammed (PBUH)",
+      "note": "Estimated date, subject to moon sighting"
+    },
+    {
+      "date": "2025-12-25",
+      "event": "Christmas Day"
+    }
+  ]
+} 

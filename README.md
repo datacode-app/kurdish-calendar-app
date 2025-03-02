@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Kurdish Calendar App
+
+A modern, multilingual Kurdish calendar application built with Next.js 15, TypeScript, and Tailwind CSS. This application provides a beautiful interface for viewing Kurdish holidays and events.
+
+## Features
+
+- **Multilingual Support**: Available in Kurdish, Arabic, Persian, and English
+- **Interactive Calendar**: View and navigate through months with holiday highlights
+- **Event Details**: See detailed information about holidays and events
+- **Responsive Design**: Works on all devices from mobile to desktop
+- **Modern UI**: Clean, minimalist design with dark mode support
+
+## Technologies Used
+
+- Next.js 15 with App Router
+- TypeScript
+- Tailwind CSS
+- next-intl for internationalization
+- date-fns for date manipulation
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 18.17 or later
+- npm or yarn
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/kurdish-calendar-app.git
+   cd kurdish-calendar-app
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
 
-## Learn More
+3. Run the development server:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `app/[locale]`: Internationalized pages
+- `app/components`: Reusable UI components
+- `public/locales`: Translation files for different languages
+- `public/data`: Holiday and event data
 
-## Deploy on Vercel
+## Internationalization
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The app supports the following languages:
+- English (en)
+- Kurdish (ku)
+- Arabic (ar)
+- Persian (fa)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Language files are stored in `public/locales/{language}/common.json`.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- Kurdish cultural organizations for holiday information
+- Next.js team for the amazing framework
+- The open-source community for various libraries used in this project

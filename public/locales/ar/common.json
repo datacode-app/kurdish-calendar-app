@@ -1,0 +1,55 @@
+{
+  "app": {
+    "title": "التقويم الكردي",
+    "description": "تطبيق حديث للتقويم الكردي مع العطلات والمناسبات"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "calendar": "التقويم",
+    "events": "المناسبات",
+    "about": "حول"
+  },
+  "calendar": {
+    "today": "اليوم",
+    "month": "الشهر",
+    "week": "الأسبوع",
+    "day": "اليوم",
+    "previous": "السابق",
+    "next": "التالي"
+  },
+  "events": {
+    "title": "المناسبات",
+    "noEvents": "لا توجد مناسبات لهذا اليوم",
+    "holiday": "عطلة",
+    "note": "ملاحظة"
+  },
+  "months": {
+    "january": "كانون الثاني",
+    "february": "شباط",
+    "march": "آذار",
+    "april": "نيسان",
+    "may": "أيار",
+    "june": "حزيران",
+    "july": "تموز",
+    "august": "آب",
+    "september": "أيلول",
+    "october": "تشرين الأول",
+    "november": "تشرين الثاني",
+    "december": "كانون الأول"
+  },
+  "days": {
+    "monday": "الإثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة",
+    "saturday": "السبت",
+    "sunday": "الأحد"
+  },
+  "language": {
+    "english": "الإنجليزية",
+    "kurdish": "الكردية",
+    "arabic": "العربية",
+    "persian": "الفارسية"
+  }
+} 
