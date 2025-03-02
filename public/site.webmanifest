@@ -1,0 +1,52 @@
+{
+  "name": "Kurdish Calendar",
+  "short_name": "Kurdish Calendar",
+  "description": "An interactive calendar for Kurdish holidays and cultural events",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "View Calendar",
+      "short_name": "Calendar",
+      "description": "View the Kurdish calendar",
+      "url": "/calendar",
+      "icons": [{ "src": "/favicon/favicon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "View Events",
+      "short_name": "Events",
+      "description": "View all Kurdish events",
+      "url": "/events",
+      "icons": [{ "src": "/favicon/favicon-96x96.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [],
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "lifestyle", "utilities"]
+} 

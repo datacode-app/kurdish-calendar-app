@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import PWA from "../pwa";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +26,32 @@ export async function generateMetadata({
   return {
     title: t('title'),
     description: t('description'),
+    icons: {
+      icon: [
+        { url: '/favicon/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+        { url: '/favicon/favicon.svg', type: 'image/svg+xml' },
+        { url: '/favicon/favicon.ico' }
+      ],
+      apple: [
+        { url: '/favicon/apple-touch-icon.png', sizes: '180x180' }
+      ],
+      shortcut: [{ url: '/favicon/favicon.ico' }]
+    },
+    manifest: '/site.webmanifest',
+    appleWebApp: {
+      title: 'Kurdish calendar',
+      statusBarStyle: 'default'
+    },
+    themeColor: [
+      { media: '(prefers-color-scheme: light)', color: 'white' },
+      { media: '(prefers-color-scheme: dark)', color: '#0f172a' }
+    ],
+    viewport: {
+      width: 'device-width',
+      initialScale: 1,
+      maximumScale: 1,
+      userScalable: false
+    }
   };
 }
 
@@ -49,6 +76,14 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
+      <head>
+        <meta name="apple-mobile-web-app-title" content="Kurdish calendar" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon/favicon.ico" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
@@ -56,6 +91,7 @@ export default async function LocaleLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <PWA />
           <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
           </NextIntlClientProvider>
