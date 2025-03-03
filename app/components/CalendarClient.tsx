@@ -244,53 +244,55 @@ export default function CalendarClient({ locale }: CalendarProps) {
       <h3 className="font-semibold text-lg tracking-tight">{title}</h3>
       {events.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-8 text-center bg-muted/20 rounded-lg">
-          <CalendarIcon className="h-12 w-12 text-muted-foreground/50 mb-2" />
+          <CalendarIcon className="h-12 w-12 text-muted-foreground/50 mb-2" aria-hidden="true" />
           <p className="text-muted-foreground">{t("events.noEvents")}</p>
         </div>
       ) : (
         <ScrollArea className="h-[300px] pr-4">
-          <div className="space-y-3">
-            {events.map((event, index) => (
-              <Card key={index} className="bg-card border-l-4 border-l-primary shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
-                <CardContent className="p-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <h4 className="font-medium text-base tracking-tight">
-                          {getLocalizedText(event.event)}
-                        </h4>
-                        {event.country && (
-                          <div className="flex items-center mt-1.5">
-                            <span className="inline-block w-2 h-2 rounded-full bg-primary/70 mr-2"></span>
-                            <p className="text-sm text-muted-foreground">
-                              {locale === 'ku' ? getKurdishCountryName(event.country) : event.country}
-                            </p>
-                          </div>
-                        )}
+          <ul className="space-y-3" role="list" aria-label={title}>
+            {events?.map((event, index) => (
+              <li key={index}>
+                <article className="bg-card border-l-4 border-l-primary shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden rounded-md">
+                  <div className="p-4">
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h4 className="font-medium text-base tracking-tight">
+                            {getLocalizedText(event.event)}
+                          </h4>
+                          {event.country && (
+                            <div className="flex items-center mt-1.5">
+                              <span className="inline-block w-2 h-2 rounded-full bg-primary/70 mr-2" aria-hidden="true"></span>
+                              <p className="text-sm text-muted-foreground">
+                                {locale === 'ku' ? getKurdishCountryName(event.country) : event.country}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        <time dateTime={event.date} className="text-sm font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-md">
+                          {formatDate(new Date(event.date), "MMM d")}
+                        </time>
                       </div>
-                      <time className="text-sm font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-md">
-                        {formatDate(new Date(event.date), "MMM d")}
-                      </time>
+                      {event.note && getLocalizedText(event.note) && (
+                        <div className="mt-2 pt-2 border-t border-dashed border-muted">
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {getLocalizedText(event.note)}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    {event.note && getLocalizedText(event.note) && (
-                      <div className="mt-2 pt-2 border-t border-dashed border-muted">
-                        <p className="text-sm text-muted-foreground leading-relaxed">
-                          {getLocalizedText(event.note)}
-                        </p>
-                      </div>
-                    )}
                   </div>
-                </CardContent>
-              </Card>
+                </article>
+              </li>
             ))}
-          </div>
+          </ul>
         </ScrollArea>
       )}
     </div>
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-6">
+    <section className="flex flex-col md:flex-row gap-6" aria-label="Kurdish Calendar">
       <Card className="flex-1 overflow-hidden shadow-md border-muted/50">
         <CardHeader className="pb-4 bg-card">
           <div className="flex justify-between items-center">
@@ -300,27 +302,28 @@ export default function CalendarClient({ locale }: CalendarProps) {
               variant="outline"
               size="sm"
               className="h-8 gap-1.5 rounded-full border-primary/30 hover:bg-primary/10 hover:text-primary transition-colors"
+              aria-label={t("calendar.today")}
             >
-              <CalendarIcon className="h-4 w-4" />
+              <CalendarIcon className="h-4 w-4" aria-hidden="true" />
               <span className="font-medium">{t("calendar.today")}</span>
             </Button>
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="bg-card shadow-sm">
+          <div className="bg-card shadow-sm" role="navigation" aria-label="Calendar navigation">
             {renderHeader()}
           </div>
-          <div className="bg-muted/10">
+          <div className="bg-muted/10" role="row">
             {renderDays()}
           </div>
-          <div className="border-t border-muted/30">
+          <div className="border-t border-muted/30" role="grid" aria-label="Calendar dates">
             {renderCells()}
           </div>
         </CardContent>
       </Card>
 
       {/* Desktop and Tablet Events Panel */}
-      <div className="hidden md:flex flex-col gap-6 w-full md:w-80 lg:w-96">
+      <aside className="hidden md:flex flex-col gap-6 w-full md:w-80 lg:w-96" aria-label="Calendar events">
         <Card className="shadow-md border-muted/50">
           <CardHeader className="pb-3 bg-card">
             <CardTitle className="text-lg tracking-tight">{formatDate(selectedDate, "MMMM d, yyyy")}</CardTitle>
@@ -344,11 +347,11 @@ export default function CalendarClient({ locale }: CalendarProps) {
             />
           </CardContent>
         </Card>
-      </div>
+      </aside>
 
       {/* Mobile Event Sheet */}
       <Sheet open={showEventSheet} onOpenChange={setShowEventSheet}>
-        <SheetContent side="bottom" className="h-[80vh] rounded-t-xl border-t-0 shadow-2xl">
+        <SheetContent side="bottom" className="h-[80vh] rounded-t-xl border-t-0 shadow-2xl" role="dialog" aria-label="Event details">
           <SheetHeader className="pb-3 border-b">
             <div className="flex justify-between items-center">
               <SheetTitle className="text-xl tracking-tight">{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
@@ -357,8 +360,9 @@ export default function CalendarClient({ locale }: CalendarProps) {
                 size="sm" 
                 onClick={() => setShowEventSheet(false)}
                 className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Close event details"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M18 6 6 18"></path>
                   <path d="m6 6 12 12"></path>
                 </svg>
@@ -383,6 +387,6 @@ export default function CalendarClient({ locale }: CalendarProps) {
           </div>
         </SheetContent>
       </Sheet>
-    </div>
+    </section>
   );
 }
