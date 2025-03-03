@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Holiday {
   date: string;
@@ -18,6 +21,8 @@ interface Holiday {
     ar: string;
     fa: string;
   };
+  country?: string;
+  region?: string;
 }
 
 export default function EventsListClient({ locale }: { locale: string }) {
@@ -30,7 +35,12 @@ export default function EventsListClient({ locale }: { locale: string }) {
     fetch('/data/holidays.json')
       .then(response => response.json())
       .then(data => {
-        setHolidays(data.holidays);
+        // Sort holidays by date (newest first)
+        const sortedHolidays = Array.isArray(data) 
+          ? [...data].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          : [...(data.holidays || [])].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        
+        setHolidays(sortedHolidays);
         setLoading(false);
       })
       .catch(error => {
@@ -49,13 +59,13 @@ export default function EventsListClient({ locale }: { locale: string }) {
   if (loading) {
     return (
       <div className="px-4 py-5 sm:p-6 text-center">
-        <div className="animate-pulse flex space-x-4 justify-center">
-          <div className="rounded-full bg-gray-200 dark:bg-gray-700 h-12 w-12"></div>
-          <div className="flex-1 space-y-4 py-1 max-w-md">
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+        <div className="animate-pulse flex flex-col space-y-4 items-center">
+          <div className="rounded-full bg-muted h-12 w-12"></div>
+          <div className="space-y-4 py-1 w-full max-w-md">
+            <div className="h-4 bg-muted rounded w-3/4 mx-auto"></div>
             <div className="space-y-2">
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+              <div className="h-4 bg-muted rounded w-full"></div>
+              <div className="h-4 bg-muted rounded w-5/6 mx-auto"></div>
             </div>
           </div>
         </div>
@@ -64,31 +74,48 @@ export default function EventsListClient({ locale }: { locale: string }) {
   }
 
   return (
-    <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+    <div className="space-y-4">
       {holidays.map((holiday, index) => (
-        <li key={index} className="px-4 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-700">
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400 truncate">
-                {getLocalizedText(holiday.event)}
-              </p>
-              <p className="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
-                <span>{format(new Date(holiday.date), "MMMM d, yyyy")}</span>
-              </p>
-              {holiday.note && getLocalizedText(holiday.note) && (
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-medium">{t('events.note')}:</span> {getLocalizedText(holiday.note)}
-                </p>
-              )}
+        <Card key={index} className="overflow-hidden hover:shadow-md transition-shadow">
+          <CardContent className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+              <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary">
+                <CalendarIcon className="h-6 w-6" />
+              </div>
+              
+              <div className="flex-grow min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                  <h3 className="text-base font-medium text-foreground break-words">
+                    {getLocalizedText(holiday.event)}
+                  </h3>
+                  <time className="text-sm text-muted-foreground whitespace-nowrap">
+                    {format(new Date(holiday.date), "MMMM d, yyyy")}
+                  </time>
+                </div>
+                
+                {holiday.country && (
+                  <div className="mt-1">
+                    <Badge variant="outline" className="text-xs">
+                      {holiday.country}
+                    </Badge>
+                    {holiday.region && (
+                      <Badge variant="outline" className="text-xs ml-2">
+                        {holiday.region}
+                      </Badge>
+                    )}
+                  </div>
+                )}
+                
+                {holiday.note && getLocalizedText(holiday.note) && (
+                  <p className="mt-2 text-sm text-muted-foreground break-words">
+                    {getLocalizedText(holiday.note)}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="ml-2 flex-shrink-0 flex">
-              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                {t('events.holiday')}
-              </span>
-            </div>
-          </div>
-        </li>
+          </CardContent>
+        </Card>
       ))}
-    </ul>
+    </div>
   );
 } 
