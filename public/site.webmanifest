@@ -1,7 +1,7 @@
 {
   "name": "Kurdish Calendar",
   "short_name": "Kurdish Calendar",
-  "description": "An interactive calendar for Kurdish holidays and cultural events",
+  "description": "A modern Kurdish calendar app with holidays and events",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

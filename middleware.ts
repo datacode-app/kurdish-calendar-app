@@ -1,17 +1,17 @@
 import createMiddleware from 'next-intl/middleware';
+// import { locales, defaultLocale } from    './config';
 
+// Get all public routes that should be internationalized
 export default createMiddleware({
-  // A list of all locales that are supported
   locales: ['en', 'ku', 'ar', 'fa'],
-  
-  // If this locale is matched, pathnames work without a prefix (e.g. `/about`)
   defaultLocale: 'en',
-  
-  // The default locale used when a locale-specific path is not matched
-  localePrefix: 'always'
+  localePrefix: 'as-needed'
 });
 
 export const config = {
-  // Skip all paths that should not be internationalized
-  matcher: ['/((?!api|_next|.*\\..*).*)']
+  matcher: [
+    // Match all pathnames except for
+    // - /api, /_next, /_vercel, /static, /public, /favicon, /data, /site.webmanifest, /robots.txt
+    '/((?!api|_next|_vercel|static|public|favicon|data|site.webmanifest|robots.txt).*)'
+  ]
 }; 
