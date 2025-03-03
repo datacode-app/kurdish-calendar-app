@@ -1,4 +1,5 @@
 import {getRequestConfig} from 'next-intl/server';
+import { defaultLocale } from './config';
 
 export default getRequestConfig(async ({
   requestLocale
@@ -8,7 +9,7 @@ export default getRequestConfig(async ({
   
   // Ensure that the incoming locale is valid
   if (!locale) {
-    locale = 'en'; // Default fallback locale
+    locale = defaultLocale; // Default fallback locale
   }
 
   return {

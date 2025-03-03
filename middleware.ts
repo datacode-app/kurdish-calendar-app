@@ -1,10 +1,10 @@
 import createMiddleware from 'next-intl/middleware';
-// import { locales, defaultLocale } from    './config';
+import { locales, defaultLocale } from './config';
 
 // Get all public routes that should be internationalized
 export default createMiddleware({
-  locales: ['en', 'ku', 'ar', 'fa'],
-  defaultLocale: 'en',
+  locales: locales,
+  defaultLocale: defaultLocale,
   localePrefix: 'as-needed'
 });
 
