@@ -241,36 +241,43 @@ export default function CalendarClient({ locale }: CalendarProps) {
     title: string;
   }) => (
     <div className="space-y-4">
-      <h3 className="font-semibold text-lg">{title}</h3>
+      <h3 className="font-semibold text-lg tracking-tight">{title}</h3>
       {events.length === 0 ? (
-        <p className="text-muted-foreground text-sm">{t("events.noEvents")}</p>
+        <div className="flex flex-col items-center justify-center py-8 text-center bg-muted/20 rounded-lg">
+          <CalendarIcon className="h-12 w-12 text-muted-foreground/50 mb-2" />
+          <p className="text-muted-foreground">{t("events.noEvents")}</p>
+        </div>
       ) : (
         <ScrollArea className="h-[300px] pr-4">
           <div className="space-y-3">
             {events.map((event, index) => (
-              <Card key={index} className="bg-card border-l-4 border-l-primary shadow-sm hover:shadow transition-shadow">
+              <Card key={index} className="bg-card border-l-4 border-l-primary shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
                 <CardContent className="p-4">
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
                       <div>
-                        <h4 className="font-medium text-base">
+                        <h4 className="font-medium text-base tracking-tight">
                           {getLocalizedText(event.event)}
                         </h4>
                         {event.country && (
-                          <p className="text-sm text-muted-foreground flex items-center mt-1">
+                          <div className="flex items-center mt-1.5">
                             <span className="inline-block w-2 h-2 rounded-full bg-primary/70 mr-2"></span>
-                            {locale === 'ku' ? getKurdishCountryName(event.country) : event.country}
-                          </p>
+                            <p className="text-sm text-muted-foreground">
+                              {locale === 'ku' ? getKurdishCountryName(event.country) : event.country}
+                            </p>
+                          </div>
                         )}
                       </div>
-                      <time className="text-sm font-medium bg-muted px-2 py-1 rounded-md">
+                      <time className="text-sm font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-md">
                         {formatDate(new Date(event.date), "MMM d")}
                       </time>
                     </div>
                     {event.note && getLocalizedText(event.note) && (
-                      <p className="text-sm text-muted-foreground mt-2 border-t pt-2 border-dashed border-muted">
-                        {getLocalizedText(event.note)}
-                      </p>
+                      <div className="mt-2 pt-2 border-t border-dashed border-muted">
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          {getLocalizedText(event.note)}
+                        </p>
+                      </div>
                     )}
                   </div>
                 </CardContent>
@@ -284,35 +291,41 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
   return (
     <div className="flex flex-col md:flex-row gap-6">
-      <Card className="flex-1 overflow-hidden">
-        <CardHeader className="pb-4">
+      <Card className="flex-1 overflow-hidden shadow-md border-muted/50">
+        <CardHeader className="pb-4 bg-card">
           <div className="flex justify-between items-center">
-            <CardTitle>{t("nav.calendar")}</CardTitle>
+            <CardTitle className="text-xl tracking-tight">{t("nav.calendar")}</CardTitle>
             <Button
               onClick={() => setCurrentDate(new Date())}
               variant="outline"
               size="sm"
-              className="h-8 gap-1 rounded-full"
+              className="h-8 gap-1.5 rounded-full border-primary/30 hover:bg-primary/10 hover:text-primary transition-colors"
             >
               <CalendarIcon className="h-4 w-4" />
-              <span>{t("calendar.today")}</span>
+              <span className="font-medium">{t("calendar.today")}</span>
             </Button>
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          {renderHeader()}
-          {renderDays()}
-          {renderCells()}
+          <div className="bg-card shadow-sm">
+            {renderHeader()}
+          </div>
+          <div className="bg-muted/10">
+            {renderDays()}
+          </div>
+          <div className="border-t border-muted/30">
+            {renderCells()}
+          </div>
         </CardContent>
       </Card>
 
       {/* Desktop and Tablet Events Panel */}
       <div className="hidden md:flex flex-col gap-6 w-full md:w-80 lg:w-96">
-        <Card>
-          <CardHeader>
-            <CardTitle>{formatDate(selectedDate, "MMMM d, yyyy")}</CardTitle>
+        <Card className="shadow-md border-muted/50">
+          <CardHeader className="pb-3 bg-card">
+            <CardTitle className="text-lg tracking-tight">{formatDate(selectedDate, "MMMM d, yyyy")}</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5">
             <EventList
               events={selectedDateEvents}
               title={t("events.todayEvents")}
@@ -320,11 +333,11 @@ export default function CalendarClient({ locale }: CalendarProps) {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{formatDate(currentDate, "MMMM yyyy")}</CardTitle>
+        <Card className="shadow-md border-muted/50">
+          <CardHeader className="pb-3 bg-card">
+            <CardTitle className="text-lg tracking-tight">{formatDate(currentDate, "MMMM yyyy")}</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5">
             <EventList
               events={currentMonthEvents}
               title={t("events.monthEvents")}
@@ -335,15 +348,15 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
       {/* Mobile Event Sheet */}
       <Sheet open={showEventSheet} onOpenChange={setShowEventSheet}>
-        <SheetContent side="bottom" className="h-[80vh] rounded-t-xl">
-          <SheetHeader className="pb-2 border-b">
+        <SheetContent side="bottom" className="h-[80vh] rounded-t-xl border-t-0 shadow-2xl">
+          <SheetHeader className="pb-3 border-b">
             <div className="flex justify-between items-center">
-              <SheetTitle className="text-xl">{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
+              <SheetTitle className="text-xl tracking-tight">{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
               <Button 
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setShowEventSheet(false)}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 6 6 18"></path>
@@ -354,14 +367,14 @@ export default function CalendarClient({ locale }: CalendarProps) {
             </div>
           </SheetHeader>
           <div className="mt-6 space-y-8 pb-8">
-            <div className="bg-muted/30 p-4 rounded-lg">
+            <div className="bg-muted/10 p-5 rounded-lg border border-muted/30">
               <EventList
                 events={selectedDateEvents}
                 title={t("events.todayEvents")}
               />
             </div>
             
-            <div className="bg-muted/30 p-4 rounded-lg">
+            <div className="bg-muted/10 p-5 rounded-lg border border-muted/30">
               <EventList
                 events={currentMonthEvents}
                 title={t("events.monthEvents")}
