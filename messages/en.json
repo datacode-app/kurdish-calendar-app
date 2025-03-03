@@ -23,12 +23,29 @@
     "events": "Events",
     "about": "About",
     "home": "Home",
-    "worldTime": "World Time"
+    "worldTime": "World Time",
+    "description": "About the Kurdish Calendar App"
   },
   "calendar": {
-    "today": "Today"
+    "today": "Today",
+    "kurdishCalendar": "Kurdish Calendar",
+    "upcomingEvents": "Upcoming Events",
+    "noEvents": "No upcoming events"
   },
   "time": {
     "title": "World Time"
+  },
+  "about": {
+    "welcome": "Welcome to the Kurdish Calendar – your definitive guide to celebrating Kurdish traditions and cultural milestones. This platform is dedicated to providing comprehensive insights into Kurdish holidays, festivals, and significant events that shape our vibrant heritage.",
+    "developed": "Developed with passion and precision by the DataCode team, our calendar marries modern design with the rich cultural narrative of Kurdistan. We believe in harnessing innovative technology to honor tradition, creating a resource that not only informs but also inspires and connects communities.",
+    "features": "Key Features",
+    "featuresList": {
+      "multilanguage": "Multi-language support (Kurdish, Arabic, Persian, and English)",
+      "interactive": "Interactive and real-time calendar updates",
+      "details": "In-depth details on holidays and cultural events",
+      "design": "User-centric design for a seamless experience across devices",
+      "darkmode": "Dark mode for enhanced viewing comfort"
+    },
+    "mission": "At DataCode, our mission is to blend cutting-edge technology with cultural authenticity. We are committed to delivering high-quality digital solutions that celebrate our heritage and empower communities. Join us on this journey as we continue to innovate, inspire, and preserve the rich legacy of Kurdish culture."
   }
 } 
