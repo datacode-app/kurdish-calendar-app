@@ -33,6 +33,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { getLocalizedDayName, getLocalizedMonthName, getKurdishCountryName } from "@/lib/date-utils";
+import { getKurdishDate } from "@/lib/getKurdishDate";
 
 interface Holiday {
   date: string;
@@ -64,6 +65,16 @@ export default function CalendarClient({ locale }: CalendarProps) {
   const [currentMonthEvents, setCurrentMonthEvents] = useState<Holiday[]>([]);
   const [selectedDateEvents, setSelectedDateEvents] = useState<Holiday[]>([]);
   const [showEventSheet, setShowEventSheet] = useState(false);
+
+  // Add Kurdish date state
+  const [kurdishDate, setKurdishDate] = useState(getKurdishDate(currentDate));
+
+  // Update Kurdish date when currentDate changes
+  useEffect(() => {
+    if (locale === 'ku') {
+      setKurdishDate(getKurdishDate(currentDate));
+    }
+  }, [currentDate, locale]);
 
   useEffect(() => {
     fetch("/data/holidays.json")
@@ -106,23 +117,43 @@ export default function CalendarClient({ locale }: CalendarProps) {
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
 
   const formatDate = (date: Date, formatStr: string) => {
+    // Special handling for Kurdish dates when Kurdish language is selected
+    if (locale === 'ku' && formatStr === 'MMMM yyyy' && kurdishDate) {
+      return `${kurdishDate.kurdishMonth} ${kurdishDate.kurdishYear}`;
+    }
+    
+    if (locale === 'ku' && 
+       (formatStr === 'MMMM d, yyyy' || formatStr === 'MMM d') && 
+       kurdishDate) {
+      // For complete date with day
+      if (formatStr === 'MMMM d, yyyy') {
+        return `${kurdishDate.kurdishMonth} ${kurdishDate.kurdishDay}, ${kurdishDate.kurdishYear}`;
+      }
+      // For month and day only
+      if (formatStr === 'MMM d') {
+        return `${kurdishDate.kurdishMonth} ${kurdishDate.kurdishDay}`;
+      }
+    }
+    
+    // For Gregorian calendar, always use English month names regardless of locale
     const formatted = format(date, formatStr);
     
+    // Only localize day names, not month names
     if (locale !== 'en') {
+      // Only translate day names, not month names
       if (formatStr === 'EEEE' || formatStr === 'EEE') {
         return getLocalizedDayName(formatted, locale);
       }
+      
+      // For formats involving months, keep month names in English
       if (formatStr === 'MMMM yyyy') {
-        const [month, year] = formatted.split(' ');
-        return `${getLocalizedMonthName(month, locale)} ${year}`;
+        return formatted; // Keep English month
       }
       if (formatStr === 'MMMM d, yyyy') {
-        const [month, rest] = formatted.split(' ');
-        return `${getLocalizedMonthName(month, locale)} ${rest}`;
+        return formatted; // Keep English month
       }
       if (formatStr === 'MMM d') {
-        const [month, day] = formatted.split(' ');
-        return `${getLocalizedMonthName(month, locale)} ${day}`;
+        return formatted; // Keep English month
       }
     }
     
@@ -216,6 +247,13 @@ export default function CalendarClient({ locale }: CalendarProps) {
           Array.isArray(holidays) &&
           holidays.some((holiday) => isSameDay(new Date(holiday.date), day));
 
+        // Get the Kurdish date for this day if locale is Kurdish
+        let dayDisplay = format(day, "d");
+        if (locale === 'ku') {
+          const dayKurdishDate = getKurdishDate(day);
+          dayDisplay = dayKurdishDate.kurdishDay.toString();
+        }
+
         days.push(
           <div
             key={day.toString()}
@@ -237,7 +275,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
                 isSameDay(day, selectedDate) && !isToday(day) && "font-medium"
               )}
             >
-              {format(day, "d")}
+              {dayDisplay}
             </span>
             {hasEvents && (
               <div className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-destructive"></div>

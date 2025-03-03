@@ -120,10 +120,10 @@ export default async function LocaleLayout({
 }>) {
   let messages;
   try {
-    messages = (await import(`../../public/locales/${locale}/common.json`)).default;
+    messages = (await import(`../../public/locale/${locale}/common.json`)).default;
   } catch {
     // Fallback to English if the locale doesn't exist
-    messages = (await import(`../../public/locales/en/common.json`)).default;
+    messages = (await import(`../../public/locale/ku/common.json`)).default;
   }
 
   // Set the direction based on the locale

@@ -110,16 +110,12 @@ export const getLocalizedDayName = (englishDay: string, locale: string): string 
 };
 
 export const getLocalizedMonthName = (englishMonth: string, locale: string): string => {
-  switch (locale) {
-    case 'ku':
-      return kurdishMonths[englishMonth as keyof typeof kurdishMonths] || englishMonth;
-    case 'ar':
-      return arabicMonths[englishMonth as keyof typeof arabicMonths] || englishMonth;
-    case 'fa':
-      return persianMonths[englishMonth as keyof typeof persianMonths] || englishMonth;
-    default:
-      return englishMonth;
+  // Only use Kurdish month names for Kurdish language
+  if (locale === 'ku') {
+    return kurdishMonths[englishMonth as keyof typeof kurdishMonths] || englishMonth;
   }
+  // For all other languages (ar, fa, en), use English month names
+  return englishMonth;
 };
 
 export const getKurdishCountryName = (englishCountry: string): string => {

@@ -1,33 +1,23 @@
 {
   "app": {
     "title": "Kurdish Calendar",
-    "description": "A comprehensive calendar of Kurdish events and holidays"
-  },
-  "events": {
-    "title": "Events",
-    "events": {
-      "title": "Kurdish Events"
-    },
-    "todayEvents": "Today's Events",
-    "monthEvents": "Month Events",
-    "noEvents": "No events"
-  },
-  "language": {
-    "ku": "Kurdish",
-    "ar": "Arabic",
-    "fa": "Persian",
-    "en": "English"
+    "description": "A modern Kurdish calendar app with holidays and events"
   },
   "nav": {
+    "home": "Home",
     "calendar": "Calendar",
     "events": "Events",
     "about": "About",
-    "home": "Home",
     "worldTime": "World Time",
     "description": "About the Kurdish Calendar App"
   },
   "calendar": {
     "today": "Today",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "previous": "Previous",
+    "next": "Next",
     "kurdishCalendar": "Kurdish Calendar",
     "upcomingEvents": "Upcoming Events",
     "noEvents": "No upcoming events",
@@ -72,8 +62,62 @@
       "Dhu al-Hijjah"
     ]
   },
+  "events": {
+    "title": "Events",
+    "monthEvents": "Events of the month",
+    "todayEvents": "Events of the day",
+    "noEvents": "No events for this day",
+    "holiday": "Holiday",
+    "note": "Note",
+    "more": "more",
+    "events": {
+      "title": "Kurdish Events"
+    }
+  },
   "time": {
-    "title": "World Time"
+    "title": "City Times",
+    "localTime": "Local Time"
+  },
+  "months": {
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "language": {
+    "english": "English",
+    "kurdish": "Kurdish",
+    "persian": "Persian",
+    "arabic": "Arabic",
+    "ku": "Kurdish",
+    "ar": "Arabic",
+    "fa": "Persian",
+    "en": "English",
+    "select": "Select Language"
   },
   "quotes": {
     "inspirational": "Inspirational Quotes",

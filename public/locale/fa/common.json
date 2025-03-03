@@ -1,33 +1,23 @@
 {
   "app": {
     "title": "تقویم کردی",
-    "description": "تقویم جامع رویدادها و مناسبت‌های کردی"
-  },
-  "events": {
-    "title": "رویدادها",
-    "events": {
-      "title": "رویدادهای کردی"
-    },
-    "todayEvents": "رویدادهای امروز",
-    "monthEvents": "رویدادهای ماه",
-    "noEvents": "رویدادی وجود ندارد"
-  },
-  "language": {
-    "ku": "کردی",
-    "ar": "عربی",
-    "fa": "فارسی",
-    "en": "انگلیسی"
+    "description": "اپلیکیشن مدرن تقویم کردی با مناسبت‌ها و رویدادها"
   },
   "nav": {
+    "home": "خانه",
     "calendar": "تقویم",
     "events": "رویدادها",
     "about": "درباره",
-    "home": "خانه",
     "worldTime": "زمان جهانی",
     "description": "درباره برنامه تقویم کردی"
   },
   "calendar": {
     "today": "امروز",
+    "month": "ماه",
+    "week": "هفته",
+    "day": "روز",
+    "previous": "قبلی",
+    "next": "بعدی",
     "kurdishCalendar": "تقویم کردی",
     "upcomingEvents": "رویدادهای آینده",
     "noEvents": "رویداد آینده‌ای وجود ندارد",
@@ -72,8 +62,62 @@
       "ذی‌الحجه"
     ]
   },
+  "events": {
+    "monthEvents": "رویدادها ماه",
+    "todayEvents": "رویدادها روز",
+    "title": "رویدادها",
+    "noEvents": "هیچ رویدادی برای امروز وجود ندارد",
+    "holiday": "تعطیلی",
+    "note": "یادداشت",
+    "more": "بیشتر",
+    "events": {
+      "title": "رویدادهای کردی"
+    }
+  },
   "time": {
-    "title": "زمان جهانی"
+    "title": "زمان شهرها",
+    "localTime": "زمان محلی"
+  },
+  "months": {
+    "january": "ژانویه",
+    "february": "فوریه",
+    "march": "مارس",
+    "april": "آوریل",
+    "may": "می",
+    "june": "ژوئن",
+    "july": "جولای",
+    "august": "آگوست",
+    "september": "سپتامبر",
+    "october": "اکتبر",
+    "november": "نوامبر",
+    "december": "دسامبر"
+  },
+  "days": {
+    "monday": "دوشنبه",
+    "tuesday": "سه‌شنبه",
+    "wednesday": "چهارشنبه",
+    "thursday": "پنج‌شنبه",
+    "friday": "جمعه",
+    "saturday": "شنبه",
+    "sunday": "یکشنبه",
+    "sun": "یک",
+    "mon": "دو",
+    "tue": "سه",
+    "wed": "چهار",
+    "thu": "پنج",
+    "fri": "جمع",
+    "sat": "شنب"
+  },
+  "language": {
+    "english": "انگلیسی",
+    "kurdish": "کردی",
+    "persian": "فارسی",
+    "arabic": "عربی",
+    "ku": "کردی",
+    "ar": "عربی",
+    "fa": "فارسی",
+    "en": "انگلیسی",
+    "select": "انتخاب زبان"
   },
   "quotes": {
     "inspirational": "سخنان الهام‌بخش",
