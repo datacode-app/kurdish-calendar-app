@@ -1,5 +1,13 @@
 {
+  "app": {
+    "title": "Kurdish Calendar",
+    "description": "A comprehensive calendar of Kurdish events and holidays"
+  },
   "events": {
+    "title": "Events",
+    "events": {
+      "title": "Kurdish Events"
+    },
     "todayEvents": "Today's Events",
     "monthEvents": "Month Events",
     "noEvents": "No events"
@@ -13,9 +21,14 @@
   "nav": {
     "calendar": "Calendar",
     "events": "Events",
-    "about": "About"
+    "about": "About",
+    "home": "Home",
+    "worldTime": "World Time"
   },
   "calendar": {
     "today": "Today"
+  },
+  "time": {
+    "title": "World Time"
   }
 } 

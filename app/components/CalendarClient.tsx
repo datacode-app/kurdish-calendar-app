@@ -248,26 +248,27 @@ export default function CalendarClient({ locale }: CalendarProps) {
         <ScrollArea className="h-[300px] pr-4">
           <div className="space-y-3">
             {events.map((event, index) => (
-              <Card key={index} className="bg-card">
+              <Card key={index} className="bg-card border-l-4 border-l-primary shadow-sm hover:shadow transition-shadow">
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-medium">
+                        <h4 className="font-medium text-base">
                           {getLocalizedText(event.event)}
                         </h4>
                         {event.country && (
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-muted-foreground flex items-center mt-1">
+                            <span className="inline-block w-2 h-2 rounded-full bg-primary/70 mr-2"></span>
                             {locale === 'ku' ? getKurdishCountryName(event.country) : event.country}
                           </p>
                         )}
                       </div>
-                      <time className="text-sm text-muted-foreground">
+                      <time className="text-sm font-medium bg-muted px-2 py-1 rounded-md">
                         {formatDate(new Date(event.date), "MMM d")}
                       </time>
                     </div>
                     {event.note && getLocalizedText(event.note) && (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground mt-2 border-t pt-2 border-dashed border-muted">
                         {getLocalizedText(event.note)}
                       </p>
                     )}
@@ -282,7 +283,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
+    <div className="flex flex-col md:flex-row gap-6">
       <Card className="flex-1 overflow-hidden">
         <CardHeader className="pb-4">
           <div className="flex justify-between items-center">
@@ -305,8 +306,8 @@ export default function CalendarClient({ locale }: CalendarProps) {
         </CardContent>
       </Card>
 
-      {/* Desktop Events Panel */}
-      <div className="hidden lg:flex flex-col gap-6 w-96">
+      {/* Desktop and Tablet Events Panel */}
+      <div className="hidden md:flex flex-col gap-6 w-full md:w-80 lg:w-96">
         <Card>
           <CardHeader>
             <CardTitle>{formatDate(selectedDate, "MMMM d, yyyy")}</CardTitle>
@@ -334,19 +335,38 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
       {/* Mobile Event Sheet */}
       <Sheet open={showEventSheet} onOpenChange={setShowEventSheet}>
-        <SheetContent side="bottom" className="h-[80vh]">
-          <SheetHeader>
-            <SheetTitle>{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
+        <SheetContent side="bottom" className="h-[80vh] rounded-t-xl">
+          <SheetHeader className="pb-2 border-b">
+            <div className="flex justify-between items-center">
+              <SheetTitle className="text-xl">{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setShowEventSheet(false)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+                <span className="sr-only">Close</span>
+              </Button>
+            </div>
           </SheetHeader>
-          <div className="mt-6 space-y-6">
-            <EventList
-              events={selectedDateEvents}
-              title={t("events.todayEvents")}
-            />
-            <EventList
-              events={currentMonthEvents}
-              title={t("events.monthEvents")}
-            />
+          <div className="mt-6 space-y-8 pb-8">
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <EventList
+                events={selectedDateEvents}
+                title={t("events.todayEvents")}
+              />
+            </div>
+            
+            <div className="bg-muted/30 p-4 rounded-lg">
+              <EventList
+                events={currentMonthEvents}
+                title={t("events.monthEvents")}
+              />
+            </div>
           </div>
         </SheetContent>
       </Sheet>

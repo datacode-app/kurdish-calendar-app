@@ -16,6 +16,7 @@ export default async function Home({
         {/* Calendar Section */}
         <Card className="mx-auto">
           <CardContent className="p-4 md:p-6">
+            
             <Calendar locale={locale} />
           </CardContent>
         </Card>
