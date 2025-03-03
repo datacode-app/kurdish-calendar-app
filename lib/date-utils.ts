@@ -29,18 +29,18 @@ export const persianDays = {
 };
 
 export const kurdishMonths = {
-  January: "کانوونی دووەم",
-  February: "شوبات",
-  March: "ئازار",
-  April: "نیسان",
-  May: "ئایار",
-  June: "حوزەیران",
-  July: "تەمموز",
-  August: "ئاب",
-  September: "ئەیلوول",
-  October: "تشرینی یەکەم",
-  November: "تشرینی دووەم",
-  December: "کانوونی یەکەم"
+  January: "خاکەلێوە",
+  February: "گوڵان",
+  March: "زەردان",
+  April: "پووشپەڕ",
+  May: "گەلاوێژ",
+  June: "خەرمانان",
+  July: "بەران",
+  August: "گێزان",
+  September: "ساران",
+  October: "بەفران",
+  November: "ڕێبەندان",
+  December: "ڕەشەمە"
 };
 
 export const arabicMonths = {

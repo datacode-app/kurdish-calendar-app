@@ -3,6 +3,33 @@
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
+@import url("https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;700&display=swap");
+@import url("https://v1.fontapi.ir/css/Vazirmatn");
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Language-specific font settings */
+html[lang="ku"] body {
+  font-family: 'Noto Kufi Arabic', Arial, Helvetica, sans-serif;
+}
+
+html[lang="ar"] body {
+  font-family: 'Noto Kufi Arabic', Arial, Helvetica, sans-serif;
+}
+
+html[lang="fa"] body {
+  font-family: 'Vazirmatn', Arial, Helvetica, sans-serif;
+}
+
+.notoKufi {
+  font-family: 'Noto Kufi Arabic', Arial, Helvetica, sans-serif;
+}
+
+.vazirmatn {
+  font-family: 'Vazirmatn', Arial, Helvetica, sans-serif;
+}
 
 @theme {
   --font-sans: var(--font-geist-sans);
