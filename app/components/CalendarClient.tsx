@@ -155,26 +155,47 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
   const renderDays = () => {
     const dateFormat = "EEEE";
+    const shortDateFormat = "EEE";
     const days = [];
     const startDate = startOfWeek(currentDate);
 
     for (let i = 0; i < 7; i++) {
+      const currentDay = addDays(startDate, i);
+      const isWeekend = i === 0 || i === 6; // Sunday or Saturday
+      
+      // Get the full and abbreviated day names
+      const fullDayName = formatDate(currentDay, dateFormat);
+      
+      // For mobile, we need to ensure we get the first character or first few characters of the localized day name
+      let shortDayName;
+      if (locale !== 'en') {
+        // Get the full localized day name and take the first character or first few characters
+        const localizedDay = getLocalizedDayName(format(currentDay, dateFormat), locale);
+        shortDayName = localizedDay.substring(0, locale === 'ku' || locale === 'ar' || locale === 'fa' ? 2 : 1);
+      } else {
+        shortDayName = formatDate(currentDay, shortDateFormat);
+      }
+      
       days.push(
         <div
           key={i}
-          className="text-center py-3 text-sm font-medium text-muted-foreground"
+          className="text-center py-2 sm:py-3"
         >
-          <span className="hidden md:inline">
-            {formatDate(addDays(startDate, i), dateFormat)}
+          <span className="hidden md:inline text-sm font-medium text-muted-foreground">
+            {fullDayName}
           </span>
-          <span className="md:hidden">
-            {formatDate(addDays(startDate, i), "EEE")}
+          <span 
+            className={`md:hidden inline-flex items-center justify-center h-8 w-8 text-xs font-semibold rounded-full 
+              ${isWeekend ? 'bg-primary/20 text-primary' : 'bg-muted/30 text-foreground'}`}
+            title={fullDayName} // Add full name as tooltip
+          >
+            {shortDayName}
           </span>
         </div>
       );
     }
 
-    return <div className="grid grid-cols-7">{days}</div>;
+    return <div className="grid grid-cols-7 border-b border-muted/30 mb-1">{days}</div>;
   };
 
   const renderCells = () => {
@@ -190,6 +211,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         const cloneDay = day;
+        const isWeekend = i === 0 || i === 6; // Sunday or Saturday
         const hasEvents =
           Array.isArray(holidays) &&
           holidays.some((holiday) => isSameDay(new Date(holiday.date), day));
@@ -201,7 +223,8 @@ export default function CalendarClient({ locale }: CalendarProps) {
               "relative h-24 p-1 transition-colors hover:bg-accent/50 cursor-pointer",
               !isSameMonth(day, monthStart) &&
                 "text-muted-foreground bg-muted/30",
-              isSameDay(day, selectedDate) && "bg-accent"
+              isSameDay(day, selectedDate) && "bg-accent",
+              isWeekend && isSameMonth(day, monthStart) && !isSameDay(day, selectedDate) && "bg-muted/10"
             )}
             onClick={() => onDateClick(cloneDay)}
           >
@@ -216,6 +239,9 @@ export default function CalendarClient({ locale }: CalendarProps) {
             >
               {format(day, "d")}
             </span>
+            {hasEvents && (
+              <div className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-destructive"></div>
+            )}
           </div>
         );
         day = addDays(day, 1);
@@ -354,7 +380,12 @@ export default function CalendarClient({ locale }: CalendarProps) {
         <SheetContent side="bottom" className="h-[80vh] rounded-t-xl border-t-0 shadow-2xl" role="dialog" aria-label="Event details">
           <SheetHeader className="pb-3 border-b">
             <div className="flex justify-between items-center">
-              <SheetTitle className="text-xl tracking-tight">{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
+              <div>
+                <SheetTitle className="text-xl tracking-tight">{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {formatDate(selectedDate, "EEEE")}
+                </p>
+              </div>
               <Button 
                 variant="ghost" 
                 size="sm" 
