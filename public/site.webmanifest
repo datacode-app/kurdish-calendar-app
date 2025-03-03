@@ -4,8 +4,8 @@
   "description": "A modern Kurdish calendar app with holidays and events",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#142935",
+  "theme_color": "#142935",
   "orientation": "portrait-primary",
   "icons": [
     {
