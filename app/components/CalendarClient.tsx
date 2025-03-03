@@ -1,15 +1,38 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, X } from 'lucide-react';
-
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from '@/components/ui/sheet';
+import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  isSameMonth,
+  isSameDay,
+  addMonths,
+  subMonths,
+  isToday,
+} from "date-fns";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar as CalendarIcon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import { getLocalizedDayName, getLocalizedMonthName, getKurdishCountryName } from "@/lib/date-utils";
 
 interface Holiday {
   date: string;
@@ -25,6 +48,8 @@ interface Holiday {
     ar: string;
     fa: string;
   };
+  country?: string;
+  region?: string;
 }
 
 interface CalendarProps {
@@ -36,105 +61,119 @@ export default function CalendarClient({ locale }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [holidays, setHolidays] = useState<Holiday[]>([]);
-  const [currentEvents, setCurrentEvents] = useState<Holiday[]>([]);
+  const [currentMonthEvents, setCurrentMonthEvents] = useState<Holiday[]>([]);
+  const [selectedDateEvents, setSelectedDateEvents] = useState<Holiday[]>([]);
   const [showEventSheet, setShowEventSheet] = useState(false);
 
   useEffect(() => {
-    // Fetch holidays data
-    fetch('/data/holidays.json')
-      .then(response => response.json())
-      .then(data => {
-        setHolidays(data.holidays);
+    fetch("/data/holidays.json")
+      .then((response) => response.json())
+      .then((data) => {
+        const holidaysArray = Array.isArray(data) ? data : data.holidays || [];
+        setHolidays(holidaysArray);
       })
-      .catch(error => console.error('Error loading holidays:', error));
+      .catch((error) => console.error("Error loading holidays:", error));
   }, []);
 
   useEffect(() => {
-    // Filter events for the selected date
-    const events = holidays.filter(holiday => 
+    const monthEvents = holidays.filter((holiday) =>
+      isSameMonth(new Date(holiday.date), currentDate)
+    );
+    setCurrentMonthEvents(monthEvents);
+
+    const dateEvents = holidays.filter((holiday) =>
       isSameDay(new Date(holiday.date), selectedDate)
     );
-    setCurrentEvents(events);
-  }, [selectedDate, holidays]);
+    setSelectedDateEvents(dateEvents);
+  }, [selectedDate, currentDate, holidays]);
 
-  // Helper function to get localized text based on locale
-  const getLocalizedText = (textObj: { [key: string]: string } | undefined, defaultText: string = ''): string => {
+  const getLocalizedText = (
+    textObj: { [key: string]: string } | undefined,
+    defaultText: string = ""
+  ): string => {
     if (!textObj) return defaultText;
-    // Use the current locale if available, otherwise fall back to English
     return textObj[locale as keyof typeof textObj] || textObj.en || defaultText;
   };
 
   const onDateClick = (day: Date) => {
     setSelectedDate(day);
-    // On mobile, show the event sheet when a date is clicked
-    if (window.innerWidth < 1024) {
+    if (window.innerWidth < 768) {
       setShowEventSheet(true);
     }
   };
 
-  const nextMonth = () => {
-    setCurrentDate(addMonths(currentDate, 1));
+  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
+  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
+
+  const formatDate = (date: Date, formatStr: string) => {
+    const formatted = format(date, formatStr);
+    
+    if (locale !== 'en') {
+      if (formatStr === 'EEEE' || formatStr === 'EEE') {
+        return getLocalizedDayName(formatted, locale);
+      }
+      if (formatStr === 'MMMM yyyy') {
+        const [month, year] = formatted.split(' ');
+        return `${getLocalizedMonthName(month, locale)} ${year}`;
+      }
+      if (formatStr === 'MMMM d, yyyy') {
+        const [month, rest] = formatted.split(' ');
+        return `${getLocalizedMonthName(month, locale)} ${rest}`;
+      }
+      if (formatStr === 'MMM d') {
+        const [month, day] = formatted.split(' ');
+        return `${getLocalizedMonthName(month, locale)} ${day}`;
+      }
+    }
+    
+    return formatted;
   };
 
-  const prevMonth = () => {
-    setCurrentDate(subMonths(currentDate, 1));
-  };
-
-  const renderHeader = () => {
-    const dateFormat = "MMMM yyyy";
-    return (
-      <div className="flex items-center justify-between py-3 md:py-4 px-3 md:px-6 border-b">
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={prevMonth}
-          className="hover:bg-background-100"
-        >
-          <ChevronLeft className="h-4 md:h-5 w-4 md:w-5" />
-          <span className="sr-only">Previous month</span>
-        </Button>
-        <h2 className="text-base md:text-lg font-medium">
-          {format(currentDate, dateFormat)}
-        </h2>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={nextMonth}
-          className="hover:bg-background-100"
-        >
-          <ChevronRight className="h-4 md:h-5 w-4 md:w-5" />
-          <span className="sr-only">Next month</span>
-        </Button>
-      </div>
-    );
-  };
+  const renderHeader = () => (
+    <div className="flex items-center justify-between py-4 px-6">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={prevMonth}
+        className="hover:bg-accent rounded-full"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </Button>
+      <h2 className="text-xl font-semibold">
+        {formatDate(currentDate, "MMMM yyyy")}
+      </h2>
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={nextMonth}
+        className="hover:bg-accent rounded-full"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </Button>
+    </div>
+  );
 
   const renderDays = () => {
-    const days = [];
     const dateFormat = "EEEE";
-    
+    const days = [];
     const startDate = startOfWeek(currentDate);
-    
+
     for (let i = 0; i < 7; i++) {
-      const dayName = format(addDays(startDate, i), dateFormat);
-      const dayKey = dayName.toLowerCase();
-      
-      // Get abbreviated day name for mobile
-      const shortDayName = format(addDays(startDate, i), "E");
-      const shortDayKey = shortDayName.toLowerCase();
-      
       days.push(
-        <div className="text-center py-2 font-medium text-sm text-muted-foreground" key={i}>
+        <div
+          key={i}
+          className="text-center py-3 text-sm font-medium text-muted-foreground"
+        >
           <span className="hidden md:inline">
-            {t(`days.${dayKey.substring(0, dayKey.length > 9 ? 9 : dayKey.length)}`)}
+            {formatDate(addDays(startDate, i), dateFormat)}
           </span>
           <span className="md:hidden">
-            {t(`days.${shortDayKey}`)}
+            {formatDate(addDays(startDate, i), "EEE")}
           </span>
         </div>
       );
     }
-    
+
     return <div className="grid grid-cols-7">{days}</div>;
   };
 
@@ -147,210 +186,170 @@ export default function CalendarClient({ locale }: CalendarProps) {
     const rows = [];
     let days = [];
     let day = startDate;
-    let formattedDate = "";
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
-        formattedDate = format(day, "d");
         const cloneDay = day;
-        
-        // Check if there's a holiday on this day
-        const dayHolidays = holidays.filter(holiday => isSameDay(new Date(holiday.date), day));
-        const hasHoliday = dayHolidays.length > 0;
+        const hasEvents =
+          Array.isArray(holidays) &&
+          holidays.some((holiday) => isSameDay(new Date(holiday.date), day));
 
         days.push(
           <div
-            className={`min-h-[50px] md:min-h-[80px] p-1 md:p-2 border ${
-              !isSameMonth(day, monthStart)
-                ? "bg-muted/50 text-muted-foreground"
-                : ""
-            } ${
-              isSameDay(day, selectedDate)
-                ? "bg-primary/10 border-primary/20"
-                : ""
-            } ${
-              hasHoliday
-                ? "border-l-4 border-l-red-500"
-                : ""
-            } relative group cursor-pointer transition-colors hover:bg-muted/30`}
             key={day.toString()}
+            className={cn(
+              "relative h-24 p-1 transition-colors hover:bg-accent/50 cursor-pointer",
+              !isSameMonth(day, monthStart) &&
+                "text-muted-foreground bg-muted/30",
+              isSameDay(day, selectedDate) && "bg-accent"
+            )}
             onClick={() => onDateClick(cloneDay)}
           >
-            <div className="flex justify-between">
-              <span
-                className={`text-sm w-6 h-6 md:w-7 md:h-7 flex items-center justify-center ${
-                  isSameDay(day, new Date())
-                    ? "bg-primary text-primary-foreground rounded-full"
-                    : isSameMonth(day, monthStart)
-                    ? ""
-                    : "text-muted-foreground"
-                }`}
-              >
-                {formattedDate}
-              </span>
-              {hasHoliday && (
-                <span className="text-[10px] md:text-xs text-red-500 font-medium">
-                  <span className="hidden md:inline">{t('events.holiday')}</span>
-                  <span className="md:hidden">•</span>
-                </span>
+            <span
+              className={cn(
+                "flex h-8 w-8 items-center justify-center rounded-full text-sm transition-colors",
+                isToday(day) &&
+                  "bg-primary text-primary-foreground font-semibold",
+                hasEvents && !isToday(day) && "text-destructive font-medium",
+                isSameDay(day, selectedDate) && !isToday(day) && "font-medium"
               )}
-            </div>
-            
-            {hasHoliday && (
-              <div className="mt-1 space-y-1">
-                {/* Only show on larger screens */}
-                <div className="hidden md:block">
-                  {dayHolidays.slice(0, 1).map((holiday, index) => (
-                    <HoverCard key={index} openDelay={100} closeDelay={100}>
-                      <HoverCardTrigger asChild>
-                        <div className="text-xs truncate text-muted-foreground">
-                          {getLocalizedText(holiday.event)}
-                        </div>
-                      </HoverCardTrigger>
-                      <HoverCardContent className="w-80">
-                        <div>
-                          <h4 className="text-sm font-semibold">{getLocalizedText(holiday.event)}</h4>
-                          <p className="text-xs text-muted-foreground">
-                            {format(new Date(holiday.date), "MMMM d, yyyy")}
-                          </p>
-                          {holiday.note && getLocalizedText(holiday.note) && (
-                            <p className="mt-2 text-xs">
-                              {getLocalizedText(holiday.note)}
-                            </p>
-                          )}
-                        </div>
-                      </HoverCardContent>
-                    </HoverCard>
-                  ))}
-                  
-                  {dayHolidays.length > 1 && (
-                    <div className="text-xs text-muted-foreground">
-                      +{dayHolidays.length - 1} {t('events.more')}
-                    </div>
-                  )}
-                </div>
-                
-                {/* Just indicate events on mobile */}
-                <div className="md:hidden">
-                  {dayHolidays.length > 0 && (
-                    <div className="flex justify-center">
-                      <div className="bg-red-500/10 rounded-full w-1.5 h-1.5"></div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+            >
+              {format(day, "d")}
+            </span>
           </div>
         );
         day = addDays(day, 1);
       }
-      
       rows.push(
-        <div className="grid grid-cols-7" key={day.toString()}>
+        <div
+          key={day.toString()}
+          className="grid grid-cols-7 divide-x divide-y"
+        >
           {days}
         </div>
       );
       days = [];
     }
-    
-    return <div>{rows}</div>;
+    return <div className="divide-y">{rows}</div>;
   };
 
-  const renderEvents = () => {
-    if (currentEvents.length === 0) {
-      return (
-        <div className="p-4 text-center text-muted-foreground">
-          {t('events.noEvents')}
-        </div>
-      );
-    }
-
-    return (
-      <div className="divide-y">
-        {currentEvents.map((event, index) => (
-          <div key={index} className="p-4">
-            <h3 className="text-lg font-medium">{getLocalizedText(event.event)}</h3>
-            <p className="text-sm text-muted-foreground">{format(new Date(event.date), "MMMM d, yyyy")}</p>
-            {event.note && getLocalizedText(event.note) && (
-              <p className="mt-2 text-sm">
-                <span className="font-medium">{t('events.note')}:</span> {getLocalizedText(event.note)}
-              </p>
-            )}
+  const EventList = ({
+    events,
+    title,
+  }: {
+    events: Holiday[];
+    title: string;
+  }) => (
+    <div className="space-y-4">
+      <h3 className="font-semibold text-lg">{title}</h3>
+      {events.length === 0 ? (
+        <p className="text-muted-foreground text-sm">{t("events.noEvents")}</p>
+      ) : (
+        <ScrollArea className="h-[300px] pr-4">
+          <div className="space-y-3">
+            {events.map((event, index) => (
+              <Card key={index} className="bg-card">
+                <CardContent className="p-4">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-medium">
+                          {getLocalizedText(event.event)}
+                        </h4>
+                        {event.country && (
+                          <p className="text-sm text-muted-foreground">
+                            {locale === 'ku' ? getKurdishCountryName(event.country) : event.country}
+                          </p>
+                        )}
+                      </div>
+                      <time className="text-sm text-muted-foreground">
+                        {formatDate(new Date(event.date), "MMM d")}
+                      </time>
+                    </div>
+                    {event.note && getLocalizedText(event.note) && (
+                      <p className="text-sm text-muted-foreground">
+                        {getLocalizedText(event.note)}
+                      </p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        ))}
-      </div>
-    );
-  };
+        </ScrollArea>
+      )}
+    </div>
+  );
 
-  const renderMobileEventSheet = () => {
-    return (
+  return (
+    <div className="flex flex-col lg:flex-row gap-6">
+      <Card className="flex-1 overflow-hidden">
+        <CardHeader className="pb-4">
+          <div className="flex justify-between items-center">
+            <CardTitle>{t("nav.calendar")}</CardTitle>
+            <Button
+              onClick={() => setCurrentDate(new Date())}
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1 rounded-full"
+            >
+              <CalendarIcon className="h-4 w-4" />
+              <span>{t("calendar.today")}</span>
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          {renderHeader()}
+          {renderDays()}
+          {renderCells()}
+        </CardContent>
+      </Card>
+
+      {/* Desktop Events Panel */}
+      <div className="hidden lg:flex flex-col gap-6 w-96">
+        <Card>
+          <CardHeader>
+            <CardTitle>{formatDate(selectedDate, "MMMM d, yyyy")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <EventList
+              events={selectedDateEvents}
+              title={t("events.todayEvents")}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{formatDate(currentDate, "MMMM yyyy")}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <EventList
+              events={currentMonthEvents}
+              title={t("events.monthEvents")}
+            />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Mobile Event Sheet */}
       <Sheet open={showEventSheet} onOpenChange={setShowEventSheet}>
-        <SheetContent side="bottom" className="h-[85vh] rounded-t-xl">
+        <SheetContent side="bottom" className="h-[80vh]">
           <SheetHeader>
-            <SheetTitle className="text-lg">{t('events.title')}</SheetTitle>
-            <SheetDescription>
-              {format(selectedDate, "MMMM d, yyyy")}
-            </SheetDescription>
+            <SheetTitle>{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
           </SheetHeader>
-          <div className="mt-4 overflow-y-auto max-h-[calc(85vh-100px)]">
-            {renderEvents()}
+          <div className="mt-6 space-y-6">
+            <EventList
+              events={selectedDateEvents}
+              title={t("events.todayEvents")}
+            />
+            <EventList
+              events={currentMonthEvents}
+              title={t("events.monthEvents")}
+            />
           </div>
         </SheetContent>
       </Sheet>
-    );
-  };
-
-  return (
-    <>
-      <div className="flex flex-col lg:flex-row gap-6">
-        <Card className="flex-1">
-          <CardHeader className="pb-3">
-            <div className="flex justify-between items-center">
-              <CardTitle>{t('nav.calendar')}</CardTitle>
-              <Button
-                onClick={() => setCurrentDate(new Date())}
-                variant="outline"
-                size="sm"
-                className="h-8 gap-1"
-              >
-                <CalendarIcon className="h-3.5 w-3.5" />
-                <span>{t('calendar.today')}</span>
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            {renderHeader()}
-            {renderDays()}
-            {renderCells()}
-          </CardContent>
-        </Card>
-        
-        {/* Only visible on desktop */}
-        <Card className="w-full lg:w-1/3 hidden lg:block">
-          <CardHeader>
-            <CardTitle>{t('events.title')}</CardTitle>
-            <CardDescription>
-              {format(selectedDate, "MMMM d, yyyy")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-0">
-            {renderEvents()}
-          </CardContent>
-        </Card>
-      </div>
-      
-      {/* Mobile event sheet */}
-      {renderMobileEventSheet()}
-      
-      {/* Floating action button for mobile */}
-      <div className="fixed bottom-6 right-6 lg:hidden">
-        <Button
-          onClick={() => setShowEventSheet(true)}
-          className="h-12 w-12 rounded-full shadow-lg"
-        >
-          <CalendarIcon className="h-5 w-5" />
-        </Button>
-      </div>
-    </>
+    </div>
   );
-} 
+}

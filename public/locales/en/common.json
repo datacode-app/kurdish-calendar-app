@@ -19,6 +19,8 @@
   },
   "events": {
     "title": "Events",
+    "monthEvents": "Events of the month",
+    "todayEvents": "Events of the day",
     "noEvents": "No events for this day",
     "holiday": "Holiday",
     "note": "Note",
@@ -61,8 +63,11 @@
   "language": {
     "english": "English",
     "kurdish": "Kurdish",
-    "arabic": "Arabic",
     "persian": "Persian",
+    "arabic": "Arabic",
+    "ku": "Kurdish",
+    "ar": "Arabic",
+    "fa": "Persian",
     "en": "English",
     "select": "Select Language"
   }

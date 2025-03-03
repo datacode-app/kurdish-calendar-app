@@ -96,7 +96,41 @@ export default function CityTimeDisplay({ locale }: CityTimeDisplayProps) {
   ];
 
   // Helper function to get localized text
-  const getLocalizedText = (textObj: { [key: string]: string }): string => {
+  const getLocalizedText = (textObj: { [key: string]: string }, isCountry: boolean = false): string => {
+    if (isCountry) {
+      // Map countries to their Kurdish regional names in different languages
+      const regionalNames: { [key: string]: { [key: string]: string } } = {
+        'Iran': {
+          en: 'Rojhalat',
+          ku: 'ڕۆژهەڵات',
+          ar: 'روجهلات',
+          fa: 'روژهلات'
+        },
+        'Iraq': {
+          en: 'Bashur',
+          ku: 'باشوور',
+          ar: 'باشور',
+          fa: 'باشور'
+        },
+        'Turkey': {
+          en: 'Bakur',
+          ku: 'باکوور',
+          ar: 'باكور',
+          fa: 'باکور'
+        },
+        'Syria': {
+          en: 'Rojava',
+          ku: 'ڕۆژئاوا',
+          ar: 'روجافا',
+          fa: 'روژاوا'
+        }
+      };
+      
+      const englishName = textObj.en;
+      if (regionalNames[englishName]) {
+        return regionalNames[englishName][locale] || regionalNames[englishName].en;
+      }
+    }
     return textObj[locale as keyof typeof textObj] || textObj.en;
   };
 
@@ -167,7 +201,7 @@ export default function CityTimeDisplay({ locale }: CityTimeDisplayProps) {
                 {getLocalizedText(city.city)}
               </div>
               <div className="text-sm text-muted-foreground mb-2">
-                {getLocalizedText(city.country)}
+                {getLocalizedText(city.country, true)}
               </div>
               
               {/* Time Display */}
