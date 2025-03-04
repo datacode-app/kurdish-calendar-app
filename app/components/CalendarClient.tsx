@@ -117,21 +117,22 @@ export default function CalendarClient({ locale }: CalendarProps) {
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
 
   const formatDate = (date: Date, formatStr: string) => {
-    // Special handling for Kurdish dates when Kurdish language is selected
-    if (locale === 'ku' && formatStr === 'MMMM yyyy' && kurdishDate) {
-      return `${kurdishDate.kurdishMonth} ${kurdishDate.kurdishYear}`;
-    }
-    
-    if (locale === 'ku' && 
-       (formatStr === 'MMMM d, yyyy' || formatStr === 'MMM d') && 
-       kurdishDate) {
-      // For complete date with day
-      if (formatStr === 'MMMM d, yyyy') {
-        return `${kurdishDate.kurdishMonth} ${kurdishDate.kurdishDay}, ${kurdishDate.kurdishYear}`;
+    // For Kurdish language, always get a fresh Kurdish date for the provided date
+    // This ensures the date is always correct even when the selected day changes
+    if (locale === 'ku') {
+      // Get Kurdish date specifically for this date (not reusing state)
+      const specificKurdishDate = getKurdishDate(date);
+      
+      if (formatStr === 'MMMM yyyy') {
+        return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishYear}`;
       }
-      // For month and day only
+      
+      if (formatStr === 'MMMM d, yyyy') {
+        return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishDay}, ${specificKurdishDate.kurdishYear}`;
+      }
+      
       if (formatStr === 'MMM d') {
-        return `${kurdishDate.kurdishMonth} ${kurdishDate.kurdishDay}`;
+        return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishDay}`;
       }
     }
     
@@ -334,7 +335,10 @@ export default function CalendarClient({ locale }: CalendarProps) {
                           )}
                         </div>
                         <time dateTime={event.date} className="text-sm font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-md">
-                          {formatDate(new Date(event.date), "MMM d")}
+                          {/* Always calculate a fresh date for each event to ensure it's correct */}
+                          {locale === 'ku' 
+                            ? `${getKurdishDate(new Date(event.date)).kurdishMonth} ${getKurdishDate(new Date(event.date)).kurdishDay}` 
+                            : formatDate(new Date(event.date), "MMM d")}
                         </time>
                       </div>
                       {event.note && getLocalizedText(event.note) && (
