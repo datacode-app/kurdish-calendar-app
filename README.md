@@ -193,7 +193,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-For questions, feedback, or support, please [open an issue](https://github.com/yourusername/kurdish-calendar/issues) or contact the maintainers directly.
+For questions, feedback, or support, please [open an issue](https://github.com/devFarzad/kurdish-calendar/issues) or contact the maintainers directly.
 
 ---
 
