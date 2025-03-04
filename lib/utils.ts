@@ -27,3 +27,30 @@ import { twMerge } from "tailwind-merge"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+/**
+ * Returns the appropriate font class based on the locale
+ * 
+ * Used to apply the correct font family based on the language:
+ * - Kurdish (ku): Noto Kufi Arabic
+ * - Arabic (ar): Noto Kufi Arabic
+ * - Persian (fa): Vazirmatn
+ * - English (en): Geist Sans (default)
+ * 
+ * @param locale - The current locale/language
+ * @returns CSS class name for the appropriate font
+ * 
+ * @example
+ * <div className={getFontClass('ar')}>Arabic text</div>
+ */
+export function getFontClass(locale: string): string {
+  switch (locale) {
+    case 'ar':
+    case 'ku':
+      return 'font-notoKufi';
+    case 'fa':
+      return 'font-vazirmatn';
+    default:
+      return 'font-sans'; // Geist Sans for English
+  }
+}

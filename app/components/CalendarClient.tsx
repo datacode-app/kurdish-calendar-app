@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import {
   format,
@@ -87,6 +87,26 @@ const KurdishMonthBashur: {[key: number]: string} = {
 };
 
 // Rojhalat Kurdish months are already defined in the getKurdishDate.ts file as KurdishMonthSorani
+
+// Add a function to get the appropriate font class based on locale
+
+/**
+ * Returns the appropriate font class based on the locale
+ * 
+ * @param locale - The current locale/language
+ * @returns CSS class name for the appropriate font
+ */
+const getFontClass = (locale: string): string => {
+  switch (locale) {
+    case 'ar':
+    case 'ku':
+      return 'font-notoKufi';
+    case 'fa':
+      return 'font-vazirmatn';
+    default:
+      return '';
+  }
+};
 
 export default function CalendarClient({ locale }: CalendarProps) {
   const t = useTranslations();
@@ -615,7 +635,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
   };
 
   return (
-    <div className="w-full mx-auto">
+    <div className={`w-full space-y-6 ${getFontClass(locale)}`}>
       {/* Add dual calendar display for Kurdish language only */}
       {locale === 'ku' && <DualKurdishCalendarDisplay />}
       

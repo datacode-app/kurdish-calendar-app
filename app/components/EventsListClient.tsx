@@ -7,6 +7,7 @@ import { Calendar as CalendarIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { getLocalizedMonthName, getKurdishCountryName } from '@/lib/date-utils';
+import { getFontClass } from '@/lib/utils';
 
 interface Holiday {
   date: string;
@@ -151,7 +152,7 @@ export default function EventsListClient({ locale }: { locale: string }) {
   });
 
   return (
-    <div className="space-y-8">
+    <div className={`w-full space-y-4 ${getFontClass(locale)}`}>
       {sortedMonthYears.map(monthYear => (
         <div key={monthYear} className="space-y-4">
           <h2 className="text-xl font-semibold text-foreground border-b pb-2">{monthYear}</h2>
