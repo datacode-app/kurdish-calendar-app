@@ -4,11 +4,12 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslations } from 'next-intl';
-// import { getLocalizedMonthName } from '@/lib/date-utils';
+import { getLocalizedMonthName } from '@/lib/date-utils';
 import moment from 'moment-jalaali';
 import 'moment-hijri';
 import { getKurdishDate } from '@/lib/getKurdishDate';
 import { Sun, MapPin } from 'lucide-react';
+import { getFontClass } from '@/lib/utils';
 
 /**
  * Define Bashur Kurdish months (Southern Kurdistan/Iraq)
@@ -219,7 +220,7 @@ export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayPro
   };
   
   return (
-    <Card className="w-full">
+    <Card className={`w-full ${getFontClass(locale)}`}>
       <CardHeader>
         <CardTitle className="text-center">{t('calendar.multiCalendar.title')}</CardTitle>
       </CardHeader>

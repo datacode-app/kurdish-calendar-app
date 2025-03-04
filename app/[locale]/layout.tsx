@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from 'next-intl';
-import { getTranslations } from 'next-intl/server';
+import { getMessages, getTranslations } from 'next-intl/server';
 import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import PWA from "../pwa";
 import { Analytics } from '@vercel/analytics/next';
+import { getFontClass } from "@/lib/utils";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -111,27 +112,17 @@ export const viewport: Viewport = {
   userScalable: false
 };
 
-export default async function LocaleLayout({
+export default async function RootLayout({
   children,
   params: { locale },
-}: Readonly<{
+}: {
   children: React.ReactNode;
   params: { locale: string };
-}>) {
-  let messages;
-  try {
-    messages = (await import(`../../public/locale/${locale}/common.json`)).default;
-  } catch {
-    // Fallback to English if the locale doesn't exist
-    messages = (await import(`../../public/locale/ku/common.json`)).default;
-  }
-
-  // Set the direction based on the locale
-  const isRtl = locale === 'ar' || locale === 'ku' || locale === 'fa';
-  const dir = isRtl ? 'rtl' : 'ltr';
+}) {
+  const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale} dir={dir} suppressHydrationWarning>
+    <html lang={locale} dir={locale === 'ar' || locale === 'ku' || locale === 'fa' ? 'rtl' : 'ltr'}>
       <head>
         <meta name="apple-mobile-web-app-title" content="Kurdish Calendar - kurd.dev" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -162,7 +153,7 @@ export default async function LocaleLayout({
           }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${getFontClass(locale)} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -173,7 +164,6 @@ export default async function LocaleLayout({
           <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
             <Analytics />
-
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
