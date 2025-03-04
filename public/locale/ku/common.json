@@ -26,7 +26,9 @@
       "gregorian": "ڕۆژژمێری گریگۆری",
       "jalali": "ڕۆژژمێری فارسی",
       "hijri": "ڕۆژژمێری ئیسلامی",
-      "kurdish": "ڕۆژژمێری کوردی"
+      "kurdish": "ڕۆژژمێری کوردی",
+      "kurdishRojhalat": "ڕۆژژمێری کوردی رۆژهالات",
+      "kurdishBashur": "ڕۆژژمێری کوردی باشوور"
     },
     "gregorian": "زایینی",
     "jalali": "فارسی (جەلالی)",
@@ -70,6 +72,14 @@
     "holiday": "پشوو",
     "note": "تێبینی",
     "more": "زیاتر",
+    "eventsThisMonth": "بۆنەکانی مانگی ڕۆژ",
+    "eventsThisWeek": "بۆنەکانی هەفتەی ڕۆژ",
+    "eventsThisYear": "بۆنەکانی سەدەی ڕۆژ",
+    "eventsNextYear": "بۆنەکانی سەدەی ڕۆژی پێشەوە",
+    "eventsNextMonth": "بۆنەکانی مانگی پێشەوە",
+    "eventsNextWeek": "بۆنەکانی هەفتەی پێشەوە",
+    "eventsOfTheDay": "بۆنەکانی ڕۆژ",
+    "eventsToday": "بۆنەکانی ڕۆژ",
     "events": {
       "title": "ڕووداوە کوردییەکان"
     }

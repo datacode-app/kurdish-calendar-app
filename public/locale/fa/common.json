@@ -21,12 +21,21 @@
     "kurdishCalendar": "تقویم کردی",
     "upcomingEvents": "رویدادهای آینده",
     "noEvents": "رویداد آینده‌ای وجود ندارد",
+    "eventsThisMonth": "رویدادهای این ماه",
+    "eventsThisWeek": "رویدادهای این هفته",
+    "eventsThisYear": "رویدادهای این سال",
+    "eventsNextYear": "رویدادهای سال آینده",
+    "eventsNextMonth": "رویدادهای ماه آینده",
+    "eventsNextWeek": "رویدادهای هفته آینده",
+    "eventsOfTheDay": "رویدادهای روز",
     "multiCalendar": {
       "title": "تاریخ فعلی در تقویم‌های مختلف",
       "gregorian": "تقویم میلادی",
       "jalali": "تقویم شمسی",
       "hijri": "تقویم هجری قمری",
-      "kurdish": "تقویم کردی"
+      "kurdish": "تقویم کردی",
+      "kurdishRojhalat": "تقویم کردی روژهالات",
+      "kurdishBashur": "تقویم کردی باشوور"
     },
     "gregorian": "میلادی",
     "jalali": "شمسی (جلالی)",

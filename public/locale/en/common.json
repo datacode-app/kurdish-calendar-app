@@ -14,6 +14,7 @@
   "calendar": {
     "today": "Today",
     "month": "Month",
+    
     "week": "Week",
     "day": "Day",
     "previous": "Previous",
@@ -21,12 +22,15 @@
     "kurdishCalendar": "Kurdish Calendar",
     "upcomingEvents": "Upcoming Events",
     "noEvents": "No upcoming events",
+
     "multiCalendar": {
       "title": "Current Date in Multiple Calendars",
       "gregorian": "Gregorian Calendar",
       "jalali": "Persian Calendar",
       "hijri": "Islamic Calendar",
-      "kurdish": "Kurdish Calendar"
+      "kurdish": "Kurdish Calendar",
+      "kurdishRojhalat": "Rojhalat (Eastern) Kurdish Calendar",
+      "kurdishBashur": "Bashur (Western) Kurdish Calendar"
     },
     "gregorian": "Gregorian",
     "jalali": "Persian (Jalali)",
@@ -70,6 +74,13 @@
     "holiday": "Holiday",
     "note": "Note",
     "more": "more",
+    "eventsThisMonth": "Events of the month",
+    "eventsThisWeek": "Events of the week",
+    "eventsThisYear": "Events of the year",
+    "eventsNextYear": "Events of the next year",
+    "eventsNextMonth": "Events of the next month",
+    "eventsNextWeek": "Events of the next week",
+    "eventsOfTheDay": "Events of the day",
     "events": {
       "title": "Kurdish Events"
     }

@@ -24,6 +24,7 @@ import {
   MapPin,
   Sun,
   Info,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -544,107 +545,151 @@ export default function CalendarClient({ locale }: CalendarProps) {
     </div>
   );
 
+  // Create a dual calendar display component
+  const DualKurdishCalendarDisplay = () => {
+    // Get current date in both calendar systems
+    const today = new Date();
+    const rojhalatDate = getKurdishDate(today);
+    
+    // Format the current date for display
+    const formattedKurdishDay = format(today, "EEEE");
+    const localizedKurdishDay = getLocalizedDayName(formattedKurdishDay, locale);
+    
+    return (
+      <div className="mb-6 overflow-hidden">
+        <Card className="border shadow-sm overflow-hidden relative bg-gradient-to-r from-background to-muted/20">
+          <CardContent className="p-0">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+              <div className="absolute -right-4 -top-4 w-32 h-32 rounded-full bg-primary"></div>
+              <div className="absolute -left-4 -bottom-4 w-24 h-24 rounded-full bg-primary"></div>
+            </div>
+            
+            <div className="relative p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
+              {/* Current Day Info */}
+              <div className="flex items-center space-x-4">
+                <div className="bg-primary/10 rounded-lg p-2.5 text-primary">
+                  <Clock className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-xl">
+                    {format(today, "d MMMM yyyy")}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {localizedKurdishDay}
+                  </p>
+                </div>
+              </div>
+
+              {/* Kurdish Calendar Systems */}
+              <div className="w-full sm:w-auto flex flex-col gap-2.5">
+                <div className="grid grid-cols-2 gap-2.5">
+                  {/* Rojhalat Date */}
+                  <div className="flex items-center gap-2 bg-amber-50 border border-amber-200/70 text-amber-900 px-3 py-2 rounded-lg">
+                    <div className="flex items-center justify-center bg-amber-500/90 text-white rounded-full w-7 h-7">
+                      <Sun className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-amber-700">ڕۆژهەڵات</p>
+                      <p className="font-semibold">{rojhalatDate.kurdishDay} {rojhalatDate.kurdishMonth} {rojhalatDate.kurdishYear}</p>
+                    </div>
+                  </div>
+
+                  {/* Bashur Date */}
+                  <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200/70 text-emerald-900 px-3 py-2 rounded-lg">
+                    <div className="flex items-center justify-center bg-emerald-500/90 text-white rounded-full w-7 h-7">
+                      <MapPin className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-emerald-700">باشوور</p>
+                      <p className="font-semibold">{KurdishMonthBashur[today.getMonth()]} {today.getDate()} {today.getFullYear()}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
-    <section className="flex flex-col md:flex-row gap-6" aria-label="Kurdish Calendar">
-      <Card className="flex-1 overflow-hidden shadow-md border-muted/50">
-        <CardHeader className="pb-4 bg-card">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-xl tracking-tight">{t("nav.calendar")}</CardTitle>
-            <Button
-              onClick={() => setCurrentDate(new Date())}
-              variant="outline"
-              size="sm"
-              className="h-8 gap-1.5 rounded-full border-primary/30 hover:bg-primary/10 hover:text-primary transition-colors"
-              aria-label={t("calendar.today")}
-            >
-              <CalendarIcon className="h-4 w-4" aria-hidden="true" />
-              <span className="font-medium">{t("calendar.today")}</span>
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="p-0">
-          <div className="bg-card shadow-sm" role="navigation" aria-label="Calendar navigation">
-            {renderHeader()}
-          </div>
-          <div className="bg-muted/10" role="row">
-            {renderDays()}
-          </div>
-          <div className="border-t border-muted/30" role="grid" aria-label="Calendar dates">
-            {renderCells()}
-          </div>
+    <div className="w-full mx-auto">
+      {/* Add dual calendar display for Kurdish language only */}
+      {locale === 'ku' && <DualKurdishCalendarDisplay />}
+      
+      <Card className="border shadow-sm">
+        <CardContent className="p-0 pb-4">
+          {renderHeader()}
+          {renderDays()}
+          {renderCells()}
         </CardContent>
       </Card>
 
-      {/* Desktop and Tablet Events Panel */}
-      <aside className="hidden md:flex flex-col gap-6 w-full md:w-80 lg:w-96" aria-label="Calendar events">
-        <Card className="shadow-md border-muted/50">
-          <CardHeader className="pb-3 bg-card">
-            <CardTitle className="text-lg tracking-tight">{formatDate(selectedDate, "MMMM d, yyyy")}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-5">
-            <EventList
-              events={selectedDateEvents}
-              title={t("events.todayEvents")}
-            />
-          </CardContent>
-        </Card>
+      {/* The rest of the calendar UI... */}
+      
+      {/* Mobile view */}
+      <div className="block md:hidden mt-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">
+            {t("events.eventsOfTheDay")}
+          </h2>
+          {locale === 'ku' && (
+            <div className={`inline-flex items-center text-xs font-medium rounded-full px-2 py-0.5 ${
+              useRojhalatMonths 
+                ? "bg-amber-100 text-amber-800 border border-amber-200" 
+                : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+            }`}>
+              <span className="mr-1">{useRojhalatMonths ? "ڕ" : "ب"}</span>
+              {formatDate(selectedDate, "MMM d")}
+            </div>
+          )}
+        </div>
+        <EventList events={selectedDateEvents} title="" />
+      </div>
 
-        <Card className="shadow-md border-muted/50">
-          <CardHeader className="pb-3 bg-card">
-            <CardTitle className="text-lg tracking-tight">{formatDate(currentDate, "MMMM yyyy")}</CardTitle>
-          </CardHeader>
-          <CardContent className="p-5">
-            <EventList
-              events={currentMonthEvents}
-              title={t("events.monthEvents")}
-            />
-          </CardContent>
-        </Card>
-      </aside>
-
-      {/* Mobile Event Sheet */}
-      <Sheet open={showEventSheet} onOpenChange={setShowEventSheet}>
-        <SheetContent side="bottom" className="h-[80vh] rounded-t-xl border-t-0 shadow-2xl" role="dialog" aria-label="Event details">
-          <SheetHeader className="pb-3 border-b">
-            <div className="flex justify-between items-center">
-              <div>
-                <SheetTitle className="text-xl tracking-tight">{formatDate(selectedDate, "MMMM d, yyyy")}</SheetTitle>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {formatDate(selectedDate, "EEEE")}
-                </p>
+      {/* Desktop/Tablet view */}
+      <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="col-span-1 lg:col-span-2">
+          <EventList events={currentMonthEvents} title={t("events.eventsThisMonth")} />
+        </div>
+        <div className="col-span-1">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">
+              {t("events.eventsOfTheDay")}
+            </h2>
+            {locale === 'ku' && (
+              <div className={`inline-flex items-center text-xs font-medium rounded-full px-2 py-0.5 ${
+                useRojhalatMonths 
+                  ? "bg-amber-100 text-amber-800 border border-amber-200" 
+                  : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+              }`}>
+                <span className="mr-1">{useRojhalatMonths ? "ڕ" : "ب"}</span>
+                {formatDate(selectedDate, "MMM d")}
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setShowEventSheet(false)}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Close event details"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M18 6 6 18"></path>
-                  <path d="m6 6 12 12"></path>
-                </svg>
-                <span className="sr-only">Close</span>
-              </Button>
-            </div>
-          </SheetHeader>
-          <div className="mt-6 space-y-8 pb-8">
-            <div className="bg-muted/10 p-5 rounded-lg border border-muted/30">
-              <EventList
-                events={selectedDateEvents}
-                title={t("events.todayEvents")}
-              />
-            </div>
-            
-            <div className="bg-muted/10 p-5 rounded-lg border border-muted/30">
-              <EventList
-                events={currentMonthEvents}
-                title={t("events.monthEvents")}
-              />
-            </div>
+            )}
           </div>
-        </SheetContent>
-      </Sheet>
-    </section>
+          <EventList events={selectedDateEvents} title="" />
+        </div>
+      </div>
+
+      {/* Mobile Events Sheet */}
+      <div className="block md:hidden fixed bottom-4 right-4 z-10">
+        <Sheet open={showEventSheet} onOpenChange={setShowEventSheet}>
+          <SheetTrigger asChild>
+            <Button className="rounded-full shadow-md" size="icon">
+              <CalendarIcon className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[80vh] rounded-t-xl">
+            <SheetHeader>
+              <SheetTitle>{t("events.eventsThisMonth")}</SheetTitle>
+            </SheetHeader>
+            <EventList events={currentMonthEvents} title="" />
+          </SheetContent>
+        </Sheet>
+      </div>
+    </div>
   );
 }
