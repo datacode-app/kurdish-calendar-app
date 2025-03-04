@@ -23,12 +23,13 @@ html[lang="fa"] body {
   font-family: 'Vazirmatn', Arial, Helvetica, sans-serif;
 }
 
-.notoKufi {
-  font-family: 'Noto Kufi Arabic', Arial, Helvetica, sans-serif;
+/* Font classes for use with Tailwind */
+.font-notoKufi {
+  font-family: 'Noto Kufi Arabic', Arial, Helvetica, sans-serif !important;
 }
 
-.vazirmatn {
-  font-family: 'Vazirmatn', Arial, Helvetica, sans-serif;
+.font-vazirmatn {
+  font-family: 'Vazirmatn', Arial, Helvetica, sans-serif !important;
 }
 
 @theme {
@@ -70,6 +71,10 @@ html[lang="fa"] body {
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
+  --font-roboto: 'Roboto', system-ui, sans-serif;
+  --font-amiri: 'Amiri', system-ui, serif;
+  --font-notokufi: 'Noto Kufi Arabic', system-ui, sans-serif;
+  --font-vazirmatn: 'Vazirmatn', system-ui, sans-serif;
 }
 
 .dark {
@@ -153,4 +158,31 @@ html[lang="fa"] body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Apply fonts based on HTML lang attribute for fallback */
+html[lang='en'] body {
+  font-family: var(--font-roboto);
+}
+
+html[lang='ar'] body {
+  font-family: var(--font-amiri);
+}
+
+html[lang='ku'] body {
+  font-family: var(--font-notokufi);
+}
+
+html[lang='fa'] body {
+  font-family: var(--font-vazirmatn);
+}
+
+/* RTL Support */
+html[dir="rtl"] .flip-in-rtl {
+  transform: scaleX(-1);
+}
+
+/* Ensure proper text alignment based on direction */
+body {
+  text-align: start;
 }
