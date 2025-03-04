@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+// import { useTranslations } from 'next-intl';
 import { format } from 'date-fns';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -27,7 +27,7 @@ interface Holiday {
 }
 
 export default function EventsListClient({ locale }: { locale: string }) {
-  const t = useTranslations();
+  // const t = useTranslations();
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,31 +50,62 @@ export default function EventsListClient({ locale }: { locale: string }) {
       });
   }, []);
 
-  // Helper function to get localized text based on locale
+  /**
+   * Gets localized text from a multilingual text object based on the current locale
+   * Falls back to English or a default value if the requested locale is not available
+   * 
+   * @param textObj - Object containing text in multiple languages (en, ku, ar, fa)
+   * @param defaultText - Default text to return if no translation is found
+   * @returns Localized text string
+   */
   const getLocalizedText = (textObj: { [key: string]: string } | undefined, defaultText: string = ''): string => {
     if (!textObj) return defaultText;
-    // Use the current locale if available, otherwise fall back to English
-    return textObj[locale as keyof typeof textObj] || textObj.en || defaultText;
+    
+    // Return text in the current locale if available
+    if (textObj[locale]) return textObj[locale];
+    
+    // Fall back to English if available
+    if (textObj.en) return textObj.en;
+    
+    // Otherwise return the default text
+    return defaultText;
   };
 
-  // Format date with localized month names
-  const formatLocalizedDate = (date: Date, formatStr: string): string => {
-    const formatted = format(date, formatStr);
-    
-    if (locale !== 'en' && formatStr.includes('MMMM')) {
-      if (formatStr === 'MMMM yyyy') {
-        const [month, year] = formatted.split(' ');
-        return `${getLocalizedMonthName(month, locale)} ${year}`;
+  /**
+   * Formats a date according to the current locale and format string
+   * Uses browser's Intl.DateTimeFormat for proper localization
+   * 
+   * @param date - Date to format
+   * @param formatStr - Format string (e.g., "MMMM d, yyyy")
+   * @param includeDay - Whether to include the day in the formatted date
+   * @returns Localized date string
+   */
+  const formatLocalizedDate = (date: Date, formatStr: string, includeDay: boolean = true): string => {
+    try {
+      // Format options for different parts of the date
+      let options: Intl.DateTimeFormatOptions = {
+        year: 'numeric'
+      };
+      
+      if (includeDay) {
+        options.day = 'numeric';
       }
       
-      if (formatStr === 'MMMM d, yyyy') {
-        const parts = formatted.split(' ');
-        const month = parts[0];
-        return `${getLocalizedMonthName(month, locale)} ${parts.slice(1).join(' ')}`;
+      if (formatStr.includes('MMMM')) {
+        options.month = 'long';
+      } else if (formatStr.includes('MMM')) {
+        options.month = 'short';
+      } else if (formatStr.includes('MM')) {
+        options.month = 'numeric';
       }
+      
+      // Format the date using browser's Intl API with the current locale
+      return new Intl.DateTimeFormat(locale, options).format(date);
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      // Fallback to a basic format
+      return date.toLocaleDateString(locale);
     }
-    
-    return formatted;
   };
 
   if (loading) {
@@ -95,31 +126,27 @@ export default function EventsListClient({ locale }: { locale: string }) {
   }
 
   // Group holidays by month and year for better organization
-  const groupedHolidays: { [key: string]: Holiday[] } = {};
+  const groupedHolidays: Record<string, Holiday[]> = {};
   holidays.forEach(holiday => {
-    const date = new Date(holiday.date);
-    const monthYear = formatLocalizedDate(date, 'MMMM yyyy');
+    const holidayDate = new Date(holiday.date);
+    
+    // Create a localized month-year string for grouping
+    const monthYear = formatLocalizedDate(holidayDate, 'MMMM yyyy', false);
+    
     if (!groupedHolidays[monthYear]) {
       groupedHolidays[monthYear] = [];
     }
+    
     groupedHolidays[monthYear].push(holiday);
   });
 
   // Get sorted month-year keys (chronological order)
   const sortedMonthYears = Object.keys(groupedHolidays).sort((a, b) => {
-    // Extract the year from the localized month-year string
-    const yearA = parseInt(a.split(' ').pop() || '0');
-    const yearB = parseInt(b.split(' ').pop() || '0');
-    
-    if (yearA !== yearB) {
-      return yearA - yearB;
-    }
-    
-    // If years are the same, we need to sort by month
-    // Get the original dates from the first holiday in each group
+    // Extract the first holiday date from each group for comparison
     const firstHolidayA = groupedHolidays[a][0];
     const firstHolidayB = groupedHolidays[b][0];
     
+    // Compare the actual dates
     return new Date(firstHolidayA.date).getTime() - new Date(firstHolidayB.date).getTime();
   });
 
@@ -144,7 +171,7 @@ export default function EventsListClient({ locale }: { locale: string }) {
                           {getLocalizedText(holiday.event)}
                         </h3>
                         <time className="text-sm text-muted-foreground whitespace-nowrap">
-                          {formatLocalizedDate(new Date(holiday.date), "MMMM d, yyyy")}
+                          {formatLocalizedDate(new Date(holiday.date), "MMMM d, yyyy", true)}
                         </time>
                       </div>
                       

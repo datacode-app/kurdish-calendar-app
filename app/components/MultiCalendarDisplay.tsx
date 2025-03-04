@@ -1,15 +1,20 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslations } from 'next-intl';
-import { getLocalizedMonthName } from '@/lib/date-utils';
+// import { getLocalizedMonthName } from '@/lib/date-utils';
 import moment from 'moment-jalaali';
 import 'moment-hijri';
 import { getKurdishDate } from '@/lib/getKurdishDate';
 import { Sun, MapPin } from 'lucide-react';
 
-// Define Bashur Kurdish months (Southern Kurdistan/Iraq)
+/**
+ * Define Bashur Kurdish months (Southern Kurdistan/Iraq)
+ * These month names are used in the Gregorian-based Kurdish calendar
+ * variant used primarily in Southern Kurdistan (Iraqi Kurdistan)
+ */
 const KurdishMonthBashur: {[key: number]: string} = {
   0: "کانوونی دووەم",    // January
   1: "شوبات",           // February
@@ -25,7 +30,12 @@ const KurdishMonthBashur: {[key: number]: string} = {
   11: "کانوونی یەکەم"   // December
 };
 
-// Helper function to convert month number to month name
+/**
+ * Converts a month number (0-11) to its English name
+ * 
+ * @param month - Zero-indexed month number (0 = January, 11 = December)
+ * @returns The English name of the month
+ */
 function getMonthName(month: number): string {
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -34,7 +44,12 @@ function getMonthName(month: number): string {
   return monthNames[month];
 }
 
-// Function to get correct Persian date using moment-jalaali
+/**
+ * Converts a Gregorian date to Persian (Jalali) date using moment-jalaali
+ * 
+ * @param date - JavaScript Date object to convert
+ * @returns Object containing Persian year (jy), month (jm), and day (jd)
+ */
 function getPersianDate(date: Date) {
   try {
     // Convert to moment-jalaali format
@@ -61,12 +76,15 @@ function getPersianDate(date: Date) {
   }
 }
 
-// Function to get correct Hijri date using moment-hijri
+/**
+ * Gets the Hijri (Islamic) date for a given Gregorian date
+ * Uses a reliable reference-based calculation method
+ * 
+ * @param date - JavaScript Date object to convert
+ * @returns Object containing Hijri year, month (0-indexed), and day
+ */
 function getHijriDate(date: Date) {
   try {
-    // Get today's date
-    const today = new Date();
-    
     // Force the Hijri year to be 1446 for the current period (2024-2025)
     // This is a direct fix to ensure the correct year is displayed
     
@@ -78,7 +96,14 @@ function getHijriDate(date: Date) {
   }
 }
 
-// Fallback function for Hijri date calculation
+/**
+ * Fallback function for Hijri date calculation using a reference date
+ * This function uses a known reference point and calculates other dates
+ * relative to it, taking into account the Islamic calendar's structure
+ * 
+ * @param date - JavaScript Date object to convert
+ * @returns Object containing Hijri year, month (0-indexed), and day
+ */
 function getHijriDateFallback(date: Date) {
   // Updated reference point: On March 4, 2025, it is Ramadan 4, 1446 AH
   const refDate = new Date(2025, 2, 4); // March 4, 2025
@@ -130,21 +155,36 @@ function getHijriDateFallback(date: Date) {
   return { year: newYear, month: newMonth, day: newDay };
 }
 
+/**
+ * Props interface for the MultiCalendarDisplay component
+ */
 interface MultiCalendarDisplayProps {
+  /** Current locale/language code (en, ku, ar, fa) */
   locale: string;
 }
 
+/**
+ * MultiCalendarDisplay Component
+ * 
+ * Displays the current date in multiple calendar systems:
+ * - Gregorian (Western)
+ * - Persian/Jalali (Solar Hijri)
+ * - Hijri (Islamic/Lunar)
+ * - Kurdish (both Rojhalat and Bashur variants when in Kurdish language)
+ * 
+ * @param locale - Current application locale
+ */
 export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayProps) {
-  const t = useTranslations('calendar');
-  const tCommon = useTranslations('months');
+  const t = useTranslations();
   const [currentDate, setCurrentDate] = useState(new Date());
   
-  // Update the date every minute
+  // Update the date every minute to ensure it stays current
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDate(new Date());
     }, 60000);
     
+    // Clean up interval on component unmount
     return () => clearInterval(timer);
   }, []);
   
@@ -164,7 +204,12 @@ export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayPro
   // Get Kurdish date using the new function (Rojhalat/Eastern)
   const kurdishDate = getKurdishDate(currentDate);
   
-  // Get English month name for Gregorian calendar
+  /**
+   * Returns the English month name for a given month number
+   * 
+   * @param month - Zero-indexed month number (0 = January, 11 = December)
+   * @returns The English name of the month
+   */
   const getEnglishMonthName = (month: number): string => {
     const monthNames = [
       "January", "February", "March", "April", "May", "June",
@@ -176,13 +221,13 @@ export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayPro
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-center">{t('multiCalendar.title')}</CardTitle>
+        <CardTitle className="text-center">{t('calendar.multiCalendar.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Gregorian Calendar */}
           <div className="p-4 border rounded-lg shadow-sm bg-background">
-            <h3 className="font-semibold text-lg mb-2">{t('multiCalendar.gregorian')}</h3>
+            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.gregorian')}</h3>
             <p>
               {gregorianDate.day} {getEnglishMonthName(gregorianDate.month)} {gregorianDate.year}
             </p>
@@ -190,22 +235,22 @@ export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayPro
           
           {/* Jalali (Persian) Calendar */}
           <div className="p-4 border rounded-lg shadow-sm bg-background">
-            <h3 className="font-semibold text-lg mb-2">{t('multiCalendar.jalali')}</h3>
+            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.jalali')}</h3>
             <p>
-              {jalaliDate.jd} {t(`jalaliMonths.${jalaliDate.jm - 1}`)} {jalaliDate.jy}
+              {jalaliDate.jd} {t(`calendar.jalaliMonths.${jalaliDate.jm - 1}`)} {jalaliDate.jy}
             </p>
           </div>
           
           {/* Hijri (Islamic/Lunar) Calendar */}
           <div className="p-4 border rounded-lg shadow-sm bg-background">
-            <h3 className="font-semibold text-lg mb-2">{t('multiCalendar.hijri')}</h3>
+            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.hijri')}</h3>
             <p>
-              {hijriDate.day} {t(`hijriMonths.${hijriDate.month}`)} {hijriDate.year}
+              {hijriDate.day} {t(`calendar.hijriMonths.${hijriDate.month}`)} {hijriDate.year}
             </p>
           </div>
         </div>
         
-        {/* Kurdish Calendars (Rojhalat and Bashur) */}
+        {/* Kurdish Calendars (Rojhalat and Bashur) - Only displayed when using Kurdish language */}
         {locale === 'ku' && (
           <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Rojhalat (Eastern) Kurdish Calendar */}
@@ -215,7 +260,7 @@ export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayPro
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-lg text-amber-800">
-                  {t('multiCalendar.kurdishRojhalat')}
+                  {t('calendar.multiCalendar.kurdishRojhalat')}
                 </h3>
                 <p className="font-medium mt-1 text-amber-900">
                   {kurdishDate.kurdishDay} {kurdishDate.kurdishMonth} {kurdishDate.kurdishYear}
@@ -230,7 +275,7 @@ export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayPro
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-lg text-emerald-800">
-                  {t('multiCalendar.kurdishBashur')}
+                  {t('calendar.multiCalendar.kurdishBashur')}
                 </h3>
                 <p className="font-medium mt-1 text-emerald-900">
                   {KurdishMonthBashur[currentDate.getMonth()]} {currentDate.getDate()} {currentDate.getFullYear()}

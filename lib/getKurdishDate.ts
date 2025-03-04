@@ -1,53 +1,106 @@
-// Define the return type for better type safety
+/**
+ * Kurdish Date Utility Module
+ * 
+ * This module provides functionality for converting Gregorian dates to Kurdish dates,
+ * which is based on the Solar Hijri (Persian) calendar but with Kurdish month names.
+ * The Kurdish New Year (Newroz) starts on March 21st of the Gregorian calendar.
+ */
+
+/**
+ * Return type for Kurdish date calculations
+ * Contains both the formatted date strings and individual components
+ */
 export interface KurdishDateResult {
+  /** Formatted Gregorian date string */
   gregorianDate: string;
+  /** Formatted Kurdish date string in Arabic script */
   kurdishDate: string;
+  /** Formatted Kurdish date string in Latin script */
   kurdishDateLatin: string;
+  /** Kurdish year (typically Gregorian year + 700) */
   kurdishYear: number;
+  /** Kurdish month name in Arabic script */
   kurdishMonth: string;
+  /** Kurdish month name in Latin script */
   kurdishMonthLatin: string;
+  /** Kurdish day of month */
   kurdishDay: number;
 }
 
 /**
- * Enum for Kurdish Sorani months in Arabic script
+ * Kurdish month names in Arabic script (Sorani dialect)
+ * Used in Eastern Kurdistan (Rojhelat) and follows the Persian calendar structure
  */
 export enum KurdishMonthSorani {
+  /** First month: equivalent to late March and most of April */
   XAKELIWE = 'خاکەلێوە',
+  /** Second month: equivalent to late April and most of May */
   GULAN = 'گوڵان',
+  /** Third month: equivalent to late May and most of June */
   COZERDAN = 'جۆزەردان',
+  /** Fourth month: equivalent to late June and most of July */
   PUSHPER = 'پووشپەڕ',
+  /** Fifth month: equivalent to late July and most of August */
   GELAWEJ = 'گەلاوێژ',
+  /** Sixth month: equivalent to late August and most of September */
   XERMANAN = 'خەرمانان',
+  /** Seventh month: equivalent to late September and most of October */
   REZBER = 'ڕەزبەر',
+  /** Eighth month: equivalent to late October and most of November */
   GELAREZAN = 'گەڵاڕێزان',
+  /** Ninth month: equivalent to late November and most of December */
   SERMAWEZ = 'سەرماوەز',
+  /** Tenth month: equivalent to late December and most of January */
   BEFRANBAR = 'بەفرانبار',
+  /** Eleventh month: equivalent to late January and most of February */
   REBENDAN = 'ڕێبەندان',
+  /** Twelfth month: equivalent to late February and most of March */
   RESHEME = 'ڕەشەمە'
 }
 
 /**
- * Enum for Kurdish Sorani months in Latin script
+ * Kurdish month names in Latin script
+ * Transliteration of the Sorani Kurdish month names using Latin alphabet
  */
 export enum KurdishMonthLatin {
+  /** First month in Latin script */
   XAKELIWE = 'Xakelêwe',
+  /** Second month in Latin script */
   GULAN = 'Gulan',
+  /** Third month in Latin script */
   COZERDAN = 'Cozerdan',
+  /** Fourth month in Latin script */
   PUSHPER = 'Pûşper',
+  /** Fifth month in Latin script */
   GELAWEJ = 'Gelawêj',
+  /** Sixth month in Latin script */
   XERMANAN = 'Xermanan',
+  /** Seventh month in Latin script */
   REZBER = 'Rezber',
+  /** Eighth month in Latin script */
   GELAREZAN = 'Gelarêzan',
+  /** Ninth month in Latin script */
   SERMAWEZ = 'Sermawez',
+  /** Tenth month in Latin script */
   BEFRANBAR = 'Befranbar',
+  /** Eleventh month in Latin script */
   REBENDAN = 'Rêbendan',
+  /** Twelfth month in Latin script */
   RESHEME = 'Reşeme'
 }
 
 /**
  * Calculates the Kurdish date from a given Gregorian date
- * @param date Optional Date object, defaults to current date if not provided
+ * 
+ * This function converts a Gregorian date to the corresponding Kurdish date,
+ * taking into account that the Kurdish New Year (Newroz) begins on March 21.
+ * The Kurdish calendar is based on the Solar Hijri calendar, with years typically
+ * being 700 years ahead of the Gregorian calendar (e.g., 2024 CE = 2724 Kurdish Era).
+ * 
+ * The conversion algorithm handles the offset between calendar systems and 
+ * returns both formatted strings and individual date components.
+ * 
+ * @param date - JavaScript Date object to convert (defaults to current date if not provided)
  * @returns Object containing both Gregorian and Kurdish date information
  */
 export function getKurdishDate(date: Date = new Date()): KurdishDateResult {
@@ -188,6 +241,7 @@ export function getKurdishDate(date: Date = new Date()): KurdishDateResult {
     }
   }
   
+  // Construct and return the result object with all date components
   return {
     gregorianDate,
     kurdishDate: `${day} ${kurdishMonths[monthIndex]} ${kurdishYear}`,

@@ -1,9 +1,26 @@
+/* eslint-disable prefer-const */
 /*
   Jalaali JavaScript Library v1.0.0
   Copyright (c) 2013 Behrang Noruzi Niya
   License: MIT
   Adapted and simplified for TypeScript
 */
+
+/**
+ * Jalaali (Persian/Solar Hijri) Calendar Utilities
+ * 
+ * This module provides utility functions for working with the Jalaali calendar system,
+ * also known as the Persian or Solar Hijri calendar.
+ * 
+ * The Jalaali calendar is the official calendar of Iran and Afghanistan, with the year
+ * starting on the vernal equinox as determined by astronomical calculations.
+ * 
+ * Functions in this module handle conversion between Gregorian and Jalaali dates,
+ * determining leap years, and other calendar-specific calculations.
+ * 
+ * Adapted from Behrang Noruzi Niya's jalaali.js
+ * Original source: https://github.com/jalaali/jalaali-js
+ */
 
 export const jalaali = {
   // Converts a Gregorian date to Jalaali.

@@ -79,6 +79,14 @@
     "holiday": "تعطیلی",
     "note": "یادداشت",
     "more": "بیشتر",
+    "eventsOfTheDay": "رویدادهای روز",
+    "eventsThisMonth": "رویدادهای این ماه",
+    "eventsThisWeek": "رویدادهای این هفته",
+    "eventsThisYear": "رویدادهای این سال",
+    "eventsNextYear": "رویدادهای سال آینده",
+    "eventsNextMonth": "رویدادهای ماه آینده",
+    "eventsNextWeek": "رویدادهای هفته آینده",
+    
     "events": {
       "title": "رویدادهای کردی"
     }
