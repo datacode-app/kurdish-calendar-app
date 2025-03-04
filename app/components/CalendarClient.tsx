@@ -20,6 +20,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar as CalendarIcon,
+  Globe,
+  MapPin,
+  Sun,
+  Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +37,15 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { getLocalizedDayName, getLocalizedMonthName, getKurdishCountryName } from "@/lib/date-utils";
-import { getKurdishDate } from "@/lib/getKurdishDate";
+import { getKurdishDate, KurdishMonthSorani } from "@/lib/getKurdishDate";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Holiday {
   date: string;
@@ -57,6 +69,24 @@ interface CalendarProps {
   locale: string;
 }
 
+// Define Bashur Kurdish months (Southern Kurdistan/Iraq)
+const KurdishMonthBashur: {[key: number]: string} = {
+  0: "کانوونی دووەم",    // January
+  1: "شوبات",           // February
+  2: "ئازار",           // March
+  3: "نیسان",           // April
+  4: "مایس",            // May
+  5: "حوزەیران",        // June
+  6: "تەمووز",          // July
+  7: "ئاب",             // August
+  8: "ئەیلوول",         // September
+  9: "تشرینی یەکەم",    // October
+  10: "تشرینی دووەم",   // November
+  11: "کانوونی یەکەم"   // December
+};
+
+// Rojhalat Kurdish months are already defined in the getKurdishDate.ts file as KurdishMonthSorani
+
 export default function CalendarClient({ locale }: CalendarProps) {
   const t = useTranslations();
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -65,6 +95,9 @@ export default function CalendarClient({ locale }: CalendarProps) {
   const [currentMonthEvents, setCurrentMonthEvents] = useState<Holiday[]>([]);
   const [selectedDateEvents, setSelectedDateEvents] = useState<Holiday[]>([]);
   const [showEventSheet, setShowEventSheet] = useState(false);
+  
+  // Kurdish calendar style toggle - Set default to Bashur (false) for Kurdish language
+  const [useRojhalatMonths, setUseRojhalatMonths] = useState(false);
 
   // Add Kurdish date state
   const [kurdishDate, setKurdishDate] = useState(getKurdishDate(currentDate));
@@ -116,23 +149,62 @@ export default function CalendarClient({ locale }: CalendarProps) {
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
 
+  // Helper function to get the appropriate Kurdish month name based on the toggle state
+  const getKurdishMonthName = (date: Date) => {
+    const gregorianMonth = date.getMonth();
+    if (useRojhalatMonths) {
+      // Use the Rojhalat/Eastern Kurdish months (from KurdishDate function)
+      const kurdishDate = getKurdishDate(date);
+      return kurdishDate.kurdishMonth;
+    } else {
+      // Use the Bashur/Southern Kurdish months
+      return KurdishMonthBashur[gregorianMonth];
+    }
+  };
+
+  // This function gets the day number based on calendar style
+  const getKurdishDayNumber = (date: Date) => {
+    if (useRojhalatMonths) {
+      // For Rojhalat: Use Persian/Solar Hijri day from getKurdishDate function
+      const kurdishDate = getKurdishDate(date);
+      return kurdishDate.kurdishDay;
+    } else {
+      // For Bashur: Use Gregorian day as-is
+      return date.getDate();
+    }
+  };
+
+  // For Kurdish language, always get a fresh Kurdish date for the provided date
+  // This ensures the date is always correct even when the selected day changes
   const formatDate = (date: Date, formatStr: string) => {
-    // For Kurdish language, always get a fresh Kurdish date for the provided date
-    // This ensures the date is always correct even when the selected day changes
     if (locale === 'ku') {
       // Get Kurdish date specifically for this date (not reusing state)
       const specificKurdishDate = getKurdishDate(date);
       
       if (formatStr === 'MMMM yyyy') {
-        return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishYear}`;
+        if (useRojhalatMonths) {
+          // For Rojhalat: use the original Kurdish year as calculated in getKurdishDate
+          return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishYear}`;
+        } else {
+          return `${KurdishMonthBashur[date.getMonth()]} ${date.getFullYear()}`;
+        }
       }
       
       if (formatStr === 'MMMM d, yyyy') {
-        return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishDay}, ${specificKurdishDate.kurdishYear}`;
+        if (useRojhalatMonths) {
+          // For Rojhalat: use the original Kurdish year as calculated in getKurdishDate
+          return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishDay}, ${specificKurdishDate.kurdishYear}`;
+        } else {
+          return `${KurdishMonthBashur[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        }
       }
       
       if (formatStr === 'MMM d') {
-        return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishDay}`;
+        if (useRojhalatMonths) {
+          return `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishDay}`;
+        } else {
+          return `${KurdishMonthBashur[date.getMonth()]} ${date.getDate()}`;
+        }
       }
     }
     
@@ -161,6 +233,17 @@ export default function CalendarClient({ locale }: CalendarProps) {
     return formatted;
   };
 
+  // Calendar badge to show on top right of calendar cells
+  const CalendarBadge = ({ isRojhalat }: { isRojhalat: boolean }) => (
+    <div className={`absolute top-1 right-1 flex items-center justify-center rounded-full w-4 h-4 text-[9px] font-bold ${
+      isRojhalat 
+        ? "bg-amber-500/90 text-amber-50" 
+        : "bg-emerald-500/90 text-emerald-50"
+    }`}>
+      {isRojhalat ? "ڕ" : "ب"}
+    </div>
+  );
+
   const renderHeader = () => (
     <div className="flex items-center justify-between py-4 px-6">
       <Button
@@ -171,9 +254,84 @@ export default function CalendarClient({ locale }: CalendarProps) {
       >
         <ChevronLeft className="h-5 w-5" />
       </Button>
-      <h2 className="text-xl font-semibold">
-        {formatDate(currentDate, "MMMM yyyy")}
-      </h2>
+
+      <div className="flex flex-col items-center">
+        {/* Calendar Type Indicator - Only visible for Kurdish */}
+        {locale === 'ku' && (
+          <div className={`relative mb-1.5 text-xs font-medium rounded-md px-2.5 py-0.5 ${
+            useRojhalatMonths 
+              ? "bg-amber-100 text-amber-800 border border-amber-200" 
+              : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+          }`}>
+            {useRojhalatMonths ? "ساڵنامەی ڕۆژهەڵات" : "ساڵنامەی باشوور"}
+          </div>
+        )}
+        
+        <h2 className="text-xl font-semibold relative">
+          {formatDate(currentDate, "MMMM yyyy")}
+          
+          {/* Info tooltip */}
+          {locale === 'ku' && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-muted/80 hover:bg-muted hover:text-accent-foreground transition-colors">
+                    <Info className="h-3 w-3" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="max-w-[250px] text-center">
+                  {useRojhalatMonths 
+                    ? "ساڵنامەی کوردی ڕۆژهەڵات وەک ساڵنامەی فارسی/هەتاوی دەژمێردرێت"
+                    : "ساڵنامەی کوردی باشوور وەک ساڵنامەی زایینی دەژمێردرێت"}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </h2>
+        
+        {/* Kurdistan Region Month Style Toggle - Only show when Kurdish language is selected */}
+        {locale === 'ku' && (
+          <div className="mt-3 relative">
+            <div className="flex items-center bg-background shadow-sm border border-muted rounded-full p-0.5 relative z-10 transition-all duration-300 min-w-[180px]">
+              {/* Toggle Background */}
+              <div 
+                className={`absolute inset-y-0.5 rounded-full transition-all duration-300 ease-in-out bg-gradient-to-r ${
+                  useRojhalatMonths 
+                    ? "from-amber-500/90 to-amber-600/80 left-0.5 right-[calc(50%-0.5rem)]" 
+                    : "from-emerald-500/90 to-emerald-600/80 left-[calc(50%-0.5rem)] right-0.5"
+                }`}
+              />
+              
+              {/* Rojhalat Option */}
+              <button
+                onClick={() => setUseRojhalatMonths(true)}
+                className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200 z-10 flex-1 ${
+                  useRojhalatMonths 
+                    ? "text-white font-medium" 
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Sun className="h-3.5 w-3.5" />
+                <span className="text-xs">ڕۆژهەڵات</span>
+              </button>
+              
+              {/* Bashur Option */}
+              <button
+                onClick={() => setUseRojhalatMonths(false)}
+                className={`flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200 z-10 flex-1 ${
+                  !useRojhalatMonths 
+                    ? "text-white font-medium" 
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <MapPin className="h-3.5 w-3.5" />
+                <span className="text-xs">باشوور</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      
       <Button
         variant="ghost"
         size="icon"
@@ -239,63 +397,71 @@ export default function CalendarClient({ locale }: CalendarProps) {
     const rows = [];
     let days = [];
     let day = startDate;
+    let formattedDate = "";
 
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         const cloneDay = day;
-        const isWeekend = i === 0 || i === 6; // Sunday or Saturday
-        const hasEvents =
-          Array.isArray(holidays) &&
-          holidays.some((holiday) => isSameDay(new Date(holiday.date), day));
-
-        // Get the Kurdish date for this day if locale is Kurdish
-        let dayDisplay = format(day, "d");
+        
+        // Format the day - now use our adjusted method for Kurdish days
         if (locale === 'ku') {
-          const dayKurdishDate = getKurdishDate(day);
-          dayDisplay = dayKurdishDate.kurdishDay.toString();
+          formattedDate = useRojhalatMonths 
+            ? getKurdishDate(cloneDay).kurdishDay.toString() 
+            : cloneDay.getDate().toString();
+        } else {
+          formattedDate = format(cloneDay, "d");
         }
+
+        const isCurrentMonth = isSameMonth(day, monthStart);
+        const isSelectedDay = isSameDay(day, selectedDate);
+        const isTodayDay = isToday(day);
+        const hasEvents = Array.isArray(holidays) && 
+          holidays.some((holiday) => isSameDay(new Date(holiday.date), day));
 
         days.push(
           <div
             key={day.toString()}
             className={cn(
-              "relative h-24 p-1 transition-colors hover:bg-accent/50 cursor-pointer",
-              !isSameMonth(day, monthStart) &&
-                "text-muted-foreground bg-muted/30",
-              isSameDay(day, selectedDate) && "bg-accent",
-              isWeekend && isSameMonth(day, monthStart) && !isSameDay(day, selectedDate) && "bg-muted/10"
+              "relative h-12 sm:h-16 border-0 flex items-center justify-center",
+              !isCurrentMonth && "text-muted-foreground bg-muted/20",
+              isCurrentMonth && "bg-background hover:bg-accent/20 hover:text-accent-foreground",
+              isSelectedDay && "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary",
+              isTodayDay && !isSelectedDay && "border-primary text-accent-foreground font-semibold",
+              "cursor-pointer select-none"
             )}
             onClick={() => onDateClick(cloneDay)}
           >
+            {/* Show calendar badge only for Kurdish */}
+            {locale === 'ku' && isCurrentMonth && (
+              <CalendarBadge isRojhalat={useRojhalatMonths} />
+            )}
+          
             <span
               className={cn(
-                "flex h-8 w-8 items-center justify-center rounded-full text-sm transition-colors",
-                isToday(day) &&
-                  "bg-primary text-primary-foreground font-semibold",
-                hasEvents && !isToday(day) && "text-destructive font-medium",
-                isSameDay(day, selectedDate) && !isToday(day) && "font-medium"
+                "flex items-center justify-center w-8 h-8 rounded-full",
+                isSelectedDay && "bg-primary text-primary-foreground",
+                isTodayDay && !isSelectedDay && "border border-primary"
               )}
             >
-              {dayDisplay}
+              {formattedDate}
             </span>
             {hasEvents && (
-              <div className="absolute bottom-1 right-1 w-2 h-2 rounded-full bg-destructive"></div>
+              <span className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${
+                isSelectedDay ? "bg-primary-foreground" : "bg-primary"
+              }`}></span>
             )}
           </div>
         );
         day = addDays(day, 1);
       }
       rows.push(
-        <div
-          key={day.toString()}
-          className="grid grid-cols-7 divide-x divide-y"
-        >
+        <div key={day.toString()} className="grid grid-cols-7 gap-px">
           {days}
         </div>
       );
       days = [];
     }
-    return <div className="divide-y">{rows}</div>;
+    return <div className="flex flex-col gap-px">{rows}</div>;
   };
 
   const EventList = ({
@@ -334,10 +500,29 @@ export default function CalendarClient({ locale }: CalendarProps) {
                             </div>
                           )}
                         </div>
-                        <time dateTime={event.date} className="text-sm font-medium bg-primary/10 text-primary px-2.5 py-1 rounded-md">
+                        <time dateTime={event.date} className={`text-sm font-medium px-2.5 py-1 rounded-md relative ${
+                          locale === 'ku' ? (
+                            useRojhalatMonths 
+                              ? "bg-amber-100 text-amber-800 border border-amber-200/50" 
+                              : "bg-emerald-100 text-emerald-800 border border-emerald-200/50"
+                          ) : "bg-primary/10 text-primary"
+                        }`}>
+                          {/* Calendar type indicator for Kurdish */}
+                          {locale === 'ku' && (
+                            <span className={`absolute -top-1 -right-1 w-3.5 h-3.5 flex items-center justify-center rounded-full text-[8px] border shadow-sm ${
+                              useRojhalatMonths 
+                                ? "bg-amber-500 text-white border-amber-400" 
+                                : "bg-emerald-500 text-white border-emerald-400"
+                            }`}>
+                              {useRojhalatMonths ? "ڕ" : "ب"}
+                            </span>
+                          )}
+                          
                           {/* Always calculate a fresh date for each event to ensure it's correct */}
                           {locale === 'ku' 
-                            ? `${getKurdishDate(new Date(event.date)).kurdishMonth} ${getKurdishDate(new Date(event.date)).kurdishDay}` 
+                            ? useRojhalatMonths 
+                              ? `${getKurdishDate(new Date(event.date)).kurdishMonth} ${getKurdishDate(new Date(event.date)).kurdishDay}` 
+                              : `${KurdishMonthBashur[new Date(event.date).getMonth()]} ${new Date(event.date).getDate()}`
                             : formatDate(new Date(event.date), "MMM d")}
                         </time>
                       </div>
