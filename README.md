@@ -2,7 +2,7 @@
 
 ![Kurdish Calendar Banner](public/images/banner.png)
 
-A comprehensive calendar application that supports multiple calendar systems relevant to Kurdish communities and the broader Middle East region. This application is available at [kurd.dev](https://kurd.dev).
+A comprehensive calendar application that supports multiple calendar systems relevant to Kurdish communities and the broader Middle East region. This application is available at [calendar.krd](https://calendar.krd).
 
 ## ✨ Features
 

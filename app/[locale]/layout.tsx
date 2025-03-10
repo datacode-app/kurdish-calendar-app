@@ -7,7 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import PWA from "../pwa";
 import { Analytics } from '@vercel/analytics/next';
 import { getFontClass } from "@/lib/utils";
-
+import { SpeedInsights } from "@vercel/speed-insights/next"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -27,20 +27,20 @@ export async function generateMetadata({
   
   const title = t('title');
   const description = t('description');
-  const baseUrl = 'https://kurd.dev';
+  const baseUrl = 'https://calander.krd';
   
   return {
     title: {
       default: title,
-      template: `%s | ${title} - kurd.dev`
+      template: `%s | ${title} - calendar.krd`
     },
     description,
     metadataBase: new URL(baseUrl),
     alternates: {
       canonical: '/',
       languages: {
-        'en': '/en',
         'ku': '/ku',
+        'en': '/en',
         'ar': '/ar',
         'fa': '/fa',
       },
@@ -51,7 +51,7 @@ export async function generateMetadata({
       url: baseUrl,
       title,
       description,
-      siteName: 'Kurdish Calendar - kurd.dev',
+      siteName: 'Kurdish Calendar - calendar.krd',
       images: [
         {
           url: `${baseUrl}/images/og-image.jpg`,
@@ -90,13 +90,13 @@ export async function generateMetadata({
     },
     manifest: '/site.webmanifest',
     appleWebApp: {
-      title: 'Kurdish Calendar - kurd.dev',
+      title: 'Kurdish Calendar - calendar.krd',
       statusBarStyle: 'default'
     },
     verification: {
       google: 'google-site-verification-code', // Replace with your actual verification code
     },
-    keywords: ['Kurdish calendar', 'Kurdish events', 'Kurdish holidays', 'Kurdistan', 'Kurdish culture', 'kurd.dev']
+    keywords: ['Kurdish calendar', 'Kurdish events', 'Kurdish holidays', 'Kurdistan', 'Kurdish culture', 'kurd.dev','calendar.krd']
   };
 }
 
@@ -125,13 +125,13 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === 'ar' || locale === 'ku' || locale === 'fa' ? 'rtl' : 'ltr'}>
       <head>
-        <meta name="apple-mobile-web-app-title" content="Kurdish Calendar - kurd.dev" />
+        <meta name="apple-mobile-web-app-title" content="Kurdish Calendar - calendar.krd" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
         <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
         <link rel="shortcut icon" href="/favicon/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-        <link rel="canonical" href={`https://kurd.dev/${locale}`} />
+        <link rel="canonical" href={`https://calendar.krd/${locale}`} />
         {/* Structured data for rich results */}
         <script
           type="application/ld+json"
@@ -140,7 +140,7 @@ export default async function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "Kurdish Calendar",
-              "url": "https://kurd.dev",
+              "url": "https://calendar.krd",
               "description": "A comprehensive calendar of Kurdish events and holidays",
               "applicationCategory": "Calendar",
               "operatingSystem": "All",
@@ -149,7 +149,7 @@ export default async function RootLayout({
                 "price": "0",
                 "priceCurrency": "USD"
               },
-              "inLanguage": ["en", "ku", "ar", "fa"]
+              "inLanguage": ["ku","en", "ar", "fa"]
             })
           }}
         />
@@ -164,6 +164,8 @@ export default async function RootLayout({
           <PWA />
           <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
+            <SpeedInsights />
+
             <Analytics />
           </NextIntlClientProvider>
         </ThemeProvider>
