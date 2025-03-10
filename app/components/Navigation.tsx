@@ -121,7 +121,7 @@ export default function Navigation() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                {['en', 'ku', 'ar', 'fa'].map((lang) => (
+                {[ 'ku','en', 'ar', 'fa'].map((lang) => (
                   <DropdownMenuItem 
                     key={lang}
                     onClick={() => handleLocaleChange(lang)}
