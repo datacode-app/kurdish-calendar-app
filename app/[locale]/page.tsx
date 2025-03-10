@@ -31,13 +31,13 @@ export default async function Home({
       <Navigation />
        {/* Multi-Calendar Display Section */}
       <div className="container mx-auto py-8 px-4 md:px-6 space-y-8">
+       <section className="py-4">
+          <MultiCalendarDisplay locale={locale} />
+        </section>
            {/* City Times Section */}
         <div className="mx-auto">
           <CityTimeDisplay locale={locale} />
         </div>
-       <section className="py-4">
-          <MultiCalendarDisplay locale={locale} />
-        </section>
         {/* Calendar Section */}
         <Card className="mx-auto">
           <CardContent className="p-4 md:p-6">

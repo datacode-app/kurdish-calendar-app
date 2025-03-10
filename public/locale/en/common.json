@@ -29,8 +29,8 @@
       "jalali": "Persian Calendar",
       "hijri": "Islamic Calendar",
       "kurdish": "Kurdish Calendar",
-      "kurdishRojhalat": "Rojhalat (Eastern) Kurdish Calendar",
-      "kurdishBashur": "Bashur (Western) Kurdish Calendar"
+      "kurdishRojhalat": "Rojhalat (Eastern) Calendar",
+      "kurdishBashur": "Bashur (Western) Calendar"
     },
     "gregorian": "Gregorian",
     "jalali": "Persian (Jalali)",
