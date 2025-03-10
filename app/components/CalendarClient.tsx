@@ -126,6 +126,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
   // Update Kurdish date when currentDate changes
   useEffect(() => {
     if (locale === 'ku') {
+      
       setKurdishDate(getKurdishDate(currentDate));
     }
   }, [currentDate, locale]);

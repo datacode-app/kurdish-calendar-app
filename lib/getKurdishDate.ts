@@ -94,18 +94,17 @@ export enum KurdishMonthLatin {
  * 
  * This function converts a Gregorian date to the corresponding Kurdish date,
  * taking into account that the Kurdish New Year (Newroz) begins on March 21.
- * The Kurdish calendar is based on the Solar Hijri calendar, with years typically
- * being 700 years ahead of the Gregorian calendar (e.g., 2024 CE = 2724 Kurdish Era).
- * 
- * The conversion algorithm handles the offset between calendar systems and 
- * returns both formatted strings and individual date components.
+ * For Rojhalat calendar, we use Tehran's timezone (UTC+3:30).
  * 
  * @param date - JavaScript Date object to convert (defaults to current date if not provided)
  * @returns Object containing both Gregorian and Kurdish date information
  */
 export function getKurdishDate(date: Date = new Date()): KurdishDateResult {
+  // Convert to Tehran time for Rojhalat calendar
+  const tehranDate = new Date(date.toLocaleString('en-US', { timeZone: 'Asia/Tehran' }));
+  
   // Format the Gregorian date
-  const gregorianDate = date.toLocaleDateString('en-US', {
+  const gregorianDate = tehranDate.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -117,10 +116,10 @@ export function getKurdishDate(date: Date = new Date()): KurdishDateResult {
   // Array of Kurdish month names in Latin script
   const kurdishMonthsLatin: string[] = Object.values(KurdishMonthLatin);
   
-  // Extract Gregorian date components
-  const gregorianYear: number = date.getFullYear();
-  const gregorianMonth: number = date.getMonth(); // 0-based (0 = January)
-  const gregorianDay: number = date.getDate();
+  // Extract Gregorian date components using Tehran time
+  const gregorianYear: number = tehranDate.getFullYear();
+  const gregorianMonth: number = tehranDate.getMonth(); // 0-based (0 = January)
+  const gregorianDay: number = tehranDate.getDate();
   
   // Variables to hold calculated Kurdish date components
   let kurdishYear: number;
@@ -237,7 +236,10 @@ export function getKurdishDate(date: Date = new Date()): KurdishDateResult {
       }
     } else { // March before the 21st
       monthIndex = 11;
-      day = gregorianDay + 9; // February has 28/29 days
+      day = gregorianDay + 10; // February has 28/29 days
+      
+      // For Resheme (last month) in March, the year should be current year + 700
+      kurdishYear = gregorianYear + 700;
     }
   }
   
