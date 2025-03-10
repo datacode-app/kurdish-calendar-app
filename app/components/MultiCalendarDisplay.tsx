@@ -225,35 +225,8 @@ export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayPro
         <CardTitle className="text-center">{t('calendar.multiCalendar.title')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Gregorian Calendar */}
-          <div className="p-4 border rounded-lg shadow-sm bg-background">
-            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.gregorian')}</h3>
-            <p>
-              {gregorianDate.day} {getEnglishMonthName(gregorianDate.month)} {gregorianDate.year}
-            </p>
-          </div>
-          
-          {/* Jalali (Persian) Calendar */}
-          <div className="p-4 border rounded-lg shadow-sm bg-background">
-            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.jalali')}</h3>
-            <p>
-              {jalaliDate.jd} {t(`calendar.jalaliMonths.${jalaliDate.jm - 1}`)} {jalaliDate.jy}
-            </p>
-          </div>
-          
-          {/* Hijri (Islamic/Lunar) Calendar */}
-          <div className="p-4 border rounded-lg shadow-sm bg-background">
-            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.hijri')}</h3>
-            <p>
-              {hijriDate.day} {t(`calendar.hijriMonths.${hijriDate.month}`)} {hijriDate.year}
-            </p>
-          </div>
-        </div>
-        
-        {/* Kurdish Calendars (Rojhalat and Bashur) - Only displayed when using Kurdish language */}
-        {locale === 'ku' && (
-          <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+      {locale === 'ku' && (
+          <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {/* Rojhalat (Eastern) Kurdish Calendar */}
             <div className="flex items-center gap-3 bg-amber-50 border border-amber-200/70 text-amber-900 p-4 rounded-lg shadow-sm">
               <div className="flex items-center justify-center bg-amber-500/90 text-white rounded-full w-10 h-10 flex-shrink-0">
@@ -285,6 +258,35 @@ export default function MultiCalendarDisplay({ locale }: MultiCalendarDisplayPro
             </div>
           </div>
         )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+               {/* Kurdish Calendars (Rojhalat and Bashur) - Only displayed when using Kurdish language */}
+      
+          {/* Gregorian Calendar */}
+          <div className="p-4 border rounded-lg shadow-sm bg-background">
+            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.gregorian')}</h3>
+            <p>
+              {gregorianDate.day} {getEnglishMonthName(gregorianDate.month)} {gregorianDate.year}
+            </p>
+          </div>
+          
+          {/* Jalali (Persian) Calendar */}
+          <div className="p-4 border rounded-lg shadow-sm bg-background">
+            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.jalali')}</h3>
+            <p>
+              {jalaliDate.jd} {t(`calendar.jalaliMonths.${jalaliDate.jm - 1}`)} {jalaliDate.jy}
+            </p>
+          </div>
+          
+          {/* Hijri (Islamic/Lunar) Calendar */}
+          <div className="p-4 border rounded-lg shadow-sm bg-background">
+            <h3 className="font-semibold text-lg mb-2">{t('calendar.multiCalendar.hijri')}</h3>
+            <p>
+              {hijriDate.day} {t(`calendar.hijriMonths.${hijriDate.month}`)} {hijriDate.year}
+            </p>
+          </div>
+        </div>
+        
+   
       </CardContent>
     </Card>
   );
