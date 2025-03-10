@@ -49,6 +49,30 @@
       }
     },
     {
+      "date": "2025-03-10",
+      "event": {
+        "en": "National Kurdish Clothing Day",
+        "ku": "ڕۆژی نیشتمانی جلوبەرگی کوردی",
+        "ar": "اليوم الوطني للزي الكردي",
+        "fa": "روز جهانی پوشش کردی"
+      },
+      "note": {
+        "en": "",
+        "ku": "",
+        "ar": "",
+        "fa": ""
+      },
+      "quote": {
+        "celebrity": "Kurdistan",
+        "quote": {
+          "en": "Every thread of our traditional Kurdish attire weaves the tale of our proud heritage, echoing the voices of our ancestors.",
+          "ku": "هەموو تیشکی جلوبەرگی کوردیی کۆنەکانمان چیرۆکی میراثی سەربەخۆی ئێمە دەخەینێت، دەنگی پێشینەکانمان بڵاوی دەکات.",
+          "fa": "هر نخ از پوشاک سنتی کردستان، داستان میراث پرافتخار ما را می‌بافد و پژواک صدای نیاکان ماست.",
+          "ar": "كل خيط من ملابسنا الكردية التقليدية ينسج قصة تراثنا الفخور، معبراً عن أصوات أجدادنا."
+        }
+      }
+    },
+    {
       "date": "2025-03-11",
       "event": {
         "en": "Anniversary of 11 March Agreement (1970)",
