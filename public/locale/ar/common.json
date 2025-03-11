@@ -12,6 +12,8 @@
     "description": "حول تطبيق التقويم الكردي"
   },
   "calendar": {
+    "Rojhalat": "الشرق",
+    "Bashur": "بشور",
     "today": "اليوم",
     "month": "شهر",
     "week": "أسبوع",

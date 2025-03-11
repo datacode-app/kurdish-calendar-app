@@ -12,6 +12,8 @@
     "description": "درباره برنامه تقویم کردی"
   },
   "calendar": {
+    "Rojhalat": "ڕۆژهەڵات",
+    "Bashur": "باشور",
     "today": "امروز",
     "month": "ماه",
     "week": "هفته",
