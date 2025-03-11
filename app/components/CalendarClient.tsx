@@ -406,7 +406,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
                 )}
               >
                 <Sun className="h-3.5 w-3.5" />
-                <span className="text-xs">ڕۆژهەڵات</span>
+                <span className="text-xs">{t(`calendar.Rojhalat`)}</span>
               </button>
               <button
                 onClick={() => setUseRojhalatMonths(false)}
@@ -418,7 +418,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
                 )}
               >
                 <MapPin className="h-3.5 w-3.5" />
-                <span className="text-xs">باشوور</span>
+                <span className="text-xs">{t(`calendar.Bashur`)}</span>
               </button>
             </div>
           </div>
