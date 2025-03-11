@@ -39,6 +39,7 @@ const STRUCTURED_DATA = JSON.stringify({
     priceCurrency: "USD",
   },
   inLanguage: ["ku", "en", "ar", "fa"],
+  
 });
 
 export async function generateMetadata({
@@ -58,6 +59,7 @@ export async function generateMetadata({
       template: `%s | ${title} - calendar.krd`,
     },
     description,
+    // defaultLocale: 'ku',
     alternates: {
       canonical: "/",
       languages: {
