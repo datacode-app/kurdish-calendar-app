@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,24 +15,35 @@ export default function QuoteDisplay({ quotes, locale }: QuoteDisplayProps) {
   const t = useTranslations();
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Get current quote
-  const currentQuote = quotes[currentQuoteIndex];
+  // Memoize the current quote to avoid recalculations on each render.
+  const currentQuote = useMemo(() => quotes[currentQuoteIndex], [quotes, currentQuoteIndex]);
 
-  // Change quote every 10 seconds
+  // Timer effect to change the quote every 10 seconds.
   useEffect(() => {
-    const interval = setInterval(() => {
+    intervalRef.current = setInterval(() => {
       setIsVisible(false);
-      
-      // Wait for exit animation to complete before changing quote
+      // Wait for the exit animation to complete before changing the quote.
       setTimeout(() => {
         setCurrentQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
         setIsVisible(true);
       }, 500);
     }, 10000);
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [quotes.length]);
+
+  // useCallback prevents re-creation of the handler on every render.
+  const handleButtonClick = useCallback((index: number) => {
+    setIsVisible(false);
+    setTimeout(() => {
+      setCurrentQuoteIndex(index);
+      setIsVisible(true);
+    }, 500);
+  }, []);
 
   if (!currentQuote) return null;
 
@@ -80,13 +91,7 @@ export default function QuoteDisplay({ quotes, locale }: QuoteDisplayProps) {
             {quotes.map((_, index) => (
               <button
                 key={index}
-                onClick={() => {
-                  setIsVisible(false);
-                  setTimeout(() => {
-                    setCurrentQuoteIndex(index);
-                    setIsVisible(true);
-                  }, 500);
-                }}
+                onClick={() => handleButtonClick(index)}
                 className={`h-2 w-2 rounded-full transition-all duration-300 ${
                   index === currentQuoteIndex ? 'bg-primary w-4' : 'bg-primary/30'
                 }`}
@@ -98,4 +103,4 @@ export default function QuoteDisplay({ quotes, locale }: QuoteDisplayProps) {
       </CardContent>
     </Card>
   );
-} 
+}

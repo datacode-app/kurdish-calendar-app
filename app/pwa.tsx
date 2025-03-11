@@ -1,20 +1,13 @@
+// app/pwa.tsx
 'use client';
+
 import { useEffect } from 'react';
+// import { register } from 'sw/registration';
 
 export default function PWA() {
   useEffect(() => {
-    if ('serviceWorker' in navigator && 
-        window.location.hostname !== 'localhost') {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js').then(
-          function() {
-            console.log('Service Worker registration successful');
-          },
-          function(err) {
-            console.log('Service Worker registration failed: ', err);
-          }
-        );
-      });
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+      navigator.serviceWorker.register('/sw.js');
     }
   }, []);
 

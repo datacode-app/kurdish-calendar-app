@@ -1,9 +1,6 @@
 import Navigation from '../components/Navigation';
-import Calendar from '../components/Calendar';
-import CityTimeDisplay from '../components/CityTimeDisplay';
+import ClientComponentsWrapper from '../components/ClientComponentsWrapper';
 import Quotes from '../components/Quotes';
-import MultiCalendarDisplay from '../components/MultiCalendarDisplay';
-import { Card, CardContent } from '@/components/ui/card';
 import { getTranslations } from 'next-intl/server';
 
 export async function generateMetadata({ 
@@ -29,31 +26,15 @@ export default async function Home({
   return (
     <main className="min-h-screen">
       <Navigation />
-       {/* Multi-Calendar Display Section */}
       <div className="container mx-auto py-8 px-4 md:px-6 space-y-8">
-       <section className="py-4">
-          <MultiCalendarDisplay locale={locale} />
-        </section>
-           {/* City Times Section */}
-        <div className="mx-auto">
-          <CityTimeDisplay locale={locale} />
-        </div>
-        {/* Calendar Section */}
-        <Card className="mx-auto">
-          <CardContent className="p-4 md:p-6">
-            <Calendar locale={locale} />
-          </CardContent>
-        </Card>
+        {/* Render client-only dynamic components via a client wrapper */}
+        <ClientComponentsWrapper locale={locale} />
         
-       
-        
-        {/* Quotes Section */}
+        {/* Quotes Section (can remain as a server component if no client-only logic is needed) */}
         <section className="py-4">
           <Quotes locale={locale} />
         </section>
-        
-     
       </div>
     </main>
   );
-} 
+}
