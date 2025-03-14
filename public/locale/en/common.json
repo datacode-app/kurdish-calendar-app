@@ -88,8 +88,11 @@
     }
   },
   "time": {
-    "title": "City Times",
-    "localTime": "Local Time"
+    "title": "Kurdistan City Times",
+    "subtitle": "Current time in major Kurdistan cities",
+    "description": "View real-time clocks for the major cities across Kurdistan",
+    "localTime": "Local Time",
+    "timezone": "Timezone"
   },
   "months": {
     "january": "January",

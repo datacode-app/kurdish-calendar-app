@@ -72,6 +72,7 @@ export default function Navigation() {
     { href: '', label: t('nav.home') },
     { href: '/calendar', label: t('nav.calendar') },
     { href: '/events', label: t('nav.events') },
+    { href: '/time', label: t('nav.worldTime') },
     { href: '/about', label: t('nav.about') },
   ];
 
