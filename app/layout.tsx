@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Head from "next/head";
+import { register } from './serviceWorkerRegistration';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +24,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Register service worker
+  if (typeof window !== 'undefined') {
+    register();
+  }
+
   return (
     <html lang="ku">
       <Head>
