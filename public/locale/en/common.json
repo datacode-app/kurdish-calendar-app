@@ -162,5 +162,11 @@
     "seconds": "Seconds",
     "description": "Join us in celebrating the Kurdish New Year! 🎉",
     "kurdishYear": "Kurdish Year"
+  },
+  "regions": {
+    "rojhalat": "Eastern Kurdistan",
+    "bashur": "Southern Kurdistan",
+    "bakur": "Northern Kurdistan",
+    "rojava": "Western Kurdistan"
   }
 } 
