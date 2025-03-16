@@ -119,7 +119,8 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
   // Fetch holidays only once on mount
   useEffect(() => {
-    fetch("/data/holidays.json")
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    fetch(`${baseUrl}/data/holidays.json`)
       .then((response) => response.json())
       .then((data) => {
         const holidaysArray = Array.isArray(data) ? data : data.holidays || [];

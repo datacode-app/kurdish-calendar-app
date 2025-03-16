@@ -11,6 +11,10 @@ const nextConfig = withPWA({
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
 })(withNextIntl({
+  env: {
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    
+  },
   /* Your other config options here */
 }) as any) as any;
 
