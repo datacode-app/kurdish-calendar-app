@@ -6,6 +6,9 @@
  * The Kurdish New Year (Newroz) starts on March 21st of the Gregorian calendar.
  */
 
+import moment from 'moment-jalaali';
+import { jalaali } from './jalaali';
+
 /**
  * Return type for Kurdish date calculations
  * Contains both the formatted date strings and individual components
@@ -94,7 +97,7 @@ export enum KurdishMonthLatin {
  * 
  * This function converts a Gregorian date to the corresponding Kurdish date,
  * taking into account that the Kurdish New Year (Newroz) begins on March 21.
- * For Rojhalat calendar, we use Tehran's timezone (UTC+3:30).
+ * For Rojhalat calendar, we use Tehran's timezone (UTC+3:30) and Jalali calendar.
  * 
  * @param date - JavaScript Date object to convert (defaults to current date if not provided)
  * @returns Object containing both Gregorian and Kurdish date information
@@ -116,132 +119,19 @@ export function getKurdishDate(date: Date = new Date()): KurdishDateResult {
   // Array of Kurdish month names in Latin script
   const kurdishMonthsLatin: string[] = Object.values(KurdishMonthLatin);
   
-  // Extract Gregorian date components using Tehran time
-  const gregorianYear: number = tehranDate.getFullYear();
-  const gregorianMonth: number = tehranDate.getMonth(); // 0-based (0 = January)
-  const gregorianDay: number = tehranDate.getDate();
+  // Use moment-jalaali for accurate Persian calendar conversion
+  const m = moment(tehranDate);
+  const jy = m.jYear();
+  const jm = m.jMonth() + 1;
+  const jd = m.jDate();
   
-  // Variables to hold calculated Kurdish date components
-  let kurdishYear: number;
-  let monthIndex: number;
-  let day: number;
+  // Calculate Kurdish year (2724 at 1403 Jalali)
+  const JALALI_KURDISH_OFFSET = 1321; // 2724 - 1403
+  const kurdishYear = jy + JALALI_KURDISH_OFFSET;
   
-  // Calculate Kurdish date based on Gregorian date
-  // Kurdish New Year starts on March 21 (Newroz)
-  if (gregorianMonth > 2 || (gregorianMonth === 2 && gregorianDay >= 21)) {
-    // After March 21 - in the current Kurdish year
-    kurdishYear = gregorianYear + 700;
-    
-    // Calculate month index and day based on Gregorian date
-    if (gregorianMonth === 2 && gregorianDay >= 21) { // March 21-31
-      monthIndex = 0;
-      day = gregorianDay - 20; // Starts from March 21
-    } else if (gregorianMonth === 3) { // April
-      if (gregorianDay <= 20) {
-        monthIndex = 0;
-        day = gregorianDay + 11; // March has 31 days
-      } else {
-        monthIndex = 1;
-        day = gregorianDay - 20;
-      }
-    } else if (gregorianMonth === 4) { // May
-      if (gregorianDay <= 21) {
-        monthIndex = 1;
-        day = gregorianDay + 10; // April has 30 days
-      } else {
-        monthIndex = 2;
-        day = gregorianDay - 21;
-      }
-    } else if (gregorianMonth === 5) { // June
-      if (gregorianDay <= 21) {
-        monthIndex = 2;
-        day = gregorianDay + 10; // May has 31 days
-      } else {
-        monthIndex = 3;
-        day = gregorianDay - 21;
-      }
-    } else if (gregorianMonth === 6) { // July
-      if (gregorianDay <= 22) {
-        monthIndex = 3;
-        day = gregorianDay + 9; // June has 30 days
-      } else {
-        monthIndex = 4;
-        day = gregorianDay - 22;
-      }
-    } else if (gregorianMonth === 7) { // August
-      if (gregorianDay <= 22) {
-        monthIndex = 4;
-        day = gregorianDay + 9; // July has 31 days
-      } else {
-        monthIndex = 5;
-        day = gregorianDay - 22;
-      }
-    } else if (gregorianMonth === 8) { // September
-      if (gregorianDay <= 22) {
-        monthIndex = 5;
-        day = gregorianDay + 9; // August has 31 days
-      } else {
-        monthIndex = 6;
-        day = gregorianDay - 22;
-      }
-    } else if (gregorianMonth === 9) { // October
-      if (gregorianDay <= 22) {
-        monthIndex = 6;
-        day = gregorianDay + 8; // September has 30 days
-      } else {
-        monthIndex = 7;
-        day = gregorianDay - 22;
-      }
-    } else if (gregorianMonth === 10) { // November
-      if (gregorianDay <= 21) {
-        monthIndex = 7;
-        day = gregorianDay + 9; // October has 31 days
-      } else {
-        monthIndex = 8;
-        day = gregorianDay - 21;
-      }
-    } else if (gregorianMonth === 11) { // December
-      if (gregorianDay <= 21) {
-        monthIndex = 8;
-        day = gregorianDay + 9; // November has 30 days
-      } else {
-        monthIndex = 9;
-        day = gregorianDay - 21;
-      }
-    } else {
-      // This should never happen as we're already handling all months
-      // after March, but TypeScript needs all paths to be covered
-      monthIndex = 0;
-      day = 1;
-    }
-  } else {
-    // Before March 21 - still in the previous Kurdish year
-    kurdishYear = gregorianYear + 699;
-    
-    if (gregorianMonth === 0) { // January
-      if (gregorianDay <= 20) {
-        monthIndex = 9;
-        day = gregorianDay + 11; // December has 31 days
-      } else {
-        monthIndex = 10;
-        day = gregorianDay - 20;
-      }
-    } else if (gregorianMonth === 1) { // February
-      if (gregorianDay <= 19) {
-        monthIndex = 10;
-        day = gregorianDay + 11; // January has 31 days
-      } else {
-        monthIndex = 11;
-        day = gregorianDay - 19;
-      }
-    } else { // March before the 21st
-      monthIndex = 11;
-      day = gregorianDay + 10; // February has 28/29 days
-      
-      // For Resheme (last month) in March, the year should be current year + 700
-      kurdishYear = gregorianYear + 700;
-    }
-  }
+  // Map Jalali month to Kurdish month (they use the same month system)
+  const monthIndex = jm - 1; // Convert to 0-based index
+  const day = jd;
   
   // Construct and return the result object with all date components
   return {

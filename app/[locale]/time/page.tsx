@@ -41,7 +41,8 @@ interface HolidaysData {
 // Function to check if a date is a holiday
 async function isHoliday(date: Date): Promise<{ isHoliday: boolean; eventName?: { [key: string]: string } }> {
   try {
-    const response = await fetch('/data/holidays.json');
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const response = await fetch(`${baseUrl}/data/holidays.json`);
     const data: HolidaysData = await response.json();
     
     const dateStr = date.toISOString().split('T')[0];
