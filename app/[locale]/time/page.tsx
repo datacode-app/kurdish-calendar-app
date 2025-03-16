@@ -7,6 +7,56 @@ import { kurdistanCities } from '@/lib/cities';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Navigation from "../../../app/components/Navigation";
+import { Calendar } from 'lucide-react';
+
+interface Holiday {
+  date: string;
+  event: {
+    en: string;
+    ku: string;
+    ar: string;
+    fa: string;
+  };
+  note: {
+    en: string;
+    ku: string;
+    ar: string;
+    fa: string;
+  };
+  quote: {
+    celebrity: string;
+    quote: {
+      en: string;
+      ku: string;
+      ar: string;
+      fa: string;
+    };
+  };
+}
+
+interface HolidaysData {
+  holidays: Holiday[];
+}
+
+// Function to check if a date is a holiday
+async function isHoliday(date: Date): Promise<{ isHoliday: boolean; eventName?: { [key: string]: string } }> {
+  try {
+    const response = await fetch('/data/holidays.json');
+    const data: HolidaysData = await response.json();
+    
+    const dateStr = date.toISOString().split('T')[0];
+    const holiday = data.holidays.find((h: Holiday) => h.date === dateStr);
+    
+    if (holiday) {
+      return { isHoliday: true, eventName: holiday.event };
+    }
+    
+    return { isHoliday: false };
+  } catch (error) {
+    console.error('Error checking holiday:', error);
+    return { isHoliday: false };
+  }
+}
 
 export default async function TimePage({ 
   params 
@@ -15,6 +65,8 @@ export default async function TimePage({
 }) {
   const { locale } = await params;
   const t = await getTranslations('time');
+  const today = new Date();
+  const holidayInfo = await isHoliday(today);
   
   const getModernLinkText = () => {
     switch (locale) {
@@ -68,7 +120,7 @@ export default async function TimePage({
                   <CityTime city={city} locale={locale} />
                   <div className="text-xs text-muted-foreground text-center">
                     {locale === 'ku' ? 'کاتی کوردی' : 'Kurdish Date'}:
-                    <div className="font-medium mt-1">
+                    <div className={`font-medium mt-1 ${holidayInfo.isHoliday ? 'text-red-500 dark:text-red-400' : ''}`}>
                       {city.timezone === 'Asia/Tehran' 
                         ? (locale === 'ku' ? getKurdishDate(new Date()).kurdishDate : getKurdishDate(new Date()).kurdishDateLatin)
                         : locale === 'ku' 
@@ -76,6 +128,12 @@ export default async function TimePage({
                           : `${new Date().getDate()} Azar ${new Date().getFullYear()}`
                       }
                     </div>
+                    {holidayInfo.isHoliday && (
+                      <div className="mt-1 flex items-center justify-center gap-1 text-red-500 dark:text-red-400">
+                        <Calendar className="h-3 w-3" />
+                        <span>{holidayInfo.eventName?.[locale as keyof typeof holidayInfo.eventName] || holidayInfo.eventName?.en}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
