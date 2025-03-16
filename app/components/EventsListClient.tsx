@@ -24,6 +24,7 @@ interface Holiday {
   };
   country?: string;
   region?: string;
+  isHoliday: boolean;
 }
 
 export default function EventsListClient({ locale }: { locale: string }) {
@@ -131,15 +132,30 @@ export default function EventsListClient({ locale }: { locale: string }) {
           </h2>
           <div className="space-y-4">
             {groupedHolidays[monthYear].map((holiday, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-md transition-shadow">
+              <Card 
+                key={index} 
+                className={`overflow-hidden hover:shadow-md transition-shadow
+                  ${holiday.isHoliday 
+                    ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800/30'
+                    : 'bg-card border-border'
+                  }`}
+              >
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                    <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary">
+                    <div className={`flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full 
+                      ${holiday.isHoliday
+                        ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                        : 'bg-primary/10 text-primary'
+                      }`}>
                       <CalendarIcon className="h-6 w-6" />
                     </div>
                     <div className="flex-grow min-w-0">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                        <h3 className="text-base font-medium text-foreground break-words">
+                        <h3 className={`text-base font-medium break-words
+                          ${holiday.isHoliday
+                            ? 'text-red-700 dark:text-red-400'
+                            : 'text-foreground'
+                          }`}>
                           {getLocalizedText(holiday.event)}
                         </h3>
                         <time className="text-sm text-muted-foreground whitespace-nowrap">
