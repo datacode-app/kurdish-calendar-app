@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
+import AnimatedNumber from './AnimatedNumber';
 
 interface TimeLeft {
   days: number;
@@ -14,6 +15,22 @@ export default function NowruzCountdown() {
   const t = useTranslations();
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [showCountdown, setShowCountdown] = useState(true);
+  const [kurdishYear, setKurdishYear] = useState("2724");
+  const [lastDigit, setLastDigit] = useState("4");
+  const [isFlipping, setIsFlipping] = useState(false);
+
+  // Enhanced year animation for last digit only
+  useEffect(() => {
+    const pulseTimer = setInterval(() => {
+      setIsFlipping(true);
+      setTimeout(() => {
+        setLastDigit(prev => prev === "4" ? "5" : "4");
+        setIsFlipping(false);
+      }, 500);
+    }, 3000);
+
+    return () => clearInterval(pulseTimer);
+  }, []);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -74,6 +91,17 @@ export default function NowruzCountdown() {
     }
   };
 
+  const yearVariants = {
+    initial: { rotateX: 0 },
+    flip: { 
+      rotateX: 180,
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
     <motion.div
       initial="hidden"
@@ -114,6 +142,37 @@ export default function NowruzCountdown() {
           </div>
         </motion.div>
       </div>
+
+      {/* Year Animation Section */}
+      <motion.div 
+        variants={itemVariants}
+        className="mt-8 p-6"
+      >
+        <div className="text-center space-y-3">
+          <div className="text-lg md:text-xl font-semibold text-emerald-600 dark:text-emerald-400">
+            {t('countdown.kurdishYear')}
+          </div>
+          <div className="flex justify-center items-center" dir="ltr">
+            <span className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300">
+              2
+            </span>
+            <span className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300">
+              7
+            </span>
+            <span className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300">
+              2
+            </span>
+            <motion.span 
+              className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300 perspective-1000"
+              animate={isFlipping ? "flip" : "initial"}
+              variants={yearVariants}
+              style={{ transformStyle: "preserve-3d", display: "inline-block" }}
+            >
+              {lastDigit}
+            </motion.span>
+          </div>
+        </div>
+      </motion.div>
 
       <motion.p 
         variants={itemVariants}
