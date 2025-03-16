@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 // import { format } from 'date-fns';
-import { Calendar as CalendarIcon } from 'lucide-react';
+import { Calendar as CalendarIcon, Star, Gift } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import {  getKurdishCountryName } from '@/lib/date-utils';
@@ -134,50 +134,68 @@ export default function EventsListClient({ locale }: { locale: string }) {
             {groupedHolidays[monthYear].map((holiday, index) => (
               <Card 
                 key={index} 
-                className={`overflow-hidden hover:shadow-md transition-shadow
+                className={`overflow-hidden hover:shadow-md transition-shadow group
                   ${holiday.isHoliday 
-                    ? 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800/30'
-                    : 'bg-card border-border'
+                    ? 'bg-red-50/80 dark:bg-red-950/20 border-red-200 dark:border-red-800/30 hover:bg-red-100/80 dark:hover:bg-red-950/30'
+                    : 'bg-card border-border hover:bg-accent/50'
                   }`}
               >
                 <CardContent className="p-4 sm:p-6">
                   <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                    <div className={`flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full 
-                      ${holiday.isHoliday
-                        ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
-                        : 'bg-primary/10 text-primary'
-                      }`}>
-                      <CalendarIcon className="h-6 w-6" />
+                    <div className="relative">
+                      <div className={`flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full 
+                        ${holiday.isHoliday
+                          ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 ring-2 ring-red-200 dark:ring-red-800/30'
+                          : 'bg-primary/10 text-primary'
+                        } transition-all duration-200 ease-in-out group-hover:scale-105`}>
+                        <CalendarIcon className="h-6 w-6" />
+                      </div>
+                      {holiday.isHoliday && (
+                        <div className="absolute -top-1 -right-1 flex items-center justify-center">
+                          <Star className="w-5 h-5 text-red-500 dark:text-red-400 fill-red-500 dark:fill-red-400 animate-pulse" />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-grow min-w-0">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                        <h3 className={`text-base font-medium break-words
-                          ${holiday.isHoliday
-                            ? 'text-red-700 dark:text-red-400'
-                            : 'text-foreground'
-                          }`}>
-                          {getLocalizedText(holiday.event)}
-                        </h3>
-                        <time className="text-sm text-muted-foreground whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          <h3 className={`text-base font-medium break-words
+                            ${holiday.isHoliday
+                              ? 'text-red-700 dark:text-red-400'
+                              : 'text-foreground'
+                            }`}>
+                            {getLocalizedText(holiday.event)}
+                          </h3>
+                          {holiday.isHoliday && (
+                            <Gift className="w-4 h-4 text-red-500 dark:text-red-400" />
+                          )}
+                        </div>
+                        <time className={`text-sm whitespace-nowrap
+                          ${holiday.isHoliday 
+                            ? 'text-red-600/80 dark:text-red-400/80' 
+                            : 'text-muted-foreground'}`}>
                           {formatLocalizedDate(new Date(holiday.date), 'MMMM d, yyyy', true)}
                         </time>
                       </div>
                       {holiday.country && (
                         <div className="mt-1">
-                          <Badge variant="outline" className="text-xs">
+                          <Badge variant={holiday.isHoliday ? "destructive" : "outline"} className="text-xs">
                             {locale === 'ku'
                               ? getKurdishCountryName(holiday.country)
                               : holiday.country}
                           </Badge>
                           {holiday.region && (
-                            <Badge variant="outline" className="text-xs ml-2">
+                            <Badge variant={holiday.isHoliday ? "destructive" : "outline"} className="text-xs ml-2">
                               {holiday.region}
                             </Badge>
                           )}
                         </div>
                       )}
                       {holiday.note && getLocalizedText(holiday.note) && (
-                        <p className="mt-2 text-sm text-muted-foreground break-words">
+                        <p className={`mt-2 text-sm break-words
+                          ${holiday.isHoliday 
+                            ? 'text-red-600/80 dark:text-red-400/80' 
+                            : 'text-muted-foreground'}`}>
                           {getLocalizedText(holiday.note)}
                         </p>
                       )}
