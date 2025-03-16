@@ -153,5 +153,13 @@
       "darkmode": "Dark mode for enhanced viewing comfort"
     },
     "mission": "At DataCode, our mission is to blend cutting-edge technology with cultural authenticity. We are committed to delivering high-quality digital solutions that celebrate our heritage and empower communities. Join us on this journey as we continue to innovate, inspire, and preserve the rich legacy of Kurdish culture."
+  },
+  "countdown": {
+    "title": "Countdown to Nowruz 🌱",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "description": "Join us in celebrating the Kurdish New Year! 🎉"
   }
 } 
