@@ -1,13 +1,10 @@
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
-import Link from 'next/link';
-import CityTime from '@/components/CityTime';
 import { getKurdishDate } from '@/lib/getKurdishDate';
-import { kurdistanCities } from '@/lib/cities';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import Navigation from "../../../app/components/Navigation";
+import Navigation from "@/app/components/Navigation";
 import { Calendar } from 'lucide-react';
+import AnalogClock, { ClockSize } from '@/app/components/AnalogClock';
 
 interface Holiday {
   date: string;
@@ -37,6 +34,49 @@ interface Holiday {
 interface HolidaysData {
   holidays: Holiday[];
 }
+
+const regions = [
+  {
+    name: 'rojhalat',
+    timezone: 'Asia/Tehran',
+    title: {
+      en: 'Rojhalat',
+      ku: 'روژهالات',
+      ar: 'روژهالات',
+      fa: 'روژهالات'
+    }
+  },
+  {
+    name: 'bashur',
+    timezone: 'Asia/Baghdad',
+    title: {
+      en: 'Bashur',
+      ku: 'باشوور',
+      ar: 'باشور',
+      fa: 'باشور'
+    }
+  },
+  {
+    name: 'bakur',
+    timezone: 'Europe/Istanbul',
+    title: {
+      en: 'Bakur',
+      ku: 'باکوور',
+      ar: 'باكور',
+      fa: 'باکور'
+    }
+  },
+  {
+    name: 'rojava',
+    timezone: 'Asia/Damascus',
+    title: {
+      en: 'Rojava',
+      ku: 'روژیوا',
+      ar: 'روژیوا',
+      fa: 'روژیوا'
+    }
+  }
+];
 
 // Function to check if a date is a holiday
 async function isHoliday(date: Date): Promise<{ isHoliday: boolean; eventName?: { [key: string]: string } }> {
@@ -69,34 +109,6 @@ export default async function TimePage({
   const today = new Date();
   const holidayInfo = await isHoliday(today);
   
-  const getModernLinkText = () => {
-    switch (locale) {
-      case 'ku':
-        return 'بینینی دیزاینی نوێ';
-      case 'ar':
-        return 'عرض التصميم الحديث';
-      case 'fa':
-        return 'مشاهده طراحی مدرن';
-      default:
-        return 'View Modern Design';
-    }
-  };
-  
-  const getKurdishCitiesLinkText = () => {
-    switch (locale) {
-      case 'ku':
-        return 'شارەکانی کوردستان';
-      case 'ar':
-        return 'المدن الكردية';
-      case 'fa':
-        return 'شهرهای کردستان';
-      case 'tr':
-        return 'Kürt Şehirleri';
-      default:
-        return 'Kurdish Cities';
-    }
-  };
-  
   return (
     <main className="min-h-screen">
       <Navigation />
@@ -115,14 +127,18 @@ export default async function TimePage({
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {kurdistanCities.map((city) => (
-                <div key={city.id} className="flex flex-col space-y-4">
-                  <CityTime city={city} locale={locale} />
-                  <div className="text-xs text-muted-foreground text-center">
-                    {locale === 'ku' ? 'کاتی کوردی' : 'Kurdish Date'}:
-                    <div className={`font-medium mt-1 ${holidayInfo.isHoliday ? 'text-red-500 dark:text-red-400' : ''}`}>
-                      {city.timezone === 'Asia/Tehran' 
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {regions.map((region) => (
+                <div key={region.name} className="flex flex-col items-center space-y-4 p-6 bg-white/5 dark:bg-gray-800/5 rounded-2xl backdrop-blur-sm border border-white/10 dark:border-gray-700/10">
+                  <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 font-kurdish">
+                    {region.title[locale as keyof typeof region.title] || region.title.en}
+                  </h3>
+                  
+                  <AnalogClock timezone={region.timezone} size={'lg' as ClockSize} />
+                  
+                  <div className="text-sm text-gray-600 dark:text-gray-400 font-kurdish">
+                    <div className={`font-medium ${holidayInfo.isHoliday ? 'text-red-500 dark:text-red-400' : ''}`}>
+                      {region.timezone === 'Asia/Tehran' 
                         ? (locale === 'ku' ? getKurdishDate(new Date()).kurdishDate : getKurdishDate(new Date()).kurdishDateLatin)
                         : locale === 'ku' 
                           ? `${new Date().getDate()} ئازار ${new Date().getFullYear()}`

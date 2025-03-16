@@ -10,6 +10,22 @@ interface RegionTime {
   cities: string[];
 }
 
+// Kurdish month names for Bashur
+const bashurMonths = [
+  'کانوونی دووەم',   // January
+  'شوبات',           // February
+  'ئازار',           // March
+  'نیسان',           // April
+  'ئایار',           // May
+  'حوزەیران',        // June
+  'تەممووز',         // July
+  'ئاب',             // August
+  'ئەیلوول',         // September
+  'تشرینی یەکەم',    // October
+  'تشرینی دووەم',    // November
+  'کانوونی یەکەم'    // December
+];
+
 const regions: RegionTime[] = [
   {
     name: 'rojhalat',
@@ -79,7 +95,13 @@ export default function KurdishRegionsTime() {
         
         // Get Kurdish date
         const kurdishDate = getKurdishDate(regionDate);
-        newDates[region.name] = kurdishDate.kurdishDate;
+        if (region.name === 'bashur') {
+          // For Bashur, use Kurdish month names
+          const bashurMonth = bashurMonths[month - 1];
+          newDates[region.name] = `${day}ی ${bashurMonth}ی ${year}`;
+        } else {
+          newDates[region.name] = kurdishDate.kurdishDate;
+        }
       });
 
       setTimes(newTimes);
@@ -147,7 +169,7 @@ export default function KurdishRegionsTime() {
                   </span>
                 </div>
                 <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
-                  {t('time.hours')}
+                  کاتژمێر
                 </span>
               </div>
 
@@ -161,7 +183,7 @@ export default function KurdishRegionsTime() {
                   </span>
                 </div>
                 <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
-                  {t('time.minutes')}
+                  خولەک
                 </span>
               </div>
 
@@ -175,14 +197,14 @@ export default function KurdishRegionsTime() {
                   </span>
                 </div>
                 <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
-                  {t('time.seconds')}
+                  چرکە
                 </span>
               </div>
             </div>
 
             {/* Kurdish Date */}
             <div className="pt-6 pb-3">
-              <span className="text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 bg-black/5 dark:bg-white/5 rounded-full py-2 px-4 backdrop-blur-md font-kurdish">
+              <span className="text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 bg-black/5 dark:bg-white/5 rounded-full py-2 px-4 backdrop-blur-md font-kurdish" dir={region.name === 'bashur' ? 'rtl' : 'ltr'}>
                 {dates[region.name] || ''}
               </span>
             </div>

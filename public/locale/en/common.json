@@ -164,9 +164,9 @@
     "kurdishYear": "Kurdish Year"
   },
   "regions": {
-    "rojhalat": "Eastern Kurdistan",
-    "bashur": "Southern Kurdistan",
-    "bakur": "Northern Kurdistan",
-    "rojava": "Western Kurdistan"
+    "rojhalat": "Rojhalat",
+    "bashur": "Bashur",
+    "bakur": "Bakur",
+    "rojava": "Rojava"
   }
 } 
