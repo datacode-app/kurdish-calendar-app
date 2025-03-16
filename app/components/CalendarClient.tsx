@@ -71,6 +71,7 @@ const getFontClass = (locale: string): string => {
 
 interface Holiday {
   date: string;
+  isHoliday: boolean;
   event: {
     en: string;
     ku: string;
@@ -85,6 +86,15 @@ interface Holiday {
   };
   country?: string;
   region?: string;
+  quote?: {
+    celebrity: string;
+    quote: {
+      en: string;
+      ku: string;
+      ar: string;
+      fa: string;
+    };
+  };
 }
 
 interface CalendarProps {
@@ -251,6 +261,17 @@ export default function CalendarClient({ locale }: CalendarProps) {
     return <div className="grid grid-cols-7 border-b border-muted/30 mb-1">{days}</div>;
   }, [currentDate, locale, formatDate]);
 
+  const isHolidayDate = useCallback(
+    (date: Date) => {
+      return holidays.some(
+        (holiday) => 
+          isSameDay(new Date(holiday.date), date) && 
+          holiday.isHoliday
+      );
+    },
+    [holidays]
+  );
+
   // Memoize calendar cells rendering
   const renderedCells = useMemo(() => {
     const monthStart = startOfMonth(currentDate);
@@ -272,6 +293,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
         const isCurrentMonth = isSameMonth(day, monthStart);
         const isSelectedDay = isSameDay(day, selectedDate);
         const isTodayDay = isToday(day);
+        const isHoliday = isHolidayDate(day);
         const hasEvents = holidays.some((holiday) =>
           isSameDay(new Date(holiday.date), day)
         );
@@ -279,46 +301,38 @@ export default function CalendarClient({ locale }: CalendarProps) {
           <div
             key={day.toString()}
             className={cn(
-              "relative h-12 sm:h-16 flex items-center justify-center",
-              !isCurrentMonth && "text-muted-foreground bg-muted/20",
-              isCurrentMonth && "bg-background hover:bg-accent/20 hover:text-accent-foreground",
-              isSelectedDay && "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary",
-              isTodayDay && !isSelectedDay && "border-primary text-accent-foreground font-semibold",
-              "cursor-pointer select-none"
+              "relative p-1 text-center focus-within:z-10",
+              i === 0 ? "pl-1" : "",
+              i === days.length - 1 ? "pr-1" : ""
             )}
-            onClick={() => onDateClick(cloneDay)}
           >
-            {locale === "ku" && isCurrentMonth && (
-              <div className="absolute top-1 right-1">
-                <div
-                  className={cn(
-                    "flex items-center justify-center rounded-full w-4 h-4 text-[9px] font-bold",
-                    useRojhalatMonths
-                      ? "bg-amber-500/90 text-amber-50"
-                      : "bg-emerald-500/90 text-emerald-50"
-                  )}
-                >
-                  {useRojhalatMonths ? "ڕ" : "ب"}
-                </div>
-              </div>
-            )}
-            <span
+            <button
+              type="button"
+              onClick={() => onDateClick(cloneDay)}
               className={cn(
-                "flex items-center justify-center w-8 h-8 rounded-full",
-                isSelectedDay && "bg-primary text-primary-foreground",
-                isTodayDay && !isSelectedDay && "border border-primary"
+                "w-full h-full flex flex-col items-center justify-center rounded-lg p-2 sm:p-3",
+                "hover:bg-accent/50 focus:outline-none focus:ring-2 focus:ring-primary",
+                isSelectedDay
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "text-foreground",
+                !isCurrentMonth && "text-muted-foreground",
+                isTodayDay && !isSelectedDay && "border-2 border-primary",
+                isHoliday && !isSelectedDay && "bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-200 font-medium border border-rose-200 dark:border-rose-800/50",
+                hasEvents && !isSelectedDay && !isHoliday && "bg-accent"
               )}
             >
-              {formattedDate}
-            </span>
-            {hasEvents && (
-              <span
+              <time
+                dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
-                  "absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full",
-                  isSelectedDay ? "bg-primary-foreground" : "bg-primary"
+                  "flex items-center justify-center font-semibold text-sm sm:text-base",
+                  isSelectedDay && "text-primary-foreground"
                 )}
-              ></span>
-            )}
+              >
+                {locale === "ku"
+                  ? getKurdishDayNumber(day)
+                  : format(day, "d")}
+              </time>
+            </button>
           </div>
         );
         day = addDays(day, 1);
