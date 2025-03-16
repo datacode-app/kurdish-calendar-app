@@ -121,6 +121,16 @@ const REGIONAL_NAMES: Readonly<Record<string, LocalizedText>> = {
 
 interface CityTimeDisplayProps {
   locale: string;
+  selectedCity?: {
+    name: {
+      en: string;
+      ku: string;
+      ar: string;
+      fa: string;
+    };
+    timezone: string;
+    id: string;
+  };
 }
 
 interface TimeData {
@@ -129,7 +139,7 @@ interface TimeData {
   kurdishDate?: string;
 }
 
-export default function CityTimeDisplay({ locale }: CityTimeDisplayProps) {
+export default function CityTimeDisplay({ locale, selectedCity }: CityTimeDisplayProps) {
   const t = useTranslations();
   
   const [cityData, setCityData] = useState<Record<string, TimeData>>({});
@@ -148,10 +158,12 @@ export default function CityTimeDisplay({ locale }: CityTimeDisplayProps) {
 
   // Memoize formatters to prevent recreation
   const formatters = useMemo(() => {
-    const options = CITIES.reduce<Record<string, { 
+    const timeZones = selectedCity ? [selectedCity.timezone] : CITIES.map(city => city.timeZone);
+    
+    const options = timeZones.reduce<Record<string, { 
       timeFormatter: Intl.DateTimeFormat; 
       dateFormatter: Intl.DateTimeFormat;
-    }>>((acc, { timeZone }) => {
+    }>>((acc, timeZone) => {
       acc[timeZone] = {
         timeFormatter: new Intl.DateTimeFormat(locale, {
           hour: '2-digit',
@@ -172,7 +184,7 @@ export default function CityTimeDisplay({ locale }: CityTimeDisplayProps) {
     }, {});
     
     return options;
-  }, [locale]);
+  }, [locale, selectedCity]);
 
   const getLocalizedText = useCallback(
     (textObj: LocalizedText, isCountry = false): string => {
@@ -192,16 +204,27 @@ export default function CityTimeDisplay({ locale }: CityTimeDisplayProps) {
       setCityData(prevData => {
         const newData: Record<string, TimeData> = {};
         
-        CITIES.forEach((city) => {
-          const { timeFormatter, dateFormatter } = formatters[city.timeZone];
-          const isRojhalat = city.country.en === 'Iran';
+        if (selectedCity) {
+          const { timeFormatter, dateFormatter } = formatters[selectedCity.timezone];
+          const isRojhalat = selectedCity.timezone === 'Asia/Tehran';
           
-          newData[city.timeZone] = {
+          newData[selectedCity.timezone] = {
             time: timeFormatter.format(now),
             date: dateFormatter.format(now),
             kurdishDate: locale === 'ku' ? formatKurdishDate(now, isRojhalat) : undefined
           };
-        });
+        } else {
+          CITIES.forEach((city) => {
+            const { timeFormatter, dateFormatter } = formatters[city.timeZone];
+            const isRojhalat = city.country.en === 'Iran';
+            
+            newData[city.timeZone] = {
+              time: timeFormatter.format(now),
+              date: dateFormatter.format(now),
+              kurdishDate: locale === 'ku' ? formatKurdishDate(now, isRojhalat) : undefined
+            };
+          });
+        }
         
         return newData;
       });
@@ -210,7 +233,7 @@ export default function CityTimeDisplay({ locale }: CityTimeDisplayProps) {
     updateTimes();
     const interval = setInterval(updateTimes, 1000);
     return () => clearInterval(interval);
-  }, [formatters, formatKurdishDate, locale]);
+  }, [formatters, formatKurdishDate, locale, selectedCity]);
 
   const CityCard = useCallback(({ city, index }: { city: CityTime; index: number }) => {
     const data = cityData[city.timeZone] || { time: '--:--:--', date: '---' };
@@ -236,6 +259,22 @@ export default function CityTimeDisplay({ locale }: CityTimeDisplayProps) {
       </div>
     );
   }, [cityData, getLocalizedText, formatKurdishDate]);
+
+  if (selectedCity) {
+    const data = cityData[selectedCity.timezone] || { time: '--:--:--', date: '---' };
+    const isRojhalat = selectedCity.timezone === 'Asia/Tehran';
+    
+    return (
+      <div className="border rounded-lg p-4 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+        <div className="text-2xl font-bold my-4 font-mono">
+          {data.time}
+        </div>
+        <div className="text-xs text-muted-foreground mt-1">
+          {formatKurdishDate(new Date(), isRojhalat)}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Card className="w-full">
