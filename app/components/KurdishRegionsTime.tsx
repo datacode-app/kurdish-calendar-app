@@ -158,53 +158,53 @@ export default function KurdishRegionsTime() {
           <div className="relative text-center space-y-6">
             {/* Digital Clock Display */}
             <div 
-              className="flex justify-center items-center space-x-2 rtl:space-x-reverse font-mono" 
+              className="flex justify-center items-center space-x-1.5 rtl:space-x-reverse font-mono" 
               dir="ltr"
             >
               {/* Hours */}
               <div className="relative">
-                <div className="bg-black/5 dark:bg-white/5 rounded-xl px-3 py-2 min-w-[4.5rem] flex justify-center backdrop-blur-md">
-                  <span className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">
+                <div className="bg-black/5 dark:bg-white/5 rounded-lg px-2 py-1.5 min-w-[3.5rem] flex justify-center backdrop-blur-md">
+                  <span className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">
                     {String(times[region.name]?.split(':')[0] || '--').padStart(2, '0')}
                   </span>
                 </div>
-                <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
+                <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
                   کاتژمێر
                 </span>
               </div>
 
-              <span className="text-3xl font-bold text-gray-400 dark:text-gray-500 animate-pulse mx-1">:</span>
+              <span className="text-2xl font-bold text-gray-400 dark:text-gray-500 animate-pulse mx-0.5">:</span>
 
               {/* Minutes */}
               <div className="relative">
-                <div className="bg-black/5 dark:bg-white/5 rounded-xl px-3 py-2 min-w-[4.5rem] flex justify-center backdrop-blur-md">
-                  <span className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">
+                <div className="bg-black/5 dark:bg-white/5 rounded-lg px-2 py-1.5 min-w-[3.5rem] flex justify-center backdrop-blur-md">
+                  <span className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">
                     {String(times[region.name]?.split(':')[1] || '--').padStart(2, '0')}
                   </span>
                 </div>
-                <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
+                <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
                   خولەک
                 </span>
               </div>
 
-              <span className="text-3xl font-bold text-gray-400 dark:text-gray-500 animate-pulse mx-1">:</span>
+              <span className="text-2xl font-bold text-gray-400 dark:text-gray-500 animate-pulse mx-0.5">:</span>
 
               {/* Seconds */}
               <div className="relative">
-                <div className="bg-black/5 dark:bg-white/5 rounded-xl px-3 py-2 min-w-[4.5rem] flex justify-center backdrop-blur-md">
-                  <span className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">
+                <div className="bg-black/5 dark:bg-white/5 rounded-lg px-2 py-1.5 min-w-[3.5rem] flex justify-center backdrop-blur-md">
+                  <span className="text-2xl md:text-3xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">
                     {String(times[region.name]?.split(':')[2] || '00').padStart(2, '0')}
                   </span>
                 </div>
-                <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
+                <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[10px] font-medium text-gray-500 dark:text-gray-400 font-kurdish">
                   چرکە
                 </span>
               </div>
             </div>
 
             {/* Kurdish Date */}
-            <div className="pt-6 pb-3">
-              <span className="text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 bg-black/5 dark:bg-white/5 rounded-full py-2 px-4 backdrop-blur-md font-kurdish" dir={region.name === 'bashur' ? 'rtl' : 'ltr'}>
+            <div className="pt-4 pb-2">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-black/5 dark:bg-white/5 rounded-full py-1.5 px-3 backdrop-blur-md font-kurdish" dir={region.name === 'bashur' ? 'rtl' : 'ltr'}>
                 {dates[region.name] || ''}
               </span>
             </div>
