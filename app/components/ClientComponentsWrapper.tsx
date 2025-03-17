@@ -16,7 +16,7 @@ export default function ClientComponentsWrapper({ locale }: { locale: string }) 
         <MultiCalendarDisplay locale={locale} />
       </section>
       <section className="py-4">
-          <KurdishRegionsTime />
+          <KurdishRegionsTime locale={locale} />
         </section>
       {/* <div className="mx-auto">
         <CityTimeDisplay locale={locale} />

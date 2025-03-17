@@ -939,9 +939,9 @@
       "isHoliday": false,
       "event": {
         "en": "Feast of Qawltas",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "جشن قاولطاس",
+        "ar": "عيد قاولطاس",
+        "fa": "جشن قاولتاس"
       },
       "note": {
         "en": "",
@@ -964,9 +964,9 @@
       "isHoliday": false,
       "event": {
         "en": "Establishment of Republic of Mahabad Day",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "ڕۆژی دامەزراندنی کۆماری مەهاباد",
+        "ar": "يوم تأسيس جمهورية مهاباد",
+        "fa": "روز تأسیس جمهوری مهاباد"
       },
       "note": {
         "en": "",
@@ -989,9 +989,9 @@
       "isHoliday": false,
       "event": {
         "en": "Erbil Deadly Twin Terrorist attacks",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "دو هێرشی ترۆریستی مرگبار لە هەولێر",
+        "ar": "هجمات إرهابية مزدوجة قاتلة في أربيل",
+        "fa": "حملات تروریستی دوگانه مرگبار در اربیل"
       },
       "note": {
         "en": "",
@@ -1014,9 +1014,9 @@
       "isHoliday": false,
       "event": {
         "en": "Turkmen's Journalism Day",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "ڕۆژی ڕۆژنامەوانیی تورکمن",
+        "ar": "يوم الصحافة التركمانية",
+        "fa": "روز روزنامه‌نگاری ترکمن"
       },
       "note": {
         "en": "",
@@ -1038,10 +1038,10 @@
       "date": "2025-03-01",
       "isHoliday": false,
       "event": {
-        "en": "Commemoration of Mustafa Barzani's Death",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "en": "Commemoration of Mustafa Barzani's Passing",
+        "ku": "بەیادگێڕانی ڕەحلتی مستەفا بارزانی",
+        "ar": "إحياء ذكرى رحيل مصطفى بارزاني",
+        "fa": "یادبود رحلت مصطفی بارزانی"
       },
       "note": {
         "en": "",
@@ -1064,9 +1064,9 @@
       "isHoliday": false,
       "event": {
         "en": "Liberation of Slemani City",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "ڕزگرتنی شاری سلێمانی",
+        "ar": "تحرير مدينة السليمانية",
+        "fa": "رهایی شهر سلیمانی"
       },
       "note": {
         "en": "",
@@ -1089,9 +1089,9 @@
       "isHoliday": false,
       "event": {
         "en": "Women's Day",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "ڕۆژی ژنان",
+        "ar": "يوم المرأة",
+        "fa": "روز زنان"
       },
       "note": {
         "en": "",
@@ -1114,9 +1114,9 @@
       "isHoliday": false,
       "event": {
         "en": "Commemoration of Anfal Genocide against the Garmians' (Chamchamal and Kalar)",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "بەیادگێڕانی جەنوای ئەنفال بەسەر گەرمیان (چەمچەماڵ و کەلار)",
+        "ar": "إحياء ذكرى إبادة أنفال ضد الجرميانيين (شمشمال وكالار)",
+        "fa": "یادبود نسل‌کشی آنفال علیه گرمیان (چمچمال و کالار)"
       },
       "note": {
         "en": "",
@@ -1139,9 +1139,9 @@
       "isHoliday": false,
       "event": {
         "en": "Commemoration of Bombardment of Qaladze",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "بەیادگێڕانی قصفی قەلادزە",
+        "ar": "إحياء ذكرى قصف قلدزة",
+        "fa": "یادبود قصف قلادزه"
       },
       "note": {
         "en": "",
@@ -1164,9 +1164,9 @@
       "isHoliday": false,
       "event": {
         "en": "Commemoration of Assyrian Martyrs",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "بەیادگێڕانی شەهیدانی ئەسوری",
+        "ar": "إحياء ذكرى شهداء الآشوريين",
+        "fa": "یادبود شهیدان آشوری"
       },
       "note": {
         "en": "",
@@ -1189,9 +1189,9 @@
       "isHoliday": false,
       "event": {
         "en": "Commemoration of Anfal Genocide against the Badinans'",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "بەیادگێڕانی جەنوای ئەنفال بەسەر بادینان",
+        "ar": "إحياء ذكرى إبادة أنفال ضد البادينانيين",
+        "fa": "یادبود نسل‌کشی آنفال علیه بادینان"
       },
       "note": {
         "en": "",
@@ -1214,9 +1214,9 @@
       "isHoliday": false,
       "event": {
         "en": "Turkmen's Culture and Language Day",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "ڕۆژی کلتوری و زمانی تورکمن",
+        "ar": "يوم الثقافة واللغة التركمانية",
+        "fa": "روز فرهنگ و زبان ترکمن"
       },
       "note": {
         "en": "",
@@ -1239,9 +1239,9 @@
       "isHoliday": false,
       "event": {
         "en": "Kurdistan Flag Day",
-        "ku": "",
-        "ar": "",
-        "fa": ""
+        "ku": "ڕۆژی ئاڵای کوردستان",
+        "ar": "يوم علم كردستان",
+        "fa": "روز پرچم کوردستان"
       },
       "note": {
         "en": "",

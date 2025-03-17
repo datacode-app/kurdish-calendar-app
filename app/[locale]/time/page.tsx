@@ -141,7 +141,7 @@ export default async function TimePage({
                       {region.timezone === 'Asia/Tehran' 
                         ? (locale === 'ku' ? getKurdishDate(new Date()).kurdishDate : getKurdishDate(new Date()).kurdishDateLatin)
                         : locale === 'ku' 
-                          ? `${new Date().getDate()} ئازار ${new Date().getFullYear()}`
+                          ? `${new Date().getDate()}ی ئازاری ${new Date().getFullYear()}`
                           : `${new Date().getDate()} Azar ${new Date().getFullYear()}`
                       }
                     </div>
