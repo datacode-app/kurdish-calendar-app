@@ -67,22 +67,27 @@
     ]
   },
   "events": {
-    "monthEvents": "المناسبات الشهرية",
-    "todayEvents": "المناسبات اليومية",
+    "monthEvents": "مناسبات الشهر",
+    "todayEvents": "مناسبات اليوم",
     "title": "المناسبات",
     "noEvents": "لا توجد مناسبات لهذا اليوم",
-    "eventsThisMonth": "المناسبات الشهرية",
-    "eventsThisWeek": "المناسبات الأسبوعية",
-    "eventsThisYear": "المناسبات السنوية",
-    "eventsNextYear": "المناسبات المقبلة لهذا السنة",
-    "eventsNextMonth": "المناسبات المقبلة لهذا الشهر",
-    "eventsNextWeek": "المناسبات المقبلة لهذا الأسبوع",
-    "eventsOfTheDay": "المناسبات اليومية",
+    "noEventsTitle": "لا توجد مناسبات",
+    "noEventsDesc": "لم يتم العثور على مناسبات لهذه الفترة",
     "holiday": "عطلة",
     "note": "ملاحظة",
     "more": "المزيد",
+    "eventsThisMonth": "مناسبات هذا الشهر",
+    "eventsThisWeek": "مناسبات هذا الأسبوع",
+    "eventsThisYear": "مناسبات هذا العام",
+    "eventsNextYear": "مناسبات العام القادم",
+    "eventsNextMonth": "مناسبات الشهر القادم",
+    "eventsNextWeek": "مناسبات الأسبوع القادم",
+    "eventsOfTheDay": "مناسبات اليوم",
+    "eventsToday": "مناسبات اليوم",
+    "foundEvents": "تم العثور على {count} مناسبة",
+    "foundEventsMonth": "{count} مناسبة في هذا الشهر",
     "events": {
-      "title": "الأحداث الكردية"
+      "title": "المناسبات الكردية"
     }
   },
   "time": {

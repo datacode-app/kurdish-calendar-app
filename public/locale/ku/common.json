@@ -71,6 +71,8 @@
     "todayEvents": "بۆنەکانی ڕۆژ",
     "title": "بۆنەکان",
     "noEvents": "هیچ بۆنەیەک نییە بۆ ئەم ڕۆژە",
+    "noEventsTitle": "هیچ بۆنەیەک نییە",
+    "noEventsDesc": "هیچ بۆنەیەک نەدۆزرایەوە بۆ ئەم کاتە",
     "holiday": "پشوو",
     "note": "تێبینی",
     "more": "زیاتر",
@@ -82,6 +84,8 @@
     "eventsNextWeek": "بۆنەکانی هەفتەی پێشەوە",
     "eventsOfTheDay": "بۆنەکانی ڕۆژ",
     "eventsToday": "بۆنەکانی ڕۆژ",
+    "foundEvents": "{count} بۆنە دۆزرایەوە",
+    "foundEventsMonth": "{count} بۆنە لەم مانگەدا",
     "events": {
       "title": "ڕووداوە کوردییەکان"
     }
