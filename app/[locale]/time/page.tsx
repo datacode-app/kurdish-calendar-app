@@ -41,9 +41,9 @@ const regions = [
     timezone: 'Asia/Tehran',
     title: {
       en: 'Rojhalat',
-      ku: 'روژهالات',
-      ar: 'روژهالات',
-      fa: 'روژهالات'
+      ku: 'ڕۆژهەڵات',
+      ar: 'ڕۆژهەڵات',
+      fa: 'ڕۆژهەڵات'
     }
   },
   {
@@ -71,9 +71,9 @@ const regions = [
     timezone: 'Asia/Damascus',
     title: {
       en: 'Rojava',
-      ku: 'روژیوا',
-      ar: 'روژیوا',
-      fa: 'روژیوا'
+      ku: 'ڕۆژئاوا',
+      ar: 'ڕۆژئاوا',
+      fa: 'ڕۆژئاوا'
     }
   }
 ];
