@@ -136,7 +136,7 @@ export function getKurdishDate(date: Date = new Date()): KurdishDateResult {
   // Construct and return the result object with all date components
   return {
     gregorianDate,
-    kurdishDate: `${day} ${kurdishMonths[monthIndex]} ${kurdishYear}`,
+    kurdishDate: `${day}ی ${kurdishMonths[monthIndex]}ی ${kurdishYear}`,
     kurdishDateLatin: `${day} ${kurdishMonthsLatin[monthIndex]} ${kurdishYear}`,
     kurdishYear,
     kurdishMonth: kurdishMonths[monthIndex],

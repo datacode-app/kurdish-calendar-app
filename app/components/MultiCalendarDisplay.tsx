@@ -7,7 +7,7 @@ import moment from "moment-jalaali";
 import "moment-hijri";
 import { getKurdishDate } from "@/lib/getKurdishDate";
 import { Sun, MapPin } from "lucide-react";
-import { getFontClass } from "@/lib/utils";
+import { formatBashurDate, formatHijriDate, formatKurdishDate, formatPersianDate, formatRojhalatDate, getFontClass } from "@/lib/utils";
 
 // Utility: Get English month name (moved outside component)
 function getEnglishMonthName(month: number): string {
@@ -177,11 +177,14 @@ export default function MultiCalendarDisplay({
                 {t("calendar.multiCalendar.kurdishRojhalat")}
               </h3>
               <p className="font-medium mt-1 text-amber-900">
-                {kurdishDate.kurdishDay}{" "}
+                {/* {kurdishDate.kurdishDay}{" "}
                 {locale === "en"
                   ? kurdishDate.kurdishMonthLatin
                   : kurdishDate.kurdishMonth}{" "}
-                {kurdishDate.kurdishYear}
+                {kurdishDate.kurdishYear} */}
+                {
+                  formatRojhalatDate(currentDate, locale).formatted
+                }
               </p>
             </div>
           </div>
@@ -195,10 +198,13 @@ export default function MultiCalendarDisplay({
                 {t("calendar.multiCalendar.kurdishBashur")}
               </h3>
               <p className="font-medium mt-1 text-emerald-900">
-                {locale === "en"
+                {
+                  formatBashurDate(currentDate, locale).formatted
+                }
+                {/* {locale === "en"
                   ? KurdishMonthBashurLatin[gregorianDate.month]
                   : KurdishMonthBashur[gregorianDate.month]}{" "}
-                {gregorianDate.day} {gregorianDate.year}
+                {gregorianDate.day} {gregorianDate.year} */}
               </p>
             </div>
           </div>
@@ -221,8 +227,11 @@ export default function MultiCalendarDisplay({
               {t("calendar.multiCalendar.jalali")}
             </h3>
             <p>
-              {jalaliDate.jd} {t(`calendar.jalaliMonths.${jalaliDate.jm - 1}`)}{" "}
-              {jalaliDate.jy}
+              {
+                formatPersianDate(currentDate, locale).formatted
+              }
+                {/* {jalaliDate.jd} {t(`calendar.jalaliMonths.${jalaliDate.jm - 1}`)}{" "}
+                {jalaliDate.jy} */}
             </p>
           </div>
           {/* Hijri (Islamic/Lunar) Calendar */}
@@ -231,8 +240,11 @@ export default function MultiCalendarDisplay({
               {t("calendar.multiCalendar.hijri")}
             </h3>
             <p>
-              {hijriDate.day} {t(`calendar.hijriMonths.${hijriDate.month}`)}{" "}
-              {hijriDate.year}
+              {
+                formatHijriDate(currentDate, locale).formatted
+              }
+              {/* {hijriDate.day} {t(`calendar.hijriMonths.${hijriDate.month}`)}{" "}
+              {hijriDate.year} */}
             </p>
           </div>
         </div>

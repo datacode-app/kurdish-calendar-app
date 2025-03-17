@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
 import { getKurdishDate } from '@/lib/getKurdishDate';
+import { formatBashurDate, formatRojhalatDate } from '@/lib/utils';
 
 interface RegionTime {
   name: string;
@@ -48,8 +49,11 @@ const regions: RegionTime[] = [
     cities: ['Qamişlo', 'Kobanî', 'Efrîn']
   }
 ];
+interface KurdishRegionsTimeProps {
+  locale: string;
+}
 
-export default function KurdishRegionsTime() {
+export default function KurdishRegionsTime({ locale }: KurdishRegionsTimeProps) {
   const t = useTranslations();
   const [times, setTimes] = useState<{ [key: string]: string }>({});
   const [dates, setDates] = useState<{ [key: string]: string }>({});
@@ -204,8 +208,11 @@ export default function KurdishRegionsTime() {
 
             {/* Kurdish Date */}
             <div className="pt-4 pb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-black/5 dark:bg-white/5 rounded-full py-1.5 px-3 backdrop-blur-md font-kurdish" dir={region.name === 'bashur' ? 'rtl' : 'ltr'}>
-                {dates[region.name] || ''}
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-black/5 dark:bg-white/5 rounded-full py-1.5 px-3 backdrop-blur-md font-kurdish" >
+              {
+                region.name === "bashur" ? formatBashurDate(new Date(), locale).formatted : formatRojhalatDate(new Date(), locale).formatted || ''
+              }
+             
               </span>
             </div>
 
