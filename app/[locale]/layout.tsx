@@ -8,6 +8,7 @@ import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getFontClass } from "@/lib/utils";
 import ClientProviders from "../components/ClientProviders";
+import Footer from "../components/Footer";
 import { cn } from "@/lib/utils";
 
 // Configure Noto Kufi Arabic font
@@ -200,7 +201,10 @@ export default async function RootLayout({
         >
           <ClientProviders />
           <NextIntlClientProvider locale={locale} messages={messages}>
-            {children}
+            <div className="relative flex min-h-screen flex-col">
+              <div className="flex-1">{children}</div>
+              <Footer />
+            </div>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
