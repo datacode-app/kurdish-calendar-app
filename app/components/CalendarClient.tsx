@@ -376,11 +376,11 @@ export default function CalendarClient({ locale }: CalendarProps) {
                     <Info className="h-3 w-3" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="max-w-[250px] text-center">
+                {/* <TooltipContent side="top" className="max-w-[250px] text-center">
                   {useRojhalatMonths
                     ? "ساڵنامەی کوردی ڕۆژهەڵات وەک ساڵنامەی فارسی/هەتاوی دەژمێردرێت"
                     : "ساڵنامەی کوردی باشوور وەک ساڵنامەی زایینی دەژمێردرێت"}
-                </TooltipContent>
+                </TooltipContent> */}
               </Tooltip>
             </TooltipProvider>
           )}
