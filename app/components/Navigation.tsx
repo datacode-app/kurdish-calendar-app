@@ -41,30 +41,47 @@ export default function Navigation() {
     window.location.href = newPath;
   };
 
-  // Function to get the path without the locale prefix
-  const getPathWithoutLocale = () => {
-    const segments = pathname.split('/');
-    if (segments.length <= 2) return '/';
-    
-    // Check if the second segment is a locale
-    const possibleLocale = segments[1];
-    if (locales.includes(possibleLocale as Locale)) {
-      return '/' + segments.slice(2).join('/');
-    }
-    return pathname;
+  // Add this debug function to help us see what's happening
+  const debugPath = (path: string) => {
+    console.log({
+      pathname,
+      locale,
+      path,
+      segments: pathname.split('/'),
+      currentPath: getPathWithoutLocale(),
+    });
   };
 
-  // Function to determine if a link is active
+  // Updated getPathWithoutLocale function
+  const getPathWithoutLocale = () => {
+    // Remove any trailing slashes
+    const cleanPath = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+    const segments = cleanPath.split('/').filter(Boolean);
+    
+    // If we're at the root or only have locale
+    if (segments.length === 0 || (segments.length === 1 && segments[0] === locale)) {
+      return '/';
+    }
+    
+    // Remove the locale segment if it exists
+    if (segments[0] === locale) {
+      return '/' + segments.slice(1).join('/');
+    }
+    
+    return '/' + segments.join('/');
+  };
+
+  // Updated isActive function
   const isActive = (path: string) => {
     const currentPath = getPathWithoutLocale();
     
-    // For home page
-    if (path === '') {
-      return currentPath === '/';
-    }
+    // Normalize the path we're checking
+    const normalizedPath = path === '' ? '/' : (path.startsWith('/') ? path : `/${path}`);
     
-    // For other pages, normalize paths for comparison
-    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    // For debugging
+    // debugPath(normalizedPath);
+    
+    // Direct comparison after normalization
     return currentPath === normalizedPath;
   };
 
