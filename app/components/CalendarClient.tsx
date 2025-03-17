@@ -199,18 +199,18 @@ export default function CalendarClient({ locale }: CalendarProps) {
         const specificKurdishDate = getKurdishDate(date);
         if (formatStr === "MMMM yyyy") {
           return useRojhalatMonths
-            ? `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishYear}`
-            : `${KurdishMonthBashur[date.getMonth()]} ${date.getFullYear()}`;
+            ? `${specificKurdishDate.kurdishMonth}ی ${specificKurdishDate.kurdishYear}`
+            : `${KurdishMonthBashur[date.getMonth()]}ی ${date.getFullYear()}`;
         }
         if (formatStr === "MMMM d, yyyy") {
           return useRojhalatMonths
-            ? `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishDay}, ${specificKurdishDate.kurdishYear}`
-            : `${KurdishMonthBashur[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+            ? `${specificKurdishDate.kurdishDay}ی ${specificKurdishDate.kurdishMonth}ی ${specificKurdishDate.kurdishYear}`
+            : `${date.getDate()}ی ${KurdishMonthBashur[date.getMonth()]}ی ${date.getFullYear()}`;
         }
         if (formatStr === "MMM d") {
           return useRojhalatMonths
-            ? `${specificKurdishDate.kurdishMonth} ${specificKurdishDate.kurdishDay}`
-            : `${KurdishMonthBashur[date.getMonth()]} ${date.getDate()}`;
+            ? `${specificKurdishDate.kurdishDay}ی ${specificKurdishDate.kurdishMonth}`
+            : `${date.getDate()}ی ${KurdishMonthBashur[date.getMonth()]}`;
         }
       }
       const formatted = format(date, formatStr);
