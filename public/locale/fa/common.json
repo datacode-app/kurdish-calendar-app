@@ -74,21 +74,25 @@
     ]
   },
   "events": {
-    "monthEvents": "رویدادها ماه",
-    "todayEvents": "رویدادها روز",
+    "monthEvents": "رویدادهای ماه",
+    "todayEvents": "رویدادهای امروز",
     "title": "رویدادها",
-    "noEvents": "هیچ رویدادی برای امروز وجود ندارد",
+    "noEvents": "رویدادی برای امروز وجود ندارد",
+    "noEventsTitle": "رویدادی یافت نشد",
+    "noEventsDesc": "رویدادی برای این دوره یافت نشد",
     "holiday": "تعطیلی",
     "note": "یادداشت",
     "more": "بیشتر",
-    "eventsOfTheDay": "رویدادهای روز",
     "eventsThisMonth": "رویدادهای این ماه",
     "eventsThisWeek": "رویدادهای این هفته",
     "eventsThisYear": "رویدادهای این سال",
     "eventsNextYear": "رویدادهای سال آینده",
     "eventsNextMonth": "رویدادهای ماه آینده",
     "eventsNextWeek": "رویدادهای هفته آینده",
-    
+    "eventsOfTheDay": "رویدادهای روز",
+    "eventsToday": "رویدادهای امروز",
+    "foundEvents": "{count} رویداد یافت شد",
+    "foundEventsMonth": "{count} رویداد در این ماه",
     "events": {
       "title": "رویدادهای کردی"
     }

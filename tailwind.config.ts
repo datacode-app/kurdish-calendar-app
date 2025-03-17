@@ -1,10 +1,13 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  darkMode: ["class"],
+import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
+
+const config: Config = {
+  darkMode: "class",
   content: [
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './lib/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
   ],
   theme: {
     container: {
@@ -16,10 +19,12 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-geist-sans)', 'Arial', 'Helvetica', 'sans-serif'],
-        mono: ['var(--font-geist-mono)', 'monospace'],
-        notoKufi: ['Noto Kufi Arabic', 'Arial', 'Helvetica', 'sans-serif'],
-        vazirmatn: ['Vazirmatn', 'Arial', 'Helvetica', 'sans-serif'],
+        sans: ['var(--font-geist-sans)', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+        mono: ['var(--font-geist-mono)', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+        notoKufi: ['var(--font-noto-kufi)', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        notoSans: ['var(--font-noto-sans)', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        vazirmatn: ['Vazirmatn', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        kurdish: ['Noto Kufi Arabic', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "var(--border)",
@@ -63,5 +68,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-} 
+  plugins: [animate],
+};
+
+export default config;
