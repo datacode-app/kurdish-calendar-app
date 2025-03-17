@@ -1,26 +1,32 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
+import { Noto_Kufi_Arabic, Noto_Sans_Arabic } from 'next/font/google';
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getFontClass } from "@/lib/utils";
 import ClientProviders from "../components/ClientProviders";
+import Footer from "../components/Footer";
+import { cn } from "@/lib/utils";
 
-// Configure fonts
-const geistSans = Geist({
-  weight: "variable",
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-  display: "swap",
-  preload: true,
+// Configure Noto Kufi Arabic font
+const notoKufi = Noto_Kufi_Arabic({
+  subsets: ['arabic'],
+  variable: '--font-noto-kufi',
+  display: 'swap',
+  adjustFontFallback: false,
+  weight: ['400', '500', '700']
 });
-const geistMono = Geist_Mono({
-  weight: "variable",
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-  preload: true,
+
+// Configure Noto Sans Arabic font
+const notoSans = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  variable: '--font-noto-sans',
+  display: 'swap',
+  adjustFontFallback: false,
+  weight: ['400', '500', '700']
 });
 
 // Static configuration values
@@ -150,9 +156,9 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params:Promise <{ locale: string }>;
+  params: Promise<{ locale: string }>;
 }) {
-  const { locale='ku' } = await params;
+  const { locale = 'ku' } = await params;
   const messages = await getMessages({ locale });
 
   return (
@@ -160,6 +166,14 @@ export default async function RootLayout({
       lang={locale}
       dir={["ar", "ku", "fa"].includes(locale) ? "rtl" : "ltr"}
       suppressHydrationWarning
+      className={cn(
+        'dark',
+        GeistSans.variable,
+        GeistMono.variable,
+        notoKufi.variable,
+        notoSans.variable,
+        locale === 'ku' || locale === 'ar' || locale === 'fa' ? notoKufi.className : notoSans.className
+      )}
     >
       <head>
         <meta
@@ -174,19 +188,23 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${getFontClass(
-          locale
-        )} antialiased`}
+        className={cn(
+          'min-h-screen bg-background font-sans antialiased',
+          locale === 'ku' || locale === 'ar' || locale === 'fa' ? 'font-notoKufi' : 'font-notoSans'
+        )}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+          defaultTheme="dark"
+          enableSystem={false}
+          storageKey="theme"
         >
           <ClientProviders />
           <NextIntlClientProvider locale={locale} messages={messages}>
-            {children}
+            <div className="relative flex min-h-screen flex-col">
+              <div className="flex-1">{children}</div>
+              <Footer />
+            </div>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

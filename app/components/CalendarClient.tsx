@@ -24,6 +24,9 @@ import {
   MapPin,
   Info,
   Clock,
+  Gift,
+  Star,
+  CalendarDays,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -71,6 +74,7 @@ const getFontClass = (locale: string): string => {
 
 interface Holiday {
   date: string;
+  isHoliday: boolean;
   event: {
     en: string;
     ku: string;
@@ -85,6 +89,15 @@ interface Holiday {
   };
   country?: string;
   region?: string;
+  quote?: {
+    celebrity: string;
+    quote: {
+      en: string;
+      ku: string;
+      ar: string;
+      fa: string;
+    };
+  };
 }
 
 interface CalendarProps {
@@ -102,6 +115,9 @@ export default function CalendarClient({ locale }: CalendarProps) {
   // Toggle for Kurdish calendar style (default Bashur)
   const [useRojhalatMonths, setUseRojhalatMonths] = useState(false);
 
+  // Add new state for month events sheet
+  const [showMonthEventsSheet, setShowMonthEventsSheet] = useState(false);
+
   // Memoize the Kurdish date for the currentDate when locale is Kurdish
   const kurdishDate = useMemo(() => {
     return locale === "ku" ? getKurdishDate(currentDate) : null;
@@ -109,7 +125,8 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
   // Fetch holidays only once on mount
   useEffect(() => {
-    fetch("/data/holidays.json")
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    fetch(`${baseUrl}/data/holidays.json`)
       .then((response) => response.json())
       .then((data) => {
         const holidaysArray = Array.isArray(data) ? data : data.holidays || [];
@@ -251,6 +268,17 @@ export default function CalendarClient({ locale }: CalendarProps) {
     return <div className="grid grid-cols-7 border-b border-muted/30 mb-1">{days}</div>;
   }, [currentDate, locale, formatDate]);
 
+  const isHolidayDate = useCallback(
+    (date: Date) => {
+      return holidays.some(
+        (holiday) => 
+          isSameDay(new Date(holiday.date), date) && 
+          holiday.isHoliday
+      );
+    },
+    [holidays]
+  );
+
   // Memoize calendar cells rendering
   const renderedCells = useMemo(() => {
     const monthStart = startOfMonth(currentDate);
@@ -272,6 +300,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
         const isCurrentMonth = isSameMonth(day, monthStart);
         const isSelectedDay = isSameDay(day, selectedDate);
         const isTodayDay = isToday(day);
+        const isHoliday = isHolidayDate(day);
         const hasEvents = holidays.some((holiday) =>
           isSameDay(new Date(holiday.date), day)
         );
@@ -279,46 +308,38 @@ export default function CalendarClient({ locale }: CalendarProps) {
           <div
             key={day.toString()}
             className={cn(
-              "relative h-12 sm:h-16 flex items-center justify-center",
-              !isCurrentMonth && "text-muted-foreground bg-muted/20",
-              isCurrentMonth && "bg-background hover:bg-accent/20 hover:text-accent-foreground",
-              isSelectedDay && "bg-primary/10 text-primary hover:bg-primary/20 hover:text-primary",
-              isTodayDay && !isSelectedDay && "border-primary text-accent-foreground font-semibold",
-              "cursor-pointer select-none"
+              "relative p-1 text-center focus-within:z-10",
+              i === 0 ? "pl-1" : "",
+              i === days.length - 1 ? "pr-1" : ""
             )}
-            onClick={() => onDateClick(cloneDay)}
           >
-            {locale === "ku" && isCurrentMonth && (
-              <div className="absolute top-1 right-1">
-                <div
-                  className={cn(
-                    "flex items-center justify-center rounded-full w-4 h-4 text-[9px] font-bold",
-                    useRojhalatMonths
-                      ? "bg-amber-500/90 text-amber-50"
-                      : "bg-emerald-500/90 text-emerald-50"
-                  )}
-                >
-                  {useRojhalatMonths ? "ڕ" : "ب"}
-                </div>
-              </div>
-            )}
-            <span
+            <button
+              type="button"
+              onClick={() => onDateClick(cloneDay)}
               className={cn(
-                "flex items-center justify-center w-8 h-8 rounded-full",
-                isSelectedDay && "bg-primary text-primary-foreground",
-                isTodayDay && !isSelectedDay && "border border-primary"
+                "w-full h-full flex flex-col items-center justify-center rounded-lg p-2 sm:p-3",
+                "hover:bg-accent/50 focus:outline-none focus:ring-2 focus:ring-primary",
+                isSelectedDay
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : "text-foreground",
+                !isCurrentMonth && "text-muted-foreground",
+                isTodayDay && !isSelectedDay && "border-2 border-primary",
+                isHoliday && !isSelectedDay && "bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-200 font-medium border border-rose-200 dark:border-rose-800/50",
+                hasEvents && !isSelectedDay && !isHoliday && "bg-accent"
               )}
             >
-              {formattedDate}
-            </span>
-            {hasEvents && (
-              <span
+              <time
+                dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
-                  "absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full",
-                  isSelectedDay ? "bg-primary-foreground" : "bg-primary"
+                  "flex items-center justify-center font-semibold text-sm sm:text-base",
+                  isSelectedDay && "text-primary-foreground"
                 )}
-              ></span>
-            )}
+              >
+                {locale === "ku"
+                  ? getKurdishDayNumber(day)
+                  : format(day, "d")}
+              </time>
+            </button>
           </div>
         );
         day = addDays(day, 1);
@@ -567,27 +588,309 @@ export default function CalendarClient({ locale }: CalendarProps) {
           {renderedCells}
         </CardContent>
       </Card>
-      {/* Mobile View */}
-      <div className="block md:hidden mt-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{t("events.eventsOfTheDay")}</h2>
-          {locale === "ku" && (
-            <div
-              className={cn(
-                "inline-flex items-center text-xs font-medium rounded-full px-2 py-0.5",
-                useRojhalatMonths
-                  ? "bg-amber-100 text-amber-800 border border-amber-200"
-                  : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+      {/* Sheet for Selected Day Events */}
+      <Sheet open={showEventSheet} onOpenChange={setShowEventSheet}>
+        <SheetContent side="bottom" className="h-[85vh] rounded-t-3xl px-0">
+          <div className="px-6">
+            <SheetHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={cn(
+                    "w-12 h-12 rounded-2xl flex items-center justify-center",
+                    selectedDateEvents.some(e => e.isHoliday)
+                      ? "bg-rose-100 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300"
+                      : "bg-primary/10 text-primary"
+                  )}>
+                    {selectedDateEvents.some(e => e.isHoliday) ? (
+                      <Gift className="h-6 w-6" />
+                    ) : (
+                      <CalendarDays className="h-6 w-6" />
+                    )}
+                  </div>
+                  <div>
+                    <SheetTitle className="text-2xl">
+                      {locale === "ku"
+                        ? useRojhalatMonths
+                          ? `${getKurdishDate(selectedDate).kurdishDay}ی ${getKurdishDate(selectedDate).kurdishMonth}`
+                          : `${selectedDate.getDate()}ی ${KurdishMonthBashur[selectedDate.getMonth()]}`
+                        : format(selectedDate, "d MMMM")}
+                    </SheetTitle>
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      {selectedDateEvents.length > 0
+                        ? t('events.foundEvents', { count: selectedDateEvents.length })
+                        : t('events.noEvents')}
+                    </p>
+                  </div>
+                </div>
+                {locale === "ku" && (
+                  <div
+                    className={cn(
+                      "flex items-center gap-1.5 text-xs font-medium rounded-full px-3 py-1.5",
+                      useRojhalatMonths
+                        ? "bg-amber-100 text-amber-800 border border-amber-200"
+                        : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                    )}
+                  >
+                    {useRojhalatMonths ? (
+                      <Sun className="h-3.5 w-3.5" />
+                    ) : (
+                      <MapPin className="h-3.5 w-3.5" />
+                    )}
+                    <span>{useRojhalatMonths ? "ڕۆژهەڵات" : "باشوور"}</span>
+                  </div>
+                )}
+              </div>
+            </SheetHeader>
+          </div>
+
+          <ScrollArea className="h-full mt-6 pb-8">
+            <div className="px-6">
+              {selectedDateEvents.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-4">
+                    <CalendarIcon className="h-8 w-8 text-muted-foreground/50" />
+                  </div>
+                  <h3 className="font-medium text-lg mb-2">{t('events.noEventsTitle')}</h3>
+                  <p className="text-muted-foreground text-sm max-w-[250px]">
+                    {t('events.noEventsDesc')}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {selectedDateEvents.map((event, index) => (
+                    <div
+                      key={index}
+                      className={cn(
+                        "group relative overflow-hidden rounded-2xl border transition-all duration-200",
+                        event.isHoliday
+                          ? "bg-rose-50 dark:bg-rose-950/20 border-rose-200/50 dark:border-rose-800/30"
+                          : "bg-card border-border/50"
+                      )}
+                    >
+                      {event.isHoliday && (
+                        <div className="absolute right-4 top-4">
+                          <Star className="h-5 w-5 text-rose-500 dark:text-rose-400 fill-current" />
+                        </div>
+                      )}
+                      <div className="p-5">
+                        <h3 className={cn(
+                          "font-medium text-lg mb-2",
+                          event.isHoliday ? "text-rose-900 dark:text-rose-100" : "text-foreground"
+                        )}>
+                          {getLocalizedText(event.event)}
+                        </h3>
+                        {event.country && (
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className={cn(
+                              "w-2 h-2 rounded-full",
+                              event.isHoliday ? "bg-rose-500" : "bg-primary"
+                            )} />
+                            <span className={cn(
+                              "text-sm",
+                              event.isHoliday ? "text-rose-700 dark:text-rose-300" : "text-muted-foreground"
+                            )}>
+                              {locale === "ku" ? getKurdishCountryName(event.country) : event.country}
+                            </span>
+                          </div>
+                        )}
+                        {event.note && getLocalizedText(event.note) && (
+                          <div className={cn(
+                            "mt-3 pt-3 border-t text-sm",
+                            event.isHoliday
+                              ? "border-rose-200/50 dark:border-rose-800/30 text-rose-700 dark:text-rose-300"
+                              : "border-border/50 text-muted-foreground"
+                          )}>
+                            {getLocalizedText(event.note)}
+                          </div>
+                        )}
+                        {event.quote && (
+                          <div className={cn(
+                            "mt-4 pt-4 border-t",
+                            event.isHoliday
+                              ? "border-rose-200/50 dark:border-rose-800/30"
+                              : "border-border/50"
+                          )}>
+                            <blockquote className={cn(
+                              "text-sm italic",
+                              event.isHoliday
+                                ? "text-rose-700 dark:text-rose-300"
+                                : "text-muted-foreground"
+                            )}>
+                              &ldquo;{getLocalizedText(event.quote.quote)}&rdquo;
+                              <footer className="mt-2 font-medium text-xs">
+                                — {event.quote.celebrity}
+                              </footer>
+                            </blockquote>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               )}
-            >
-              <span className="mr-1">{useRojhalatMonths ? "ڕ" : "ب"}</span>
-              {formatDate(selectedDate, "MMM d")}
             </div>
-          )}
-        </div>
-        <EventList events={selectedDateEvents} title="" />
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
+      {/* Floating Button for Month Events */}
+      <div className="fixed bottom-4 right-4 z-10 md:hidden">
+        <Sheet open={showMonthEventsSheet} onOpenChange={setShowMonthEventsSheet}>
+          <SheetTrigger asChild>
+            <Button 
+              className="rounded-full shadow-lg bg-primary hover:bg-primary/90 text-primary-foreground" 
+              size="icon"
+              variant="default"
+            >
+              <CalendarDays className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[85vh] rounded-t-3xl px-0">
+            <div className="px-6">
+              <SheetHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-primary/10 text-primary">
+                      <CalendarDays className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <SheetTitle className="text-2xl">
+                        {locale === "ku"
+                          ? useRojhalatMonths
+                            ? getKurdishDate(currentDate).kurdishMonth
+                            : KurdishMonthBashur[currentDate.getMonth()]
+                          : format(currentDate, "MMMM")}
+                      </SheetTitle>
+                      <p className="text-sm text-muted-foreground mt-0.5">
+                        {currentMonthEvents.length > 0
+                          ? t('events.foundEventsMonth', { count: currentMonthEvents.length })
+                          : t('events.noEvents')}
+                      </p>
+                    </div>
+                  </div>
+                  {locale === "ku" && (
+                    <div
+                      className={cn(
+                        "flex items-center gap-1.5 text-xs font-medium rounded-full px-3 py-1.5",
+                        useRojhalatMonths
+                          ? "bg-amber-100 text-amber-800 border border-amber-200"
+                          : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                      )}
+                    >
+                      {useRojhalatMonths ? (
+                        <Sun className="h-3.5 w-3.5" />
+                      ) : (
+                        <MapPin className="h-3.5 w-3.5" />
+                      )}
+                      <span>{useRojhalatMonths ? "ڕۆژهەڵات" : "باشوور"}</span>
+                    </div>
+                  )}
+                </div>
+              </SheetHeader>
+            </div>
+
+            <ScrollArea className="h-full mt-6 pb-8">
+              <div className="px-6">
+                {currentMonthEvents.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center mb-4">
+                      <CalendarIcon className="h-8 w-8 text-muted-foreground/50" />
+                    </div>
+                    <h3 className="font-medium text-lg mb-2">{t('events.noEventsTitle')}</h3>
+                    <p className="text-muted-foreground text-sm max-w-[250px]">
+                      {t('events.noEventsDesc')}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {currentMonthEvents.map((event, index) => (
+                      <div
+                        key={index}
+                        className={cn(
+                          "group relative overflow-hidden rounded-2xl border transition-all duration-200",
+                          event.isHoliday
+                            ? "bg-rose-50 dark:bg-rose-950/20 border-rose-200/50 dark:border-rose-800/30"
+                            : "bg-card border-border/50"
+                        )}
+                      >
+                        <div className="absolute right-4 top-4 flex items-center gap-2">
+                          {event.isHoliday && (
+                            <Star className="h-5 w-5 text-rose-500 dark:text-rose-400 fill-current" />
+                          )}
+                          <div className={cn(
+                            "text-xs font-medium px-2 py-1 rounded-full",
+                            event.isHoliday
+                              ? "bg-rose-100 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300"
+                              : "bg-primary/10 text-primary"
+                          )}>
+                            {locale === "ku"
+                              ? useRojhalatMonths
+                                ? `${getKurdishDate(new Date(event.date)).kurdishDay}`
+                                : `${new Date(event.date).getDate()}`
+                              : format(new Date(event.date), "d")}
+                          </div>
+                        </div>
+                        <div className="p-5">
+                          <h3 className={cn(
+                            "font-medium text-lg mb-2 pr-20",
+                            event.isHoliday ? "text-rose-900 dark:text-rose-100" : "text-foreground"
+                          )}>
+                            {getLocalizedText(event.event)}
+                          </h3>
+                          {event.country && (
+                            <div className="flex items-center gap-2 mb-3">
+                              <div className={cn(
+                                "w-2 h-2 rounded-full",
+                                event.isHoliday ? "bg-rose-500" : "bg-primary"
+                              )} />
+                              <span className={cn(
+                                "text-sm",
+                                event.isHoliday ? "text-rose-700 dark:text-rose-300" : "text-muted-foreground"
+                              )}>
+                                {locale === "ku" ? getKurdishCountryName(event.country) : event.country}
+                              </span>
+                            </div>
+                          )}
+                          {event.note && getLocalizedText(event.note) && (
+                            <div className={cn(
+                              "mt-3 pt-3 border-t text-sm",
+                              event.isHoliday
+                                ? "border-rose-200/50 dark:border-rose-800/30 text-rose-700 dark:text-rose-300"
+                                : "border-border/50 text-muted-foreground"
+                            )}>
+                              {getLocalizedText(event.note)}
+                            </div>
+                          )}
+                          {event.quote && (
+                            <div className={cn(
+                              "mt-4 pt-4 border-t",
+                              event.isHoliday
+                                ? "border-rose-200/50 dark:border-rose-800/30"
+                                : "border-border/50"
+                            )}>
+                              <blockquote className={cn(
+                                "text-sm italic",
+                                event.isHoliday
+                                  ? "text-rose-700 dark:text-rose-300"
+                                  : "text-muted-foreground"
+                              )}>
+                                &ldquo;{getLocalizedText(event.quote.quote)}&rdquo;
+                                <footer className="mt-2 font-medium text-xs">
+                                  — {event.quote.celebrity}
+                                </footer>
+                              </blockquote>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
       </div>
-      {/* Desktop/Tablet View */}
+      {/* Remove the mobile view section since we're using the sheet */}
       <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <div className="col-span-1 lg:col-span-2">
           <EventList events={currentMonthEvents} title={t("events.eventsThisMonth")} />
@@ -611,22 +914,6 @@ export default function CalendarClient({ locale }: CalendarProps) {
           </div>
           <EventList events={selectedDateEvents} title="" />
         </div>
-      </div>
-      {/* Mobile Events Sheet */}
-      <div className="block md:hidden fixed bottom-4 right-4 z-10">
-        <Sheet open={showEventSheet} onOpenChange={setShowEventSheet}>
-          <SheetTrigger asChild>
-            <Button className="rounded-full shadow-md" size="icon">
-              <CalendarIcon className="h-5 w-5" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="bottom" className="h-[80vh] rounded-t-xl">
-            <SheetHeader>
-              <SheetTitle>{t("events.eventsThisMonth")}</SheetTitle>
-            </SheetHeader>
-            <EventList events={currentMonthEvents} title="" />
-          </SheetContent>
-        </Sheet>
       </div>
     </div>
   );
