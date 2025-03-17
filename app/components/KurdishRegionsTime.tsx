@@ -208,7 +208,7 @@ export default function KurdishRegionsTime({ locale }: KurdishRegionsTimeProps) 
 
             {/* Kurdish Date */}
             <div className="pt-4 pb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-black/5 dark:bg-white/5 rounded-full py-1.5 px-3 backdrop-blur-md font-kurdish" dir={region.name === 'bashur' ? 'rtl' : 'ltr'}>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-black/5 dark:bg-white/5 rounded-full py-1.5 px-3 backdrop-blur-md font-kurdish" >
               {
                 region.name === "bashur" ? formatBashurDate(new Date(), locale).formatted : formatRojhalatDate(new Date(), locale).formatted || ''
               }

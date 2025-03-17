@@ -187,6 +187,24 @@ export default function CalendarClient({ locale }: CalendarProps) {
     [useRojhalatMonths, locale]
   );
 
+  // Add this helper function at the top of your component
+  const formatMonthYear = useCallback((date: Date, locale: string) => {
+    try {
+      if (locale === 'ku') {
+        return getFormattedDate(date);
+      }
+      
+      // For non-Kurdish locales, use a safe fallback
+      const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
+      const year = date.getFullYear();
+      return `${month} ${year}`;
+    } catch (error) {
+      console.error('Error formatting month/year:', error);
+      // Fallback to basic English format
+      return format(date, 'MMMM yyyy');
+    }
+  }, [getFormattedDate]);
+
   // Memoize rendered days header
   const renderedDays = useMemo(() => {
     const days = [];
@@ -329,6 +347,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
     []
   );
 
+  // Update the renderHeader function
   const renderHeader = useCallback(() => (
     <div className="flex items-center justify-between py-4 px-6">
       <Button variant="ghost" size="icon" onClick={prevMonth} className="hover:bg-accent rounded-full">
@@ -348,9 +367,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
           </div>
         )}
         <h2 className="text-xl font-semibold relative">
-          {locale === "ku" 
-            ? getFormattedDate(currentDate)
-            : format(currentDate, "MMMM yyyy")}
+          {formatMonthYear(currentDate, locale)}
           {locale === "ku" && (
             <TooltipProvider>
               <Tooltip>
@@ -411,7 +428,30 @@ export default function CalendarClient({ locale }: CalendarProps) {
         <ChevronRight className="h-5 w-5" />
       </Button>
     </div>
-  ), [prevMonth, nextMonth, currentDate, locale, useRojhalatMonths, getFormattedDate]);
+  ), [prevMonth, nextMonth, currentDate, locale, useRojhalatMonths, formatMonthYear]);
+
+  // Update the sheet title formatting
+  const formatSheetDate = useCallback((date: Date, locale: string) => {
+    try {
+      if (locale === 'ku') {
+        if (useRojhalatMonths) {
+          const kurdishDate = getKurdishDate(date);
+          return `${kurdishDate.kurdishDay}ی ${kurdishDate.kurdishMonth}`;
+        } else {
+          return `${date.getDate()}ی ${KurdishMonthBashur[date.getMonth()]}`;
+        }
+      }
+      
+      // For non-Kurdish locales, use a safe fallback
+      return new Intl.DateTimeFormat('en-US', { 
+        day: 'numeric',
+        month: 'long'
+      }).format(date);
+    } catch (error) {
+      console.error('Error formatting sheet date:', error);
+      return format(date, 'd MMMM');
+    }
+  }, [useRojhalatMonths]);
 
   const EventList = useCallback(
     ({ events, title }: { events: Holiday[]; title: string }) => (
@@ -456,11 +496,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
                               : "bg-primary/10 text-primary"
                           )}
                         >
-                          {locale === "ku"
-                            ? useRojhalatMonths
-                              ? `${getKurdishDate(new Date(event.date)).kurdishMonth} ${getKurdishDate(new Date(event.date)).kurdishDay}`
-                              : `${KurdishMonthBashur[new Date(event.date).getMonth()]} ${new Date(event.date).getDate()}`
-                            : formatDate(new Date(event.date), "MMM d")}
+                          {formatSheetDate(new Date(event.date), locale)}
                         </time>
                       </div>
                       {event.note && getLocalizedText(event.note) && (
@@ -479,7 +515,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
         )}
       </div>
     ),
-    [t, getLocalizedText, locale, useRojhalatMonths, formatDate]
+    [t, getLocalizedText, locale, useRojhalatMonths, formatSheetDate]
   );
 
   const DualKurdishCalendarDisplay = useMemo(() => {
@@ -571,11 +607,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
                   </div>
                   <div>
                     <SheetTitle className="text-2xl">
-                      {locale === "ku"
-                        ? useRojhalatMonths
-                          ? `${getKurdishDate(selectedDate).kurdishDay}ی ${getKurdishDate(selectedDate).kurdishMonth}`
-                          : `${selectedDate.getDate()}ی ${KurdishMonthBashur[selectedDate.getMonth()]}`
-                        : format(selectedDate, "d MMMM")}
+                      {formatSheetDate(selectedDate, locale)}
                     </SheetTitle>
                     <p className="text-sm text-muted-foreground mt-0.5">
                       {selectedDateEvents.length > 0
@@ -720,7 +752,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
                           ? useRojhalatMonths
                             ? getKurdishDate(currentDate).kurdishMonth
                             : KurdishMonthBashur[currentDate.getMonth()]
-                          : format(currentDate, "MMMM")}
+                          : new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate)}
                       </SheetTitle>
                       <p className="text-sm text-muted-foreground mt-0.5">
                         {currentMonthEvents.length > 0
@@ -784,11 +816,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
                               ? "bg-rose-100 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300"
                               : "bg-primary/10 text-primary"
                           )}>
-                            {locale === "ku"
-                              ? useRojhalatMonths
-                                ? `${getKurdishDate(new Date(event.date)).kurdishDay}`
-                                : `${new Date(event.date).getDate()}`
-                              : format(new Date(event.date), "d")}
+                            {formatSheetDate(new Date(event.date), locale)}
                           </div>
                         </div>
                         <div className="p-5">
