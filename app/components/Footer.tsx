@@ -13,9 +13,9 @@ export default function Footer() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-sm text-muted-foreground"
+          className="text-sm text-muted-foreground text-center"
         >
-          © 2025 {t("madeBy")}{" "}
+          © ٢٠٢٥ {t("madeBy")}{" "}
           <a
             href="https://datacode.app"
             target="_blank"
