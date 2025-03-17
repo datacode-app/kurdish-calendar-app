@@ -31,14 +31,16 @@ export default function Navigation() {
     // Ensure path has a leading slash for consistency
     const normalizedPath = path === '' ? '' : (path.startsWith('/') ? path : `/${path}`);
     const fullPath = path === '' ? `/${locale}` : `/${locale}${normalizedPath}`;
-    window.location.href = fullPath;
+    // window.location.href = fullPath;
+    router.push(fullPath);
   };
 
   // Function to handle locale change
   const handleLocaleChange = (newLocale: string) => {
     const currentPath = getPathWithoutLocale();
     const newPath = currentPath === '/' ? `/${newLocale}` : `/${newLocale}${currentPath}`;
-    window.location.href = newPath;
+    // window.location.href = newPath;
+    router.push(newPath);
   };
 
   // Add this debug function to help us see what's happening
