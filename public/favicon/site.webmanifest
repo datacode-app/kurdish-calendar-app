@@ -17,5 +17,9 @@
   ],
   "theme_color": "#142935",
   "background_color": "#142935",
-  "display": "standalone"
+  
+  "display": "fullscreen",
+  "lang": "ku",
+  "dir": "rtl"
+
 }

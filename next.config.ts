@@ -1,9 +1,21 @@
-import createNextIntlPlugin from 'next-intl/plugin';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import createNextIntlPlugin from "next-intl/plugin";
+import withPWA from "next-pwa";
 
-const withNextIntl = createNextIntlPlugin('./i18n.ts');
+const withNextIntl = createNextIntlPlugin("./i18n.ts");
 
-const nextConfig = withNextIntl({
-  /* config options here */
-});
+// Combine the PWA plugin with the next-intl plugin
+const nextConfig = withPWA({
+  dest: "public",
+  register: false, // We're handling registration in our PWA component
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
+})(withNextIntl({
+  env: {
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    
+  },
+  /* Your other config options here */
+}) as any) as any;
 
 export default nextConfig;

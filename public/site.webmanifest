@@ -3,7 +3,8 @@
   "short_name": "Kurdish Calendar",
   "description": "A modern Kurdish calendar app with holidays and events",
   "start_url": "/",
-  "display": "standalone",
+
+   "display": "fullscreen",
   "background_color": "#142935",
   "theme_color": "#142935",
   "orientation": "portrait-primary",
@@ -46,7 +47,7 @@
     }
   ],
   "screenshots": [],
-  "lang": "en",
-  "dir": "ltr",
-  "categories": ["education", "lifestyle", "utilities"]
+  "lang": "ku",
+  "dir": "rtl",
+  "categories": ["education", "lifestyle", "utilities","calendar","events","kurdish","kurdistan"]
 } 

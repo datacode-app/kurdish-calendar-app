@@ -31,40 +31,59 @@ export default function Navigation() {
     // Ensure path has a leading slash for consistency
     const normalizedPath = path === '' ? '' : (path.startsWith('/') ? path : `/${path}`);
     const fullPath = path === '' ? `/${locale}` : `/${locale}${normalizedPath}`;
-    window.location.href = fullPath;
+    // window.location.href = fullPath;
+    router.push(fullPath);
   };
 
   // Function to handle locale change
   const handleLocaleChange = (newLocale: string) => {
     const currentPath = getPathWithoutLocale();
     const newPath = currentPath === '/' ? `/${newLocale}` : `/${newLocale}${currentPath}`;
-    window.location.href = newPath;
+    // window.location.href = newPath;
+    router.push(newPath);
   };
 
-  // Function to get the path without the locale prefix
+  // Add this debug function to help us see what's happening
+  const debugPath = (path: string) => {
+    console.log({
+      pathname,
+      locale,
+      path,
+      segments: pathname.split('/'),
+      currentPath: getPathWithoutLocale(),
+    });
+  };
+
+  // Updated getPathWithoutLocale function
   const getPathWithoutLocale = () => {
-    const segments = pathname.split('/');
-    if (segments.length <= 2) return '/';
+    // Remove any trailing slashes
+    const cleanPath = pathname.endsWith('/') ? pathname.slice(0, -1) : pathname;
+    const segments = cleanPath.split('/').filter(Boolean);
     
-    // Check if the second segment is a locale
-    const possibleLocale = segments[1];
-    if (locales.includes(possibleLocale as Locale)) {
-      return '/' + segments.slice(2).join('/');
+    // If we're at the root or only have locale
+    if (segments.length === 0 || (segments.length === 1 && segments[0] === locale)) {
+      return '/';
     }
-    return pathname;
+    
+    // Remove the locale segment if it exists
+    if (segments[0] === locale) {
+      return '/' + segments.slice(1).join('/');
+    }
+    
+    return '/' + segments.join('/');
   };
 
-  // Function to determine if a link is active
+  // Updated isActive function
   const isActive = (path: string) => {
     const currentPath = getPathWithoutLocale();
     
-    // For home page
-    if (path === '') {
-      return currentPath === '/';
-    }
+    // Normalize the path we're checking
+    const normalizedPath = path === '' ? '/' : (path.startsWith('/') ? path : `/${path}`);
     
-    // For other pages, normalize paths for comparison
-    const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+    // For debugging
+    // debugPath(normalizedPath);
+    
+    // Direct comparison after normalization
     return currentPath === normalizedPath;
   };
 
@@ -72,6 +91,7 @@ export default function Navigation() {
     { href: '', label: t('nav.home') },
     { href: '/calendar', label: t('nav.calendar') },
     { href: '/events', label: t('nav.events') },
+    { href: '/time', label: t('nav.worldTime') },
     { href: '/about', label: t('nav.about') },
   ];
 
@@ -121,7 +141,7 @@ export default function Navigation() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                {['en', 'ku', 'ar', 'fa'].map((lang) => (
+                {[ 'ku','en', 'ar', 'fa'].map((lang) => (
                   <DropdownMenuItem 
                     key={lang}
                     onClick={() => handleLocaleChange(lang)}
@@ -172,7 +192,7 @@ export default function Navigation() {
                   {t('language.select')}
                 </p>
                 <div className="grid grid-cols-2 gap-2 px-4">
-                  {['en', 'ku', 'ar', 'fa'].map((lang) => (
+                  {['ku','en' , 'ar', 'fa'].map((lang) => (
                     <Button
                       key={lang}
                       variant={locale === lang ? "default" : "outline"}

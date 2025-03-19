@@ -22,6 +22,8 @@
     "kurdishCalendar": "Kurdish Calendar",
     "upcomingEvents": "Upcoming Events",
     "noEvents": "No upcoming events",
+    "Rojhalat": "Rojhalat",
+    "Bashur": "Bashur",
 
     "multiCalendar": {
       "title": "Current Date in Multiple Calendars",
@@ -29,8 +31,8 @@
       "jalali": "Persian Calendar",
       "hijri": "Islamic Calendar",
       "kurdish": "Kurdish Calendar",
-      "kurdishRojhalat": "Rojhalat (Eastern) Kurdish Calendar",
-      "kurdishBashur": "Bashur (Western) Kurdish Calendar"
+      "kurdishRojhalat": "Rojhalat (Eastern) Calendar",
+      "kurdishBashur": "Bashur (South) Calendar"
     },
     "gregorian": "Gregorian",
     "jalali": "Persian (Jalali)",
@@ -67,27 +69,35 @@
     ]
   },
   "events": {
+    "monthEvents": "Month Events",
+    "todayEvents": "Today's Events",
     "title": "Events",
-    "monthEvents": "Events of the month",
-    "todayEvents": "Events of the day",
     "noEvents": "No events for this day",
+    "noEventsTitle": "No Events Found",
+    "noEventsDesc": "No events found for this period",
     "holiday": "Holiday",
     "note": "Note",
-    "more": "more",
-    "eventsThisMonth": "Events of the month",
-    "eventsThisWeek": "Events of the week",
-    "eventsThisYear": "Events of the year",
-    "eventsNextYear": "Events of the next year",
-    "eventsNextMonth": "Events of the next month",
-    "eventsNextWeek": "Events of the next week",
-    "eventsOfTheDay": "Events of the day",
+    "more": "More",
+    "eventsThisMonth": "Events This Month",
+    "eventsThisWeek": "Events This Week",
+    "eventsThisYear": "Events This Year",
+    "eventsNextYear": "Events Next Year",
+    "eventsNextMonth": "Events Next Month",
+    "eventsNextWeek": "Events Next Week",
+    "eventsOfTheDay": "Events of the Day",
+    "eventsToday": "Today's Events",
+    "foundEvents": "{count} Events Found",
+    "foundEventsMonth": "{count} Events This Month",
     "events": {
       "title": "Kurdish Events"
     }
   },
   "time": {
-    "title": "City Times",
-    "localTime": "Local Time"
+    "title": "Kurdistan City Times",
+    "subtitle": "Current time in major Kurdistan cities",
+    "description": "View real-time clocks for the major cities across Kurdistan",
+    "localTime": "Local Time",
+    "timezone": "Timezone"
   },
   "months": {
     "january": "January",
@@ -103,6 +113,7 @@
     "november": "November",
     "december": "December"
   },
+  
   "days": {
     "monday": "Monday",
     "tuesday": "Tuesday",
@@ -147,5 +158,23 @@
       "darkmode": "Dark mode for enhanced viewing comfort"
     },
     "mission": "At DataCode, our mission is to blend cutting-edge technology with cultural authenticity. We are committed to delivering high-quality digital solutions that celebrate our heritage and empower communities. Join us on this journey as we continue to innovate, inspire, and preserve the rich legacy of Kurdish culture."
+  },
+  "countdown": {
+    "title": "Countdown to Nowruz 🌱",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "description": "Join us in celebrating the Kurdish New Year! 🎉",
+    "kurdishYear": "Kurdish Year"
+  },
+  "regions": {
+    "rojhalat": "Eastern Kurdistan",
+    "bashur": "Southern Kurdistan",
+    "bakur": "Northern Kurdistan",
+    "rojava": "Western Kurdistan"
+  },
+  "footer": {
+    "madeBy": "Made by"
   }
 } 
