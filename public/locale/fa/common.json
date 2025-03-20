@@ -37,7 +37,9 @@
       "hijri": "تقویم هجری قمری",
       "kurdish": "تقویم کردی",
       "kurdishRojhalat": "تقویم روژهالات",
-      "kurdishBashur": "تقویم باشوور"
+      "kurdishBashur": "تقویم باشوور",
+      "kurdishRojhalatDesc": "تاریخ بە وقت ڕۆژهەڵات",
+      "kurdishBashurDesc": "تاریخ بە وقت باشوور"
     },
     "gregorian": "میلادی",
     "jalali": "شمسی (جلالی)",

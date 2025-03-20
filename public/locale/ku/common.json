@@ -30,7 +30,9 @@
       "hijri": "ڕۆژژمێری ئیسلامی",
       "kurdish": "ڕۆژژمێری کوردی",
       "kurdishRojhalat": "ڕۆژژمێری رۆژهەلات",
-      "kurdishBashur": "ڕۆژژمێری باشوور"
+      "kurdishBashur": "ڕۆژژمێری باشوور",
+      "kurdishRojhalatDesc": "بەرواری سەردەمی ڕۆژهەڵات",
+      "kurdishBashurDesc": "بەرواری سەردەمی باشوور"
     },
     "gregorian": "",
     "jalali": "فارسی (جەلالی)",

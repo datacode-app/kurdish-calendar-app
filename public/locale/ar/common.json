@@ -30,7 +30,9 @@
       "hijri": "التقويم الهجري",
       "kurdish": "التقويم الكردي",
       "kurdishRojhalat": "التقويم Rojhalat",
-      "kurdishBashur": "التقويم باشوور"
+      "kurdishBashur": "التقويم باشوور",
+      "kurdishRojhalatDesc": "التاريخ بالوقت Rojhalat",
+      "kurdishBashurDesc": "التاريخ بالوقت باشوور"
     },
     "gregorian": "الميلادي",
     "jalali": "الفارسي (الجلالي)",

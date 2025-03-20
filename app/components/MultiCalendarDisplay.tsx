@@ -176,6 +176,9 @@ export default function MultiCalendarDisplay({
               <h3 className="font-semibold text-lg text-amber-800">
                 {t("calendar.multiCalendar.kurdishRojhalat")}
               </h3>
+              <small className="text-sm text-gray-600">
+                {t("calendar.multiCalendar.kurdishRojhalatDesc")}
+              </small>
               <p className="font-medium mt-1 text-amber-900">
                 {/* {kurdishDate.kurdishDay}{" "}
                 {locale === "en"
@@ -197,6 +200,9 @@ export default function MultiCalendarDisplay({
               <h3 className="font-semibold text-lg text-emerald-800">
                 {t("calendar.multiCalendar.kurdishBashur")}
               </h3>
+              <small className="text-sm text-gray-600">
+                {t("calendar.multiCalendar.kurdishBashurDesc")}
+              </small>
               <p className="font-medium mt-1 text-emerald-900">
                 {
                   formatBashurDate(currentDate, locale).formatted
@@ -210,7 +216,7 @@ export default function MultiCalendarDisplay({
           </div>
         </div>
         {/* )} */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2">
           {/* Gregorian Calendar */}
           <div className="p-4 border rounded-lg shadow-sm bg-background">
             <h3 className="font-semibold text-lg mb-2">
@@ -221,8 +227,9 @@ export default function MultiCalendarDisplay({
               {gregorianDate.year}
             </p>
           </div>
+          {/**If you need active Persian card calendar uncomment the following code */}
           {/* Jalali (Persian) Calendar */}
-          <div className="p-4 border rounded-lg shadow-sm bg-background">
+          {/* <div className="p-4 border rounded-lg shadow-sm bg-background">
             <h3 className="font-semibold text-lg mb-2">
               {t("calendar.multiCalendar.jalali")}
             </h3>
@@ -230,10 +237,10 @@ export default function MultiCalendarDisplay({
               {
                 formatPersianDate(currentDate, locale).formatted
               }
-                {/* {jalaliDate.jd} {t(`calendar.jalaliMonths.${jalaliDate.jm - 1}`)}{" "}
-                {jalaliDate.jy} */}
-            </p>
-          </div>
+            //     {jalaliDate.jd} {t(`calendar.jalaliMonths.${jalaliDate.jm - 1}`)}{" "}
+            //     {jalaliDate.jy}
+            // </p>
+          </div> */}
           {/* Hijri (Islamic/Lunar) Calendar */}
           <div className="p-4 border rounded-lg shadow-sm bg-background">
             <h3 className="font-semibold text-lg mb-2">

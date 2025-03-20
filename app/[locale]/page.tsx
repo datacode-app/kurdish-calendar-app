@@ -41,9 +41,9 @@ export default async function Home({
         <ClientComponentsWrapper locale={locale} />
         
         {/* Quotes Section */}
-        <section className="py-4">
+        {/* <section className="py-4">
           <Quotes locale={locale} />
-        </section>
+        </section> */}
       </div>
     </main>
   );

@@ -333,19 +333,19 @@ export default function CalendarClient({ locale }: CalendarProps) {
   }, [currentDate, selectedDate, holidays, locale, useRojhalatMonths, onDateClick, getFormattedDate]);
 
   // Memoized Calendar Badge component
-  const CalendarBadge = useCallback(
-    ({ isRojhalat }: { isRojhalat: boolean }) => (
-      <div
-        className={cn(
-          "absolute top-1 right-1 flex items-center justify-center rounded-full w-4 h-4 text-[9px] font-bold",
-          isRojhalat ? "bg-amber-500/90 text-amber-50" : "bg-emerald-500/90 text-emerald-50"
-        )}
-      >
-        {isRojhalat ? "ڕ" : "ب"}
-      </div>
-    ),
-    []
-  );
+  // const CalendarBadge = useCallback(
+  //   ({ isRojhalat }: { isRojhalat: boolean }) => (
+  //     <div
+  //       className={cn(
+  //         "absolute top-1 right-1 flex items-center justify-center rounded-full w-4 h-4 text-[9px] font-bold",
+  //         isRojhalat ? "bg-amber-500/90 text-amber-50" : "bg-emerald-500/90 text-emerald-50"
+  //       )}
+  //     >
+  //       {isRojhalat ? "ڕ" : "ب"}
+  //     </div>
+  //   ),
+  //   []
+  // );
 
   // Update the renderHeader function
   const renderHeader = useCallback(() => (
@@ -396,7 +396,12 @@ export default function CalendarClient({ locale }: CalendarProps) {
                     : "from-emerald-500/90 to-emerald-600/80 left-[calc(50%-0.5rem)] right-0.5"
                 )}
               />
-              <button
+              {/** 
+               * 
+               * if you want active button to be the one that is currently selected, you can use the following code: (switch Rojhalat and Bashur)
+               * 
+               */}
+              {/* <button
                 onClick={() => setUseRojhalatMonths(true)}
                 className={cn(
                   "flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200 z-10 flex-1",
@@ -419,7 +424,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
               >
                 <MapPin className="h-3.5 w-3.5" />
                 <span className="text-xs">{t(`calendar.Bashur`)}</span>
-              </button>
+              </button> */}
             </div>
           </div>
         )}
@@ -547,7 +552,9 @@ export default function CalendarClient({ locale }: CalendarProps) {
                   <p className="text-muted-foreground">{localizedKurdishDay}</p>
                 </div>
               </div>
-              <div className="w-full sm:w-auto flex flex-col gap-2.5">
+              {/**if You want to how card near calendar for rojhalat and bushur uncomment the following code */}
+              
+              {/* <div className="w-full sm:w-auto flex flex-col gap-2.5">
                 <div className="grid grid-cols-2 gap-2.5">
                   <div className="flex items-center gap-2 bg-amber-50 border border-amber-200/70 text-amber-900 px-3 py-2 rounded-lg">
                     <div className="flex items-center justify-center bg-amber-500/90 text-white rounded-full w-7 h-7">
@@ -568,7 +575,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </CardContent>
         </Card>

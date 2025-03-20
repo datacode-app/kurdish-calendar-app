@@ -141,7 +141,7 @@ export default function Navigation() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
-                {[ 'ku','en', 'ar', 'fa'].map((lang) => (
+                {[ 'ku','en', 'ar',].map((lang) => (
                   <DropdownMenuItem 
                     key={lang}
                     onClick={() => handleLocaleChange(lang)}
@@ -192,7 +192,7 @@ export default function Navigation() {
                   {t('language.select')}
                 </p>
                 <div className="grid grid-cols-2 gap-2 px-4">
-                  {['ku','en' , 'ar', 'fa'].map((lang) => (
+                  {['ku','en' , 'ar'].map((lang) => (
                     <Button
                       key={lang}
                       variant={locale === lang ? "default" : "outline"}
