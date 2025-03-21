@@ -105,6 +105,23 @@ interface CalendarProps {
   locale: string;
 }
 
+// Custom arrow components that won't be affected by RTL
+const LeftArrow = () => (
+  <span style={{ display: 'inline-block' }}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  </span>
+);
+
+const RightArrow = () => (
+  <span style={{ display: 'inline-block' }}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  </span>
+);
+
 // --- Component Start ---
 
 export default function CalendarClient({ locale }: CalendarProps) {
@@ -349,9 +366,9 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
   // Update the renderHeader function
   const renderHeader = useCallback(() => (
-    <div className="flex items-center justify-between py-4 px-6">
+    <div className="flex items-center justify-between py-4 px-6" dir="ltr">
       <Button variant="ghost" size="icon" onClick={prevMonth} className="hover:bg-accent rounded-full">
-        <ChevronLeft className="h-5 w-5" />
+        <LeftArrow />
       </Button>
       <div className="flex flex-col items-center">
         {locale === "ku" && (
@@ -396,41 +413,12 @@ export default function CalendarClient({ locale }: CalendarProps) {
                     : "from-emerald-500/90 to-emerald-600/80 left-[calc(50%-0.5rem)] right-0.5"
                 )}
               />
-              {/** 
-               * 
-               * if you want active button to be the one that is currently selected, you can use the following code: (switch Rojhalat and Bashur)
-               * 
-               */}
-              {/* <button
-                onClick={() => setUseRojhalatMonths(true)}
-                className={cn(
-                  "flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200 z-10 flex-1",
-                  useRojhalatMonths
-                    ? "text-white font-medium"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <Sun className="h-3.5 w-3.5" />
-                <span className="text-xs">{t(`calendar.Rojhalat`)}</span>
-              </button>
-              <button
-                onClick={() => setUseRojhalatMonths(false)}
-                className={cn(
-                  "flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-200 z-10 flex-1",
-                  !useRojhalatMonths
-                    ? "text-white font-medium"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <MapPin className="h-3.5 w-3.5" />
-                <span className="text-xs">{t(`calendar.Bashur`)}</span>
-              </button> */}
             </div>
           </div>
         )}
       </div>
       <Button variant="ghost" size="icon" onClick={nextMonth} className="hover:bg-accent rounded-full">
-        <ChevronRight className="h-5 w-5" />
+        <RightArrow />
       </Button>
     </div>
   ), [prevMonth, nextMonth, currentDate, locale, useRojhalatMonths, formatMonthYear]);
