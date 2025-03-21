@@ -33,9 +33,9 @@ export default async function Home({
        
 
         {/* Nowruz Countdown */}
-        <section className="py-4">
+        {/* <section className="py-4">
           <NowruzCountdown />
-        </section>
+        </section> */}
 
         {/* Render client-only dynamic components via a client wrapper */}
         <ClientComponentsWrapper locale={locale} />
