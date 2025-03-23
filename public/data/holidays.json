@@ -253,6 +253,60 @@
       }
     },
     {
+      "date": "2025-03-22",
+      "isHoliday": true,
+      "event": {
+        "en": "Nawroz Kurdish New Year",
+        "ku": "نەورۆز، ساڵی نوێی کوردی",
+        "ar": "نوروز، السنة الكردية الجديدة",
+        "fa": "نوروز، سال نو کردی"
+      },
+      "note": {
+        "en": "Traditional celebration of spring and new year",
+        "ku": "جەژنی بەهار و ساڵی نوێ",
+        "ar": "احتفال تقليدي بالربيع والسنة الجديدة",
+        "fa": "جشن سنتی بهار و سال نو"
+      },
+      "country": "Kurdistan",
+      "region": "All regions",
+      "quote": {
+        "celebrity": "",
+        "quote": {
+          "en": "",
+          "ku": "",
+          "ar": "",
+          "fa": ""
+        }
+      }
+    },
+    {
+      "date": "2025-03-23",
+      "isHoliday": true,
+      "event": {
+        "en": "Nawroz Kurdish New Year",
+        "ku": "نەورۆز، ساڵی نوێی کوردی",
+        "ar": "نوروز، السنة الكردية الجديدة",
+        "fa": "نوروز، سال نو کردی"
+      },
+      "note": {
+        "en": "Traditional celebration of spring and new year",
+        "ku": "جەژنی بەهار و ساڵی نوێ",
+        "ar": "احتفال تقليدي بالربيع والسنة الجديدة",
+        "fa": "جشن سنتی بهار و سال نو"
+      },
+      "country": "Kurdistan",
+      "region": "All regions",
+      "quote": {
+        "celebrity": "",
+        "quote": {
+          "en": "",
+          "ku": "",
+          "ar": "",
+          "fa": ""
+        }
+      }
+    },
+    {
       "date": "2025-03-30",
       "isHoliday": true,
       "event": {
@@ -306,6 +360,31 @@
       "date": "2025-04-01",
       "isHoliday": true,
       "event": {
+        "en": "Eid-al-Fitr (End of Ramadan)",
+        "ku": "جەژنی ڕەمەزان (کۆتایی مانگی ڕەمەزان)",
+        "ar": "عيد الفطر (نهاية شهر رمضان)",
+        "fa": "عید فطر (پایان ماه رمضان)"
+      },
+      "note": {
+        "en": "Estimated date, subject to moon sighting",
+        "ku": "ڕێکەوتی خەمڵێندراو، بەپێی بینینی مانگ دەگۆڕێت",
+        "ar": "تاريخ تقديري، يخضع لرؤية الهلال",
+        "fa": "تاریخ تخمینی، تابع رؤیت هلال ماه"
+      },
+      "quote": {
+        "celebrity": "",
+        "quote": {
+          "en": "",
+          "ku": "",
+          "ar": "",
+          "fa": ""
+        }
+      }
+    },
+    {
+      "date": "2025-04-01",
+      "isHoliday": true,
+      "event": {
         "en": "Assyrian New Year",
         "ku": "ساڵی نوێی ئاشووری",
         "ar": "رأس السنة الآشورية",
@@ -327,56 +406,8 @@
         }
       }
     },
-    {
-      "date": "2025-04-01",
-      "isHoliday": true,
-      "event": {
-        "en": "Eid-al-Fitr (End of Ramadan)",
-        "ku": "جەژنی ڕەمەزان (کۆتایی مانگی ڕەمەزان)",
-        "ar": "عيد الفطر (نهاية شهر رمضان)",
-        "fa": "عید فطر (پایان ماه رمضان)"
-      },
-      "note": {
-        "en": "Estimated date, subject to moon sighting",
-        "ku": "ڕێکەوتی خەمڵێندراو، بەپێی بینینی مانگ دەگۆڕێت",
-        "ar": "تاريخ تقديري، يخضع لرؤية الهلال",
-        "fa": "تاریخ تخمینی، تابع رؤیت هلال ماه"
-      },
-      "quote": {
-        "celebrity": "",
-        "quote": {
-          "en": "",
-          "ku": "",
-          "ar": "",
-          "fa": ""
-        }
-      }
-    },
-    {
-      "date": "2025-04-02",
-      "isHoliday": false,
-      "event": {
-        "en": "Eid-al-Fitr (End of Ramadan)",
-        "ku": "جەژنی ڕەمەزان (کۆتایی مانگی ڕەمەزان)",
-        "ar": "عيد الفطر (نهاية شهر رمضان)",
-        "fa": "عید فطر (پایان ماه رمضان)"
-      },
-      "note": {
-        "en": "Estimated date, subject to moon sighting",
-        "ku": "ڕێکەوتی خەمڵێندراو، بەپێی بینینی مانگ دەگۆڕێت",
-        "ar": "تاريخ تقديري، يخضع لرؤية الهلال",
-        "fa": "تاریخ تخمینی، تابع رؤیت هلال ماه"
-      },
-      "quote": {
-        "celebrity": "",
-        "quote": {
-          "en": "",
-          "ku": "",
-          "ar": "",
-          "fa": ""
-        }
-      }
-    },
+   
+  
     {
       "date": "2025-04-09",
       "isHoliday": true,
@@ -728,7 +759,7 @@
       }
     },
     {
-      "date": "2025-09-04",
+      "date": "2025-09-05",
       "isHoliday": false,
       "event": {
         "en": "Birthday of Prophet Mohammed (PBUH)",
