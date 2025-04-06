@@ -1,8 +1,8 @@
 import Navigation from '../components/Navigation';
 import ClientComponentsWrapper from '../components/ClientComponentsWrapper';
-import Quotes from '../components/Quotes';
-import NowruzCountdown from '../components/NowruzCountdown';
-import KurdishRegionsTime from '@/app/components/KurdishRegionsTime';
+// import Quotes from '../components/Quotes';
+// import NowruzCountdown from '../components/NowruzCountdown';
+// import KurdishRegionsTime from '@/app/components/KurdishRegionsTime';
 import { getTranslations } from 'next-intl/server';
 
 export async function generateMetadata({ 
