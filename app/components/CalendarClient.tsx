@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -136,10 +137,23 @@ export default function CalendarClient({ locale }: CalendarProps) {
   // Add new state for month events sheet
   const [showMonthEventsSheet, setShowMonthEventsSheet] = useState(false);
 
-  // Memoize the Kurdish date for the currentDate when locale is Kurdish
-  const kurdishDate = useMemo(() => {
-    return locale === "ku" ? getKurdishDate(currentDate) : null;
-  }, [currentDate, locale]);
+  // Function to normalize dates for comparison, with special handling for Kurdish locale
+  const getAdjustedDateForComparison = useCallback((date: Date, dateString?: string): Date => {
+    // Create a clean date without time component
+    const cleanDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    
+    // If in Kurdish locale, add one day to the holiday date for proper comparison
+    // This direct adjustment compensates for the calendar calculation differences
+    if (locale === "ku" && dateString) {
+      cleanDate.setDate(cleanDate.getDate() + 1);
+    }
+    
+    return cleanDate;
+  }, [locale]);
 
   // Fetch holidays only once on mount
   useEffect(() => {
@@ -148,6 +162,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
       .then((response) => response.json())
       .then((data) => {
         const holidaysArray = Array.isArray(data) ? data : data.holidays || [];
+
         setHolidays(holidaysArray);
       })
       .catch((error) => console.error("Error loading holidays:", error));
@@ -155,16 +170,18 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
   // Memoize filtered events for the current month and selected day
   const currentMonthEvents = useMemo(() => {
-    return holidays.filter((holiday) =>
-      isSameMonth(new Date(holiday.date), currentDate)
-    );
-  }, [holidays, currentDate]);
+    return holidays.filter((holiday) => {
+      const adjustedDate = getAdjustedDateForComparison(new Date(holiday.date), holiday.date);
+      return isSameMonth(adjustedDate, currentDate);
+    });
+  }, [holidays, currentDate, getAdjustedDateForComparison]);
 
   const selectedDateEvents = useMemo(() => {
-    return holidays.filter((holiday) =>
-      isSameDay(new Date(holiday.date), selectedDate)
-    );
-  }, [holidays, selectedDate]);
+    return holidays.filter((holiday) => {
+      const adjustedDate = getAdjustedDateForComparison(new Date(holiday.date), holiday.date);
+      return isSameDay(adjustedDate, selectedDate);
+    });
+  }, [holidays, selectedDate, getAdjustedDateForComparison]);
 
   // Wrap helper functions in useCallback to avoid recreations
   const getLocalizedText = useCallback(
@@ -273,12 +290,13 @@ export default function CalendarClient({ locale }: CalendarProps) {
   const isHolidayDate = useCallback(
     (date: Date) => {
       return holidays.some(
-        (holiday) => 
-          isSameDay(new Date(holiday.date), date) && 
-          holiday.isHoliday
+        (holiday) => {
+          const adjustedDate = getAdjustedDateForComparison(new Date(holiday.date), holiday.date);
+          return isSameDay(adjustedDate, date) && holiday.isHoliday;
+        }
       );
     },
-    [holidays]
+    [holidays, getAdjustedDateForComparison]
   );
 
   // Memoize calendar cells rendering
@@ -300,9 +318,12 @@ export default function CalendarClient({ locale }: CalendarProps) {
         const isSelectedDay = isSameDay(day, selectedDate);
         const isTodayDay = isToday(day);
         const isHoliday = isHolidayDate(day);
-        const hasEvents = holidays.some((holiday) =>
-          isSameDay(new Date(holiday.date), day)
-        );
+
+        const hasEvents = holidays.some((holiday) => {
+          const adjustedDate = getAdjustedDateForComparison(new Date(holiday.date), holiday.date);
+          return isSameDay(adjustedDate, day);
+        });
+        
         days.push(
           <div
             key={day.toString()}
@@ -340,16 +361,20 @@ export default function CalendarClient({ locale }: CalendarProps) {
           </div>
         );
         day = addDays(day, 1);
+
+    
       }
       rows.push(
         <div key={day.toString()} className="grid grid-cols-7 gap-px">
           {days}
         </div>
       );
+
+  
       days = [];
     }
     return <div className="flex flex-col gap-px">{rows}</div>;
-  }, [currentDate, selectedDate, holidays, locale, useRojhalatMonths, onDateClick, getFormattedDate]);
+  }, [currentDate, selectedDate, holidays, locale, useRojhalatMonths, onDateClick, getFormattedDate, getAdjustedDateForComparison]);
 
   // Memoized Calendar Badge component
   // const CalendarBadge = useCallback(
@@ -524,6 +549,8 @@ export default function CalendarClient({ locale }: CalendarProps) {
     const formattedKurdishDay = format(today, "EEEE");
     const localizedKurdishDay = getLocalizedDayName(formattedKurdishDay, locale);
     
+
+
     // Get formatted dates using the utility functions
     const rojhalatFormatted = formatRojhalatDate(today, locale).formatted;
     const bashurFormatted = formatBashurDate(today, locale).formatted;
@@ -589,7 +616,10 @@ export default function CalendarClient({ locale }: CalendarProps) {
               <div className="flex items-center gap-3">
                 <div className={cn(
                   "w-12 h-12 rounded-2xl flex items-center justify-center",
-                  selectedDateEvents.some(e => e.isHoliday)
+                  selectedDateEvents.some(e => {
+                  
+                    return e.isHoliday
+                  })
                     ? "bg-rose-100 dark:bg-rose-900/20 text-rose-700 dark:text-rose-300"
                     : "bg-primary/10 text-primary"
                 )}>
@@ -885,8 +915,11 @@ export default function CalendarClient({ locale }: CalendarProps) {
       <Card className="border shadow-sm">
         <CardContent className="p-0 pb-4">
           {renderHeader()}
+       
           {renderedDays}
+     
           {renderedCells}
+     
         </CardContent>
       </Card>
       {SheetModal}

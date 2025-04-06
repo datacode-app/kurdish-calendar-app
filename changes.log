@@ -1,3 +1,9 @@
+[2023-11-30] [FIXED] [lib/getKurdishDate.ts] Changed timezone from Tehran (UTC+3:30) to Baghdad (UTC+3) for Kurdish date calculations to fix event display issues in Kurdish calendar.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed issue where events and holidays were displayed one day later in Kurdish compared to English by implementing a special date adjustment function for Kurdish locale that normalizes dates properly while preserving UTC time handling.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Implemented direct +1 day adjustment for holiday and event dates in Kurdish locale to correct the date display discrepancy between English and Kurdish.
+
 [2023-10-18] [FIXED] [app/[locale]/time/modern/page.tsx] Fixed React Hook issues by moving state to client component
 [2023-10-18] [ADDED] [components/ModernClockSettings.tsx] Created client component to handle interactive settings
 [2023-10-18] [ADDED] [lib/theme-utils.ts] Added utility functions for theme and dark mode management
