@@ -1,4 +1,12 @@
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed holiday display in Kurdish locale to ensure holidays appear on correct dates by adjusting date comparison logic to subtract one day for Kurdish locale instead of adding one day.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed date formatting in Kurdish locale to show correct dates in event section by simplifying date handling and using direct date comparisons without adjustments.
+
 [2023-11-30] [FIXED] [lib/getKurdishDate.ts] Changed timezone from Tehran (UTC+3:30) to Baghdad (UTC+3) for Kurdish date calculations to fix event display issues in Kurdish calendar.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed event display in Events of the Day section to show correct events for selected date in Kurdish locale by properly adjusting date comparisons in selectedDateEvents filtering.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed event display in Kurdish locale to ensure events show for the correct selected date by properly adjusting date comparisons and implementing consistent date handling across all event-related functions.
 
 [2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed issue where events and holidays were displayed one day later in Kurdish compared to English by implementing a special date adjustment function for Kurdish locale that normalizes dates properly while preserving UTC time handling.
 
@@ -11,6 +19,12 @@
 [2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed holiday and event date alignment in Kurdish locale to ensure holidays (like May 1st) appear on the correct dates in both Kurdish and English languages.
 
 [2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed holiday date alignment in Kurdish locale by implementing a new getHolidayDate function to ensure holidays (like May 1st) appear on the correct dates while maintaining proper Kurdish date display.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed event display when clicking dates in Kurdish locale by implementing getClickAdjustedDate function to ensure events show for the correct date (e.g., May 1st events showing on May 1st, not May 2nd).
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed holiday date display in Kurdish locale to ensure holidays like International Labour Day (May 1st) appear on the correct date by adjusting the date comparison logic and implementing proper date adjustments for both display and holiday dates.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed date selection in Kurdish locale to prevent automatic selection of next day by removing the date adjustment in onDateClick function and using the original clicked date.
 
 [2023-10-18] [FIXED] [app/[locale]/time/modern/page.tsx] Fixed React Hook issues by moving state to client component
 [2023-10-18] [ADDED] [components/ModernClockSettings.tsx] Created client component to handle interactive settings

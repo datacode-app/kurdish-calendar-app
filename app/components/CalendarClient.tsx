@@ -137,9 +137,8 @@ export default function CalendarClient({ locale }: CalendarProps) {
   // Add new state for month events sheet
   const [showMonthEventsSheet, setShowMonthEventsSheet] = useState(false);
 
-  // Function to normalize dates for comparison, with special handling for Kurdish locale
+  // Function to normalize dates for comparison
   const getAdjustedDateForComparison = useCallback((date: Date): Date => {
-    // Create a clean date without time component
     return new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -147,7 +146,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
     );
   }, []);
 
-  // Add a new function to get the correct Kurdish date display
+  // Function to get the correct Kurdish date display
   const getKurdishAdjustedDate = useCallback((date: Date): Date => {
     // For Kurdish locale, add one day to display the correct date
     if (locale === "ku") {
@@ -158,15 +157,16 @@ export default function CalendarClient({ locale }: CalendarProps) {
     return date;
   }, [locale]);
 
-  // Add a new function to handle holiday date adjustments
+  // Function to handle holiday date adjustments
   const getHolidayDate = useCallback((dateStr: string): Date => {
     const date = new Date(dateStr);
-    // For Kurdish locale, we need to adjust the display date but keep holiday on correct day
-    if (locale === "ku") {
-      date.setDate(date.getDate() + 1);
-    }
     return date;
-  }, [locale]);
+  }, []);
+
+  // Function to handle click date adjustments
+  const getClickAdjustedDate = useCallback((date: Date): Date => {
+    return date;
+  }, []);
 
   // Fetch holidays only once on mount
   useEffect(() => {
@@ -181,20 +181,47 @@ export default function CalendarClient({ locale }: CalendarProps) {
       .catch((error) => console.error("Error loading holidays:", error));
   }, []);
 
-  // Memoize filtered events for the current month and selected day
-  const currentMonthEvents = useMemo(() => {
-    return holidays.filter((holiday) => {
-      const holidayDate = getHolidayDate(holiday.date);
-      return isSameMonth(holidayDate, getKurdishAdjustedDate(currentDate));
-    });
-  }, [holidays, currentDate, getKurdishAdjustedDate, getHolidayDate]);
+  // Update the holiday check function
+  const isHolidayDate = useCallback(
+    (date: Date) => {
+      return holidays.some((holiday) => {
+        const holidayDate = new Date(holiday.date);
+        if (locale === "ku") {
+          const adjustedDate = new Date(date);
+          adjustedDate.setDate(adjustedDate.getDate() - 1);
+          return isSameDay(holidayDate, adjustedDate) && holiday.isHoliday;
+        }
+        return isSameDay(holidayDate, date) && holiday.isHoliday;
+      });
+    },
+    [holidays, locale]
+  );
 
+  // Update the event filtering logic
   const selectedDateEvents = useMemo(() => {
     return holidays.filter((holiday) => {
-      const holidayDate = getHolidayDate(holiday.date);
-      return isSameDay(holidayDate, getKurdishAdjustedDate(selectedDate));
+      const holidayDate = new Date(holiday.date);
+      if (locale === "ku") {
+        const adjustedDate = new Date(selectedDate);
+        adjustedDate.setDate(adjustedDate.getDate() - 1);
+        return isSameDay(holidayDate, adjustedDate);
+      }
+      return isSameDay(holidayDate, selectedDate);
     });
-  }, [holidays, selectedDate, getKurdishAdjustedDate, getHolidayDate]);
+  }, [holidays, selectedDate, locale]);
+
+  // Update the current month events filtering
+  const currentMonthEvents = useMemo(() => {
+    return holidays.filter((holiday) => {
+      const holidayDate = new Date(holiday.date);
+      if (locale === "ku") {
+        const adjustedDate = new Date(currentDate);
+        adjustedDate.setDate(adjustedDate.getDate() - 1);
+        return isSameMonth(holidayDate, adjustedDate);
+      }
+      return isSameMonth(holidayDate, currentDate);
+    });
+  }, [holidays, currentDate, locale]);
 
   // Wrap helper functions in useCallback to avoid recreations
   const getLocalizedText = useCallback(
@@ -208,10 +235,9 @@ export default function CalendarClient({ locale }: CalendarProps) {
     [locale]
   );
 
+  // Update onDateClick to handle date selection correctly
   const onDateClick = useCallback((day: Date) => {
-    // Create a clean date object to avoid timezone issues
-    const cleanDate = new Date(day.getFullYear(), day.getMonth(), day.getDate());
-    setSelectedDate(cleanDate);
+    setSelectedDate(day);
     if (window.innerWidth < 768) {
       setShowEventSheet(true);
     }
@@ -300,17 +326,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
     return <div className="grid grid-cols-7 border-b border-muted/30 mb-1">{days}</div>;
   }, [currentDate, locale]);
 
-  const isHolidayDate = useCallback(
-    (date: Date) => {
-      return holidays.some((holiday) => {
-        const holidayDate = getHolidayDate(holiday.date);
-        return isSameDay(holidayDate, getKurdishAdjustedDate(date)) && holiday.isHoliday;
-      });
-    },
-    [holidays, getKurdishAdjustedDate, getHolidayDate]
-  );
-
-  // Memoize calendar cells rendering
+  // Update the renderedCells to handle date display correctly
   const renderedCells = useMemo(() => {
     const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(monthStart);
@@ -322,18 +338,16 @@ export default function CalendarClient({ locale }: CalendarProps) {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         const cloneDay = day;
-        // Use the Kurdish adjusted date only for display
-        const displayDate = getKurdishAdjustedDate(cloneDay);
         const formattedDate = locale === "ku"
-          ? getFormattedDate(displayDate).split(' ')[0]
+          ? getFormattedDate(cloneDay).split(' ')[0]
           : format(cloneDay, "d");
         const isCurrentMonth = isSameMonth(day, monthStart);
         const isSelectedDay = isSameDay(day, selectedDate);
         const isTodayDay = isToday(day);
-        const isHoliday = isHolidayDate(day);
+        const isHoliday = isHolidayDate(cloneDay);
         const hasEvents = holidays.some((holiday) => {
-          const holidayDate = getHolidayDate(holiday.date);
-          return isSameDay(holidayDate, getKurdishAdjustedDate(day));
+          const holidayDate = new Date(holiday.date);
+          return isSameDay(holidayDate, cloneDay);
         });
         
         days.push(
@@ -361,7 +375,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
               )}
             >
               <time
-                dateTime={format(displayDate, "yyyy-MM-dd")}
+                dateTime={format(cloneDay, "yyyy-MM-dd")}
                 className={cn(
                   "flex items-center justify-center font-semibold text-sm sm:text-base",
                   isSelectedDay && "text-primary-foreground"
@@ -382,7 +396,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
       days = [];
     }
     return <div className="flex flex-col gap-px">{rows}</div>;
-  }, [currentDate, selectedDate, holidays, locale, useRojhalatMonths, onDateClick, getFormattedDate, isHolidayDate, getKurdishAdjustedDate]);
+  }, [currentDate, selectedDate, holidays, locale, onDateClick, getFormattedDate, isHolidayDate]);
 
   // Memoized Calendar Badge component
   // const CalendarBadge = useCallback(
@@ -461,15 +475,15 @@ export default function CalendarClient({ locale }: CalendarProps) {
   // Update the sheet title formatting
   const formatSheetDate = useCallback((date: Date, locale: string) => {
     try {
-      // Create a new Date instance to avoid any mutation issues
-      const displayDate = getKurdishAdjustedDate(date);
-      
       if (locale === 'ku') {
+        // Create a new Date instance to avoid mutation
+        const displayDate = new Date(date);
+        
         if (useRojhalatMonths) {
           const kurdishDate = getKurdishDate(displayDate);
           return `${kurdishDate.kurdishDay}ی ${kurdishDate.kurdishMonth}`;
         } else {
-          // Use formatted approach for Bashur to ensure consistency
+          // Use formatted approach for Bashur
           const formatted = formatBashurDate(displayDate, locale);
           return formatted.formatted;
         }
@@ -478,18 +492,29 @@ export default function CalendarClient({ locale }: CalendarProps) {
       return new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'ar', { 
         day: 'numeric',
         month: 'long'
-      }).format(displayDate);
+      }).format(date);
     } catch (error) {
       console.error('Error formatting sheet date:', error);
-      // Fallback to basic format
       return format(date, 'd MMMM');
     }
-  }, [useRojhalatMonths, getKurdishAdjustedDate]);
+  }, [useRojhalatMonths]);
 
   const EventList = useCallback(
     ({ events, title }: { events: Holiday[]; title: string }) => (
       <div className="space-y-4">
-        <h3 className="font-semibold text-lg tracking-tight">{title}</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold text-lg tracking-tight">{title}</h3>
+          {locale === "ku" && (
+            <div className={cn(
+              "inline-flex items-center text-xs font-medium rounded-full px-2 py-0.5",
+              useRojhalatMonths
+                ? "bg-amber-100 text-amber-800 border border-amber-200"
+                : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+            )}>
+              {formatSheetDate(selectedDate, locale)}
+            </div>
+          )}
+        </div>
         {events.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center bg-muted/20 rounded-lg">
             <CalendarIcon className="h-12 w-12 text-muted-foreground/50 mb-2" aria-hidden="true" />
@@ -532,13 +557,6 @@ export default function CalendarClient({ locale }: CalendarProps) {
                           {formatSheetDate(new Date(event.date), locale)}
                         </time>
                       </div>
-                      {event.note && getLocalizedText(event.note) && (
-                        <div className="mt-2 pt-2 border-t border-dashed border-muted">
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {getLocalizedText(event.note)}
-                          </p>
-                        </div>
-                      )}
                     </div>
                   </article>
                 </li>
@@ -548,7 +566,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
         )}
       </div>
     ),
-    [t, getLocalizedText, locale, useRojhalatMonths, formatSheetDate]
+    [t, getLocalizedText, locale, useRojhalatMonths, formatSheetDate, selectedDate]
   );
 
   const DualKurdishCalendarDisplay = useMemo(() => {
