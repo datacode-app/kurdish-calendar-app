@@ -4,6 +4,14 @@
 
 [2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Implemented direct +1 day adjustment for holiday and event dates in Kurdish locale to correct the date display discrepancy between English and Kurdish.
 
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed Kurdish calendar date alignment by adjusting the date comparison logic to subtract one day for current dates and add one day for holiday dates in Kurdish locale.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed Kurdish date display by adding getKurdishAdjustedDate function to correctly show dates in Kurdish locale, ensuring proper display of current date (7 Nisan).
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed holiday and event date alignment in Kurdish locale to ensure holidays (like May 1st) appear on the correct dates in both Kurdish and English languages.
+
+[2023-11-30] [FIXED] [app/components/CalendarClient.tsx] Fixed holiday date alignment in Kurdish locale by implementing a new getHolidayDate function to ensure holidays (like May 1st) appear on the correct dates while maintaining proper Kurdish date display.
+
 [2023-10-18] [FIXED] [app/[locale]/time/modern/page.tsx] Fixed React Hook issues by moving state to client component
 [2023-10-18] [ADDED] [components/ModernClockSettings.tsx] Created client component to handle interactive settings
 [2023-10-18] [ADDED] [lib/theme-utils.ts] Added utility functions for theme and dark mode management
