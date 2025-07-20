@@ -51,3 +51,5 @@
 [2023-10-22] [ADDED] [app/[locale]/time/kurdish-cities/page.tsx] Added new page for displaying Kurdish cities clocks
 [2023-10-22] [ADDED] [app/[locale]/time/kurdish-cities/kurdish-cities-clock-grid.tsx] Created client component for the Kurdish cities clock grid
 [2023-10-22] [UPDATED] [app/[locale]/time/page.tsx] Added link to Kurdish cities clock page with color gradient 
+
+[2023-11-30] [FIXED] [app/components/Navigation.tsx] Added spacing for service menu links in RTL languages (Arabic and Kurdish) by adding right margin/padding and proper text alignment.

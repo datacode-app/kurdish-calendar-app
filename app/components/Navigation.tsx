@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
@@ -87,6 +87,11 @@ export default function Navigation() {
     return currentPath === normalizedPath;
   };
 
+  // Additional CSS classes for RTL padding
+  const getRtlClasses = useCallback(() => {
+    return locale === 'ku' || locale === 'ar' ? 'rtl:pr-2' : '';
+  }, [locale]);
+
   const navItems = [
     { href: '', label: t('nav.home') },
     { href: '/calendar', label: t('nav.calendar') },
@@ -117,11 +122,11 @@ export default function Navigation() {
               <button
                 key={item.href}
                 onClick={() => handleNavigation(item.href)}
-                className={`relative py-2 text-sm font-medium transition-colors hover:text-primary group ${
+                className={`relative py-2 text-sm font-medium transition-colors hover:text-primary group rtl:mr-2 ${
                   isActive(item.href) 
                     ? "text-primary" 
                     : "text-muted-foreground"
-                }`}
+                } ${getRtlClasses()}`}
               >
                 {item.label}
                 <span className={`absolute left-0 right-0 bottom-0 h-0.5 bg-primary transform origin-left transition-transform duration-200 ease-out ${
@@ -131,7 +136,7 @@ export default function Navigation() {
             ))}
           </div>
 
-          <div className="flex items-center gap-4 pl-4 border-l border-border/50">
+          <div className="flex items-center gap-4 pl-4 rtl:pr-4 border-l rtl:border-r border-border/50 rtl:border-l-0">
             <ThemeToggle />
             
             <DropdownMenu>
@@ -176,11 +181,11 @@ export default function Navigation() {
                       handleNavigation(item.href);
                       setIsOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-3 text-lg font-medium rounded-lg transition-colors ${
+                    className={`w-full text-left rtl:text-right px-4 py-3 text-lg font-medium rounded-lg transition-colors ${
                       isActive(item.href) 
                         ? "bg-accent text-primary" 
                         : "text-muted-foreground hover:bg-accent/50"
-                    }`}
+                    } ${getRtlClasses()}`}
                   >
                     {item.label}
                   </button>
