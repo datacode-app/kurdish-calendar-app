@@ -9,6 +9,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { getFontClass } from "@/lib/utils";
 import ClientProviders from "../components/ClientProviders";
 import Footer from "../components/Footer";
+import CulturalPlanReview from "../components/CulturalPlanReview";
+import WebMcpBridge from "../components/WebMcpBridge";
 import { cn } from "@/lib/utils";
 
 // Configure Noto Kufi Arabic font
@@ -203,8 +205,10 @@ export default async function RootLayout({
           <NextIntlClientProvider locale={locale} messages={messages}>
             <div className="relative flex min-h-screen flex-col">
               <div className="flex-1">{children}</div>
+              <CulturalPlanReview />
               <Footer />
             </div>
+            <WebMcpBridge locale={locale} />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

@@ -43,6 +43,8 @@ import { getLocalizedDayName, getLocalizedMonthName, getKurdishCountryName, form
 import { getKurdishDate, KurdishMonthSorani } from "@/lib/getKurdishDate";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatRojhalatDate, formatBashurDate } from "@/lib/utils";
+import { CALENDAR_OPEN_DATE_EVENT } from "@/lib/webmcp";
+import { getCalendarDataUrl } from "@/lib/calendar-data-url";
 
 // --- Static declarations moved outside the component ---
 
@@ -119,6 +121,20 @@ export default function CalendarClient({ locale }: CalendarProps) {
   // Add new state for month events sheet
   const [showMonthEventsSheet, setShowMonthEventsSheet] = useState(false);
 
+  useEffect(() => {
+    const showDate = (requestedDate: string | null) => {
+      if (!requestedDate || !/^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) return;
+      const date = new Date(`${requestedDate}T12:00:00.000Z`);
+      if (Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== requestedDate) return;
+      setCurrentDate(date);
+      setSelectedDate(date);
+    };
+    const onOpenDate = (event: Event) => showDate((event as CustomEvent<string>).detail);
+    showDate(new URLSearchParams(window.location.search).get('date'));
+    window.addEventListener(CALENDAR_OPEN_DATE_EVENT, onOpenDate);
+    return () => window.removeEventListener(CALENDAR_OPEN_DATE_EVENT, onOpenDate);
+  }, []);
+
   // Memoize the Kurdish date for the currentDate when locale is Kurdish
   const kurdishDate = useMemo(() => {
     return locale === "ku" ? getKurdishDate(currentDate) : null;
@@ -126,8 +142,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
   // Fetch holidays only once on mount
   useEffect(() => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-    fetch(`${baseUrl}/data/holidays.json`)
+    fetch(getCalendarDataUrl(process.env.NEXT_PUBLIC_API_BASE_URL))
       .then((response) => response.json())
       .then((data) => {
         const holidaysArray = Array.isArray(data) ? data : data.holidays || [];

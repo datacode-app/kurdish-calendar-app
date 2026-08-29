@@ -4,6 +4,38 @@
 
 A comprehensive calendar application that supports multiple calendar systems relevant to Kurdish communities and the broader Middle East region. This application is available at [calendar.krd](https://calendar.krd).
 
+## WebMCP cultural planning
+
+Kurdish Calendar now exposes five structured browser tools through the experimental [`document.modelContext`](https://github.com/webmachinelearning/webmcp) API:
+
+- `kurdish_calendar_get_today` returns today's Gregorian, Kurdish Rojhalat, Kurdish Bashur, Persian, and Hijri dates.
+- `kurdish_calendar_convert_date` converts a supplied Gregorian date across the same calendar systems.
+- `kurdish_calendar_find_events` searches the app's multilingual cultural-event data by inclusive date range, language, holiday status, and text.
+- `kurdish_calendar_open_date` opens and selects a date in the real calendar interface.
+- `kurdish_calendar_stage_plan` places an editable itinerary into a visible review panel. It does not book, save, or publish anything.
+
+The tools are registered imperatively with `document.modelContext.registerTool()` and use `AbortSignal` cleanup. Tool results are structured JSON plus a short text summary. The same event dataset powers both the human UI and agent tools.
+
+### Human-agent workflow
+
+Try this prompt in a WebMCP-capable browser:
+
+> Find Kurdish cultural events around Nawroz, open March 21 in the calendar, and stage a two-day cultural plan for me to review.
+
+The agent can research and stage a draft, while the person sees the selected date and edits the itinerary. No tool can save, publish, book, or send the plan.
+
+### Testing WebMCP
+
+Use ChatGPT's in-app browser, or Chrome 149+ with `chrome://flags/#enable-webmcp-testing` enabled. Then run the app and inspect the registered tools:
+
+```js
+await document.modelContext.getTools()
+```
+
+### Challenge-period work
+
+The calendar, localization, conversion utilities, event dataset, and public website existed before the OpenAI WebMCP Challenge. The WebMCP bridge, five tool contracts, agent-driven date navigation, editable draft-plan review panel, lifecycle handling, and their tests were added after the challenge opened. The Git history on the `feat/webmcp-cultural-planner` branch distinguishes this work from the pre-existing application.
+
 ## ✨ Features
 
 - **Multi-Calendar System Support**:
