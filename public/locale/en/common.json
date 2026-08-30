@@ -176,5 +176,18 @@
   },
   "footer": {
     "madeBy": "Made by"
+  },
+  "culturalMemory": {
+    "badge": "Kurdish Cultural Memory · 7 WebMCP tools",
+    "consent": "Consent-first drafts stay private until you decide",
+    "eyebrow": "Built for every Kurdish community",
+    "title": "Preserve living culture across borders and generations",
+    "description": "Explore sourced traditions, translate dates across calendar systems, coordinate diaspora communities across time zones, and prepare editable family or school preservation briefs—with attribution and consent built in.",
+    "tags": {
+      "diaspora": "Kurdistan + diaspora",
+      "languages": "4 languages",
+      "archive": "Sourced archive",
+      "humanControlled": "Human controlled"
+    }
   }
 } 
