@@ -105,7 +105,7 @@ export default function CulturalPlanReview() {
               <span className="rounded-full border border-primary/30 bg-primary/10 px-2 py-1 font-semibold uppercase text-primary" key={language}>{language}</span>
             ))}
           </div>
-          <div className="max-h-72 space-y-3 overflow-y-auto pr-1">
+          <div className="max-h-72 space-y-3 overflow-y-auto pr-1 md:max-h-none md:overflow-visible md:pr-0">
             {plan.items.map((item, index) => (
               <div className="rounded-lg border bg-muted/20 p-3" key={`${item.date}-${index}`}>
                 <div className="mb-2 text-xs font-semibold text-primary">
