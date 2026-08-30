@@ -11,7 +11,7 @@ export default createMiddleware({
 export const config = {
   matcher: [
     // Match all pathnames except for
-    // - /api, /_next, /_vercel, /static, /public, /favicon, /data, /site.webmanifest, /robots.txt
-    '/((?!api|_next|_vercel|static|public|favicon|data|site.webmanifest|robots.txt).*)'
+    // - /api, /_next, /_vercel, /static, /public, /favicon, /data, service workers, and static metadata
+    '/((?!api|_next|_vercel|static|public|favicon|data|sw\\.js|workbox-|site\\.webmanifest|robots\\.txt).*)'
   ]
 }; 

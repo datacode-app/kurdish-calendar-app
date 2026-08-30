@@ -186,3 +186,8 @@ html[dir="rtl"] .flip-in-rtl {
 body {
   text-align: start;
 }
+
+/* Keep the mobile month shortcut from covering an agent-staged review. */
+body:has([aria-label="Cultural preservation brief"]) .month-events-fab {
+  display: none;
+}
