@@ -742,7 +742,7 @@ export default function CalendarClient({ locale }: CalendarProps) {
         </SheetContent>
       </Sheet>
       {/* Floating Button for Month Events */}
-      <div className="fixed bottom-4 right-4 z-10 md:hidden">
+      <div className="month-events-fab fixed bottom-4 right-4 z-10 md:hidden">
         <Sheet open={showMonthEventsSheet} onOpenChange={setShowMonthEventsSheet}>
           <SheetTrigger asChild>
             <Button 

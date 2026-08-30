@@ -23,6 +23,16 @@ export interface CalendarEvent {
   region?: string;
 }
 
+export interface CulturalHeritageEntry {
+  id: string;
+  title: LocalizedText;
+  summary: LocalizedText;
+  regions: string[];
+  themes: string[];
+  preservationPrompts: Record<SupportedLocale, string[]>;
+  sources: Array<{ label: string; url: string }>;
+}
+
 export interface CulturalPlanItem {
   date: string;
   time?: string;
@@ -32,7 +42,12 @@ export interface CulturalPlanItem {
 
 export interface CulturalPlanDraft {
   title: string;
+  purpose: string;
+  audience: string;
+  languages: string[];
   items: CulturalPlanItem[];
+  sourceUrls: string[];
+  consentRequired: true;
 }
 
 export const CULTURAL_PLAN_DRAFT_EVENT = 'kurdish-calendar:webmcp-plan-draft';
@@ -67,12 +82,14 @@ export interface WebMcpModelContext {
 
 interface CalendarToolDependencies {
   events: CalendarEvent[];
+  heritage: CulturalHeritageEntry[];
   locale: SupportedLocale;
   openDate(date: string): void;
   stagePlan(plan: CulturalPlanDraft): void;
 }
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const UTC_INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?Z$/;
 const SUPPORTED_LOCALES: SupportedLocale[] = ['en', 'ku', 'ar', 'fa'];
 
 function parseDateOnly(value: unknown, field = 'date'): Date {
@@ -109,6 +126,63 @@ export function createDateContext(dateValue: string, locale: SupportedLocale) {
     persian: formatPersianDate(date, locale).formatted,
     hijri: formatHijriDate(date, locale).formatted,
   };
+}
+
+export interface GlobalTimeComparison {
+  instant: string;
+  inconvenientCount: number;
+  locations: Array<{
+    timeZone: string;
+    localDate: string;
+    localTime: string;
+    hour: number;
+    comfortable: boolean;
+  }>;
+}
+
+export function compareGlobalTimes(
+  instants: string[],
+  timeZones: string[],
+  locale: SupportedLocale,
+): GlobalTimeComparison[] {
+  if (instants.length < 1 || instants.length > 6) throw new Error('candidateInstants must contain between 1 and 6 UTC times.');
+  if (timeZones.length < 1 || timeZones.length > 8) throw new Error('timeZones must contain between 1 and 8 IANA zones.');
+  const uniqueZones = Array.from(new Set(timeZones));
+  const comparisons = instants.map((instant) => {
+    if (!UTC_INSTANT_PATTERN.test(instant) || Number.isNaN(Date.parse(instant))) {
+      throw new Error('Each candidate instant must be an ISO UTC time such as 2026-03-21T13:00:00Z.');
+    }
+    const date = new Date(instant);
+    const locations = uniqueZones.map((timeZone) => {
+      let parts: Intl.DateTimeFormatPart[];
+      try {
+        parts = new Intl.DateTimeFormat('en-GB', {
+          timeZone,
+          year: 'numeric', month: '2-digit', day: '2-digit',
+          hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+        }).formatToParts(date);
+      } catch {
+        throw new Error(`${timeZone} must be a valid IANA time zone.`);
+      }
+      const get = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? '';
+      const hour = Number(get('hour'));
+      return {
+        timeZone,
+        localDate: `${get('year')}-${get('month')}-${get('day')}`,
+        localTime: new Intl.DateTimeFormat(locale, {
+          timeZone, hour: '2-digit', minute: '2-digit', timeZoneName: 'short',
+        }).format(date),
+        hour,
+        comfortable: hour >= 8 && hour < 22,
+      };
+    });
+    return {
+      instant,
+      inconvenientCount: locations.filter((location) => !location.comfortable).length,
+      locations,
+    };
+  });
+  return comparisons.sort((a, b) => a.inconvenientCount - b.inconvenientCount || a.instant.localeCompare(b.instant));
 }
 
 export function buildKurdishCalendarTools(deps: CalendarToolDependencies): WebMcpTool[] {
@@ -202,6 +276,89 @@ export function buildKurdishCalendarTools(deps: CalendarToolDependencies): WebMc
       },
     },
     {
+      name: 'kurdish_calendar_explore_heritage',
+      description: 'Explore a sourced, multilingual Kurdish cultural-preservation archive across Kurdistan and the global diaspora.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          query: { type: 'string', description: 'Optional search across titles, summaries, themes, and preservation prompts.' },
+          region: { type: 'string', description: 'Optional region such as bashur, bakur, rojhelat, rojava, all-regions, or diaspora.' },
+          language: { type: 'string', enum: SUPPORTED_LOCALES },
+        },
+        additionalProperties: false,
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      execute(input) {
+        const language = getLocale(input.language, deps.locale);
+        const query = typeof input.query === 'string' ? input.query.trim().toLocaleLowerCase() : '';
+        const region = typeof input.region === 'string' ? input.region.trim().toLocaleLowerCase() : '';
+        const entries = deps.heritage
+          .filter((entry) => !region || entry.regions.some((value) => value.toLocaleLowerCase() === region))
+          .filter((entry) => {
+            if (!query) return true;
+            const searchable = [
+              ...Object.values(entry.title),
+              ...Object.values(entry.summary),
+              ...entry.themes,
+              ...Object.values(entry.preservationPrompts).flat(),
+            ];
+            return searchable.some((value) => value.toLocaleLowerCase().includes(query));
+          })
+          .map((entry) => ({
+            id: entry.id,
+            title: entry.title[language],
+            summary: entry.summary[language],
+            regions: entry.regions,
+            themes: entry.themes,
+            preservationPrompts: entry.preservationPrompts[language],
+            sources: entry.sources,
+          }));
+        return result(`Found ${entries.length} sourced cultural-preservation entries.`, {
+          count: entries.length,
+          language,
+          region: region || 'any',
+          entries,
+        });
+      },
+    },
+    {
+      name: 'kurdish_calendar_compare_global_times',
+      description: 'Compare and rank candidate UTC times for Kurdish communities in multiple IANA time zones; comfortable hours are 08:00–21:59 local.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          candidateInstants: {
+            type: 'array', minItems: 1, maxItems: 6,
+            items: { type: 'string', description: 'ISO UTC time such as 2026-03-21T13:00:00Z.' },
+          },
+          timeZones: {
+            type: 'array', minItems: 1, maxItems: 8, uniqueItems: true,
+            items: { type: 'string', description: 'IANA time zone such as Asia/Baghdad or America/Toronto.' },
+          },
+          language: { type: 'string', enum: SUPPORTED_LOCALES },
+        },
+        required: ['candidateInstants', 'timeZones'],
+        additionalProperties: false,
+      },
+      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+      execute(input) {
+        if (!Array.isArray(input.candidateInstants) || !input.candidateInstants.every((value) => typeof value === 'string')) {
+          throw new Error('candidateInstants must be an array of ISO UTC times.');
+        }
+        if (!Array.isArray(input.timeZones) || !input.timeZones.every((value) => typeof value === 'string')) {
+          throw new Error('timeZones must be an array of IANA time zones.');
+        }
+        const language = getLocale(input.language, deps.locale);
+        const candidates = compareGlobalTimes(input.candidateInstants, input.timeZones, language);
+        return result(`Compared ${candidates.length} candidate times across ${input.timeZones.length} locations.`, {
+          language,
+          comfortWindow: '08:00–21:59 local time',
+          candidates,
+          recommendedInstant: candidates[0]?.instant,
+        });
+      },
+    },
+    {
       name: 'kurdish_calendar_open_date',
       description: 'Open a Gregorian date in the visible Kurdish Calendar interface for human inspection.',
       inputSchema: {
@@ -221,12 +378,18 @@ export function buildKurdishCalendarTools(deps: CalendarToolDependencies): WebMc
       },
     },
     {
-      name: 'kurdish_calendar_stage_plan',
-      description: 'Stage an editable cultural itinerary in Kurdish Calendar for human review; this never saves, books, or publishes it.',
+      name: 'kurdish_calendar_stage_preservation_brief',
+      description: 'Stage an editable, consent-first cultural preservation brief for a family, school, or diaspora community; this never saves or publishes it.',
       inputSchema: {
         type: 'object',
         properties: {
           title: { type: 'string', minLength: 1, maxLength: 100 },
+          purpose: { type: 'string', minLength: 1, maxLength: 240 },
+          audience: { type: 'string', minLength: 1, maxLength: 160 },
+          languages: {
+            type: 'array', minItems: 1, maxItems: 4, uniqueItems: true,
+            items: { type: 'string', enum: SUPPORTED_LOCALES },
+          },
           items: {
             type: 'array',
             minItems: 1,
@@ -243,18 +406,37 @@ export function buildKurdishCalendarTools(deps: CalendarToolDependencies): WebMc
               additionalProperties: false,
             },
           },
+          sourceUrls: {
+            type: 'array', maxItems: 8, uniqueItems: true,
+            items: { type: 'string', description: 'HTTPS source or attribution URL.' },
+          },
         },
-        required: ['title', 'items'],
+        required: ['title', 'purpose', 'audience', 'languages', 'items', 'sourceUrls'],
         additionalProperties: false,
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       execute(input) {
         if (typeof input.title !== 'string' || !input.title.trim()) throw new Error('title is required.');
+        if (typeof input.purpose !== 'string' || !input.purpose.trim()) throw new Error('purpose is required.');
+        if (typeof input.audience !== 'string' || !input.audience.trim()) throw new Error('audience is required.');
+        if (!Array.isArray(input.languages) || input.languages.length < 1 || input.languages.length > 4
+          || !input.languages.every((language) => typeof language === 'string' && SUPPORTED_LOCALES.includes(language as SupportedLocale))) {
+          throw new Error('languages must contain between 1 and 4 supported language codes.');
+        }
+        if (!Array.isArray(input.sourceUrls) || input.sourceUrls.length > 8 || !input.sourceUrls.every((source) => {
+          if (typeof source !== 'string') return false;
+          try { return new URL(source).protocol === 'https:'; } catch { return false; }
+        })) {
+          throw new Error('sourceUrls must contain up to 8 HTTPS URLs.');
+        }
         if (!Array.isArray(input.items) || input.items.length < 1 || input.items.length > 6) {
           throw new Error('items must contain between 1 and 6 activities.');
         }
         const plan: CulturalPlanDraft = {
           title: input.title.trim(),
+          purpose: input.purpose.trim(),
+          audience: input.audience.trim(),
+          languages: input.languages as string[],
           items: input.items.map((raw) => {
             if (!raw || typeof raw !== 'object') throw new Error('Each plan item must be an object.');
             const item = raw as Record<string, unknown>;
@@ -268,12 +450,15 @@ export function buildKurdishCalendarTools(deps: CalendarToolDependencies): WebMc
               note: typeof item.note === 'string' ? item.note.trim() : undefined,
             };
           }),
+          sourceUrls: input.sourceUrls as string[],
+          consentRequired: true,
         };
         deps.stagePlan(plan);
-        return result('Staged an editable cultural plan for human review. Nothing was saved or published.', {
+        return result('Staged an editable cultural preservation brief for human review. Nothing was saved or published.', {
           status: 'draft',
           saved: false,
           published: false,
+          consentRequired: true,
           plan,
         });
       },

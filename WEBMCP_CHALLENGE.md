@@ -2,7 +2,7 @@
 
 ## Project
 
-**Kurdish Calendar — an agent-ready cultural calendar**
+**Kurdish Cultural Memory — preserve living culture across borders and generations**
 
 - Live application: https://calendar.krd
 - Public source: https://github.com/datacode-app/kurdish-calendar-app
@@ -10,35 +10,37 @@
 
 ## Why WebMCP fits
 
-Kurdish Calendar already brings Gregorian, Kurdish Rojhalat, Kurdish Bashur, Persian, and Hijri dates together with multilingual cultural-event data. That information is difficult for browser agents to use reliably through visual clicking alone: dates can look similar while representing different calendar systems, and the same event may be expressed in Sorani Kurdish, Arabic, Persian, or English.
+Kurdish communities live across Kurdistan and a worldwide diaspora. Preserving a family memory or organizing a cultural gathering can require several Kurdish varieties, four written interface languages, five calendar views, sourced cultural context, and coordination across distant time zones.
 
-WebMCP turns those domain concepts into explicit tools. A person can ask an agent to find culturally relevant dates, compare calendar representations, open the correct day in the visible calendar, and prepare an itinerary. The final plan appears in the ordinary product interface as an editable, unsaved draft.
+Ordinary browser navigation leaves the person to translate dates, search long event lists, check several clocks, collect trustworthy context, and reconstruct the result elsewhere. WebMCP exposes those domain concepts as explicit tools. The agent can do the repetitive comparison and preparation while the person remains responsible for cultural judgment, attribution, consent, and publication.
 
 ## Human-agent collaboration
 
-Before this integration, a person had to manually translate dates across calendar systems, browse monthly event lists, open individual dates, and assemble a plan elsewhere. With WebMCP, the agent performs the structured research and navigation while the person retains judgment and control.
-
 The agent can:
 
-1. inspect today's date across five calendar views;
-2. convert a supplied Gregorian date;
-3. search multilingual cultural events over a date range;
-4. open and select a date in the real calendar UI; and
-5. stage a cultural itinerary for review.
+1. inspect today across Gregorian, Kurdish Rojhalat, Kurdish Bashur, Persian, and Hijri calendars;
+2. convert a supplied Gregorian date across those systems;
+3. search multilingual Kurdish cultural events;
+4. explore a sourced cultural-preservation archive for all Kurdish regions and the diaspora;
+5. compare and rank gathering times across up to eight IANA time zones;
+6. open the chosen date in the real calendar UI; and
+7. stage a consent-first preservation brief for a family, school, or community.
 
-The agent cannot book, save, publish, or send the plan. The review panel explicitly labels it as an unsaved draft and lets the person edit or dismiss it.
+The person sees the selected date and an editable brief containing its purpose, audience, languages, activities, sources, and consent reminder. No tool can save, publish, book, or send it.
 
 ## WebMCP implementation
 
-The authenticated-free public site registers five imperative tools through `document.modelContext.registerTool()`:
+The public site registers seven imperative tools through `document.modelContext.registerTool()`:
 
 - `kurdish_calendar_get_today`
 - `kurdish_calendar_convert_date`
 - `kurdish_calendar_find_events`
+- `kurdish_calendar_explore_heritage`
+- `kurdish_calendar_compare_global_times`
 - `kurdish_calendar_open_date`
-- `kurdish_calendar_stage_plan`
+- `kurdish_calendar_stage_preservation_brief`
 
-Each tool includes a JSON input schema, behavior annotations, structured output, and a short text result. Registrations use the standard `AbortSignal` lifecycle, and a partial registration failure aborts the whole set. Event search uses the same bundled/API dataset as the visible calendar.
+Each tool has a strict JSON input schema, behavior annotations, structured output, and a short text result. Registrations use `AbortSignal`; synchronous or asynchronous partial-registration failures abort the complete set. Event search uses the same data as the visible calendar. Cultural entries carry source URLs, localized summaries, regional tags, themes, and preservation prompts.
 
 ## Existing project versus challenge work
 
@@ -46,27 +48,29 @@ Kurdish Calendar, its localization, date-conversion utilities, event data, and p
 
 Added during the challenge:
 
-- the five WebMCP tool contracts and implementations;
-- imperative registration and lifecycle cleanup;
-- agent-driven navigation to a selected date;
-- a visible, editable cultural-plan review panel;
-- explicit unsaved/human-control messaging;
-- current bundled event data through 2026;
-- automated tests and WebMCP-capable browser verification.
+- seven WebMCP tool contracts and implementations;
+- imperative registration and fail-closed lifecycle cleanup;
+- agent-driven date navigation;
+- sourced multilingual cultural-preservation records;
+- international time-zone comparison and ranking;
+- an editable, consent-first preservation review panel;
+- explicit private/unsaved/human-control messaging;
+- updated bundled event data through 2026;
+- automated tests and WebMCP-capable desktop/mobile browser verification.
 
-The feature commit history documents the extension during the submission period.
+The feature branch history separates the challenge extension from the pre-existing application.
 
 ## Demo prompt
 
-> Find Kurdish cultural events around Nawroz 2026, open March 21 in the calendar, and stage a two-day cultural plan for me to review.
+> Help Kurdish families in Erbil, London, Toronto, and Sydney preserve Nawroz together. Find sourced cultural context, compare 2026-03-21 at 13:00Z and 17:00Z, open March 21, and stage a Kurdish-English preservation brief for families to review. Include a consent-first prompt for recording one family memory.
 
 ## Testing
 
 1. Use ChatGPT's in-app browser, or Chrome 149+ with `chrome://flags/#enable-webmcp-testing` enabled.
 2. Open the live URL.
-3. Confirm `await document.modelContext.getTools()` returns the five tools.
+3. Confirm `await document.modelContext.getTools()` returns the seven tools.
 4. Run the demo prompt.
-5. Confirm March 21 is selected and the staged plan is visible, editable, and labeled unsaved.
+5. Confirm March 21 is selected and the preservation brief is editable, sourced, consent-first, private, and unsaved.
 
 Automated checks:
 
@@ -78,4 +82,4 @@ npm run build
 
 ## Video plan
 
-The final video will be a continuous recording of the live product, under three minutes, with English audio. It will show tool discovery, multilingual event search, cross-calendar context, agent-driven date selection, and the editable unsaved plan. No slideshows or mock-product footage will be used.
+The final video will be a continuous recording of the deployed product, under three minutes, with English audio. It will show tool discovery, sourced heritage exploration, multilingual calendar context, global-time comparison, agent-driven date selection, and the editable consent-first preservation brief. No slideshow or mock-product footage will be used.

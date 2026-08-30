@@ -4,25 +4,27 @@
 
 A comprehensive calendar application that supports multiple calendar systems relevant to Kurdish communities and the broader Middle East region. This application is available at [calendar.krd](https://calendar.krd).
 
-## WebMCP cultural planning
+## WebMCP Kurdish Cultural Memory
 
-Kurdish Calendar now exposes five structured browser tools through the experimental [`document.modelContext`](https://github.com/webmachinelearning/webmcp) API:
+Kurdish Calendar now exposes seven structured browser tools through the experimental [`document.modelContext`](https://github.com/webmachinelearning/webmcp) API:
 
 - `kurdish_calendar_get_today` returns today's Gregorian, Kurdish Rojhalat, Kurdish Bashur, Persian, and Hijri dates.
 - `kurdish_calendar_convert_date` converts a supplied Gregorian date across the same calendar systems.
-- `kurdish_calendar_find_events` searches the app's multilingual cultural-event data by inclusive date range, language, holiday status, and text.
+- `kurdish_calendar_find_events` searches multilingual cultural-event data by date range, language, holiday status, and text.
+- `kurdish_calendar_explore_heritage` explores sourced cultural records, preservation prompts, regions, and themes.
+- `kurdish_calendar_compare_global_times` ranks UTC meeting candidates across up to eight IANA time zones for international Kurdish communities.
 - `kurdish_calendar_open_date` opens and selects a date in the real calendar interface.
-- `kurdish_calendar_stage_plan` places an editable itinerary into a visible review panel. It does not book, save, or publish anything.
+- `kurdish_calendar_stage_preservation_brief` places an editable, consent-first family, school, or diaspora preservation brief into the visible product. It never saves or publishes it.
 
-The tools are registered imperatively with `document.modelContext.registerTool()` and use `AbortSignal` cleanup. Tool results are structured JSON plus a short text summary. The same event dataset powers both the human UI and agent tools.
+The tools are registered imperatively with `document.modelContext.registerTool()` and use `AbortSignal` cleanup. Tool results are structured JSON plus a short text summary. The cultural archive keeps its source URLs with each record, while the same event dataset powers both the human UI and agent tools.
 
 ### Human-agent workflow
 
 Try this prompt in a WebMCP-capable browser:
 
-> Find Kurdish cultural events around Nawroz, open March 21 in the calendar, and stage a two-day cultural plan for me to review.
+> Help Kurdish families in Erbil, London, Toronto, and Sydney preserve Nawroz together. Find sourced cultural context, compare two UTC meeting times, open March 21, and stage a Kurdish-English preservation brief for families to review. Include prompts for recording a family memory, and keep everything private and consent-first.
 
-The agent can research and stage a draft, while the person sees the selected date and edits the itinerary. No tool can save, publish, book, or send the plan.
+The agent handles multilingual research, calendar conversion, and global-time comparison. The person reviews sources, edits every part of the brief, decides what remains private, and asks contributors for permission. No tool can save, publish, book, or send the brief.
 
 ### Testing WebMCP
 
@@ -34,7 +36,7 @@ await document.modelContext.getTools()
 
 ### Challenge-period work
 
-The calendar, localization, conversion utilities, event dataset, and public website existed before the OpenAI WebMCP Challenge. The WebMCP bridge, five tool contracts, agent-driven date navigation, editable draft-plan review panel, lifecycle handling, and their tests were added after the challenge opened. The Git history on the `feat/webmcp-cultural-planner` branch distinguishes this work from the pre-existing application.
+The calendar, localization, conversion utilities, event dataset, and public website existed before the OpenAI WebMCP Challenge. The WebMCP bridge, seven tool contracts, sourced cultural archive, global-time comparison, agent-driven date navigation, editable consent-first preservation review panel, lifecycle handling, and their tests were added after the challenge opened. The Git history on the `feat/webmcp-cultural-planner` branch distinguishes this work from the pre-existing application.
 
 ## ✨ Features
 

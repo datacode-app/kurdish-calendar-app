@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCalendarDataUrl } from '@/lib/calendar-data-url';
+import { CULTURAL_HERITAGE } from '@/lib/cultural-heritage';
 import {
   buildKurdishCalendarTools,
   CULTURAL_PLAN_DRAFT_EVENT,
@@ -43,6 +44,7 @@ export default function WebMcpBridge({ locale }: { locale: string }) {
 
   const tools = useMemo(() => buildKurdishCalendarTools({
     events,
+    heritage: CULTURAL_HERITAGE,
     locale: safeLocale,
     openDate: (date) => {
       dispatchCalendarOpenDate(window, date);
