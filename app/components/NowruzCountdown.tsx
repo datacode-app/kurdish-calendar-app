@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import AnimatedNumber from './AnimatedNumber';
+import { getKurdishDate } from '@/lib/getKurdishDate';
 
 interface TimeLeft {
   days: number;
@@ -15,31 +15,17 @@ export default function NowruzCountdown() {
   const t = useTranslations();
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [showCountdown, setShowCountdown] = useState(true);
-  const [kurdishYear, setKurdishYear] = useState("2724");
-  const [lastDigit, setLastDigit] = useState("4");
-  const [isFlipping, setIsFlipping] = useState(false);
-
-  // Enhanced year animation for last digit only
-  useEffect(() => {
-    const pulseTimer = setInterval(() => {
-      setIsFlipping(true);
-      setTimeout(() => {
-        setLastDigit(prev => prev === "4" ? "5" : "4");
-        setIsFlipping(false);
-      }, 500);
-    }, 3000);
-
-    return () => clearInterval(pulseTimer);
-  }, []);
+  // Kurdish year the countdown is heading into, e.g. "2727"
+  const [targetKurdishYear, setTargetKurdishYear] = useState("");
 
   useEffect(() => {
     const calculateTimeLeft = () => {
       const now = new Date();
       const currentYear = now.getFullYear();
-      
+
       // Nowruz is on March 21
       const nowruz = new Date(currentYear, 2, 21); // Month is 0-indexed
-      
+
       // If we've passed this year's Nowruz, look to next year
       if (now > nowruz) {
         nowruz.setFullYear(currentYear + 1);
@@ -49,8 +35,10 @@ export default function NowruzCountdown() {
         return;
       }
 
+      setTargetKurdishYear(String(getKurdishDate(nowruz).kurdishYear));
+
       const difference = nowruz.getTime() - now.getTime();
-      
+
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -88,17 +76,6 @@ export default function NowruzCountdown() {
       opacity: 1, 
       y: 0,
       transition: { duration: 0.6 }
-    }
-  };
-
-  const yearVariants = {
-    initial: { rotateX: 0 },
-    flip: { 
-      rotateX: 180,
-      transition: {
-        duration: 0.5,
-        ease: "easeInOut"
-      }
     }
   };
 
@@ -153,23 +130,14 @@ export default function NowruzCountdown() {
             {t('countdown.kurdishYear')}
           </div>
           <div className="flex justify-center items-center" dir="ltr">
-            <span className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300">
-              2
-            </span>
-            <span className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300">
-              7
-            </span>
-            <span className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300">
-              2
-            </span>
-            <motion.span 
-              className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300 perspective-1000"
-              animate={isFlipping ? "flip" : "initial"}
-              variants={yearVariants}
-              style={{ transformStyle: "preserve-3d", display: "inline-block" }}
-            >
-              {lastDigit}
-            </motion.span>
+            {(targetKurdishYear || ' ').split('').map((digit, index) => (
+              <span
+                key={index}
+                className="text-6xl md:text-7xl font-bold text-emerald-700 dark:text-emerald-300"
+              >
+                {digit}
+              </span>
+            ))}
           </div>
         </div>
       </motion.div>
