@@ -97,14 +97,14 @@ export default function Navigation() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-20 items-center justify-between px-8 max-w-7xl mx-auto">
+      <div className="container mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-8">
         {/* Logo Section */}
-        <div className="flex items-center">
+        <div className="min-w-0 flex items-center">
           <button 
             onClick={() => handleNavigation('')}
-            className="flex items-center space-x-2 transition-colors hover:opacity-90"
+            className="min-w-0 flex items-center transition-colors hover:opacity-90"
           >
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <span className="block truncate bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-xl font-bold text-transparent sm:text-2xl">
               {t('app.title')}
             </span>
           </button>
@@ -157,7 +157,7 @@ export default function Navigation() {
 
         {/* Mobile Navigation */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <div className="flex items-center gap-4 md:hidden">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-4 md:hidden">
             <ThemeToggle />
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="hover:bg-accent">

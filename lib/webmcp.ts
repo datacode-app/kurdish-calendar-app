@@ -23,34 +23,18 @@ export interface CalendarEvent {
   region?: string;
 }
 
-export interface CulturalHeritageEntry {
-  id: string;
-  title: LocalizedText;
-  summary: LocalizedText;
-  regions: string[];
-  themes: string[];
-  preservationPrompts: Record<SupportedLocale, string[]>;
-  sources: Array<{ label: string; url: string }>;
-}
-
-export interface CulturalPlanItem {
-  date: string;
-  time?: string;
-  activity: string;
-  note?: string;
-}
-
-export interface CulturalPlanDraft {
+export interface CalendarPlanDraft {
   title: string;
-  purpose: string;
-  audience: string;
-  languages: string[];
-  items: CulturalPlanItem[];
-  sourceUrls: string[];
-  consentRequired: true;
+  date: string;
+  eventTitle: string;
+  selectedInstant: string;
+  timeZones: string[];
+  notes?: string;
+  calendarContext: ReturnType<typeof createDateContext>;
+  localTimes: GlobalTimeComparison['locations'];
 }
 
-export const CULTURAL_PLAN_DRAFT_EVENT = 'kurdish-calendar:webmcp-plan-draft';
+export const CALENDAR_PLAN_DRAFT_EVENT = 'kurdish-calendar:webmcp-event-plan';
 export const CALENDAR_OPEN_DATE_EVENT = 'kurdish-calendar:webmcp-open-date';
 
 export function dispatchCalendarOpenDate(target: EventTarget, date: string): void {
@@ -82,10 +66,9 @@ export interface WebMcpModelContext {
 
 interface CalendarToolDependencies {
   events: CalendarEvent[];
-  heritage: CulturalHeritageEntry[];
   locale: SupportedLocale;
   openDate(date: string): void;
-  stagePlan(plan: CulturalPlanDraft): void;
+  stagePlan(plan: CalendarPlanDraft): void;
 }
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -185,25 +168,20 @@ export function compareGlobalTimes(
   return comparisons.sort((a, b) => a.inconvenientCount - b.inconvenientCount || a.instant.localeCompare(b.instant));
 }
 
+export function formatCalendarPlan(plan: CalendarPlanDraft): string {
+  return [
+    plan.title,
+    `${plan.eventTitle} — ${plan.date}`,
+    `Selected time: ${plan.selectedInstant}`,
+    ...plan.localTimes.map((location) => `${location.timeZone}: ${location.localDate} ${location.localTime}`),
+    `Calendars: ${plan.calendarContext.kurdishBashur}; ${plan.calendarContext.kurdishRojhalat}; ${plan.calendarContext.persian}; ${plan.calendarContext.hijri}`,
+    plan.notes ? `Notes: ${plan.notes}` : '',
+    'Draft only — Not saved or shared.',
+  ].filter(Boolean).join('\n');
+}
+
 export function buildKurdishCalendarTools(deps: CalendarToolDependencies): WebMcpTool[] {
   return [
-    {
-      name: 'kurdish_calendar_get_today',
-      description: 'Get today in Gregorian, Kurdish Rojhalat, Kurdish Bashur, Persian, and Hijri calendars.',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          language: { type: 'string', enum: SUPPORTED_LOCALES },
-        },
-        additionalProperties: false,
-      },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-      execute(input) {
-        const language = getLocale(input.language, deps.locale);
-        const today = new Date().toISOString().slice(0, 10);
-        return result(`Today across five calendar views is ${today}.`, createDateContext(today, language));
-      },
-    },
     {
       name: 'kurdish_calendar_convert_date',
       description: 'Convert one Gregorian date into the calendar systems displayed by Kurdish Calendar.',
@@ -276,52 +254,6 @@ export function buildKurdishCalendarTools(deps: CalendarToolDependencies): WebMc
       },
     },
     {
-      name: 'kurdish_calendar_explore_heritage',
-      description: 'Explore a sourced, multilingual Kurdish cultural-preservation archive across Kurdistan and the global diaspora.',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          query: { type: 'string', description: 'Optional search across titles, summaries, themes, and preservation prompts.' },
-          region: { type: 'string', description: 'Optional region such as bashur, bakur, rojhelat, rojava, all-regions, or diaspora.' },
-          language: { type: 'string', enum: SUPPORTED_LOCALES },
-        },
-        additionalProperties: false,
-      },
-      annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
-      execute(input) {
-        const language = getLocale(input.language, deps.locale);
-        const query = typeof input.query === 'string' ? input.query.trim().toLocaleLowerCase() : '';
-        const region = typeof input.region === 'string' ? input.region.trim().toLocaleLowerCase() : '';
-        const entries = deps.heritage
-          .filter((entry) => !region || entry.regions.some((value) => value.toLocaleLowerCase() === region))
-          .filter((entry) => {
-            if (!query) return true;
-            const searchable = [
-              ...Object.values(entry.title),
-              ...Object.values(entry.summary),
-              ...entry.themes,
-              ...Object.values(entry.preservationPrompts).flat(),
-            ];
-            return searchable.some((value) => value.toLocaleLowerCase().includes(query));
-          })
-          .map((entry) => ({
-            id: entry.id,
-            title: entry.title[language],
-            summary: entry.summary[language],
-            regions: entry.regions,
-            themes: entry.themes,
-            preservationPrompts: entry.preservationPrompts[language],
-            sources: entry.sources,
-          }));
-        return result(`Found ${entries.length} sourced cultural-preservation entries.`, {
-          count: entries.length,
-          language,
-          region: region || 'any',
-          entries,
-        });
-      },
-    },
-    {
       name: 'kurdish_calendar_compare_global_times',
       description: 'Compare and rank candidate UTC times for Kurdish communities in multiple IANA time zones; comfortable hours are 08:00–21:59 local.',
       inputSchema: {
@@ -378,87 +310,57 @@ export function buildKurdishCalendarTools(deps: CalendarToolDependencies): WebMc
       },
     },
     {
-      name: 'kurdish_calendar_stage_preservation_brief',
-      description: 'Stage an editable, consent-first cultural preservation brief for a family, school, or diaspora community; this never saves or publishes it.',
+      name: 'kurdish_calendar_stage_event_plan',
+      description: 'Stage an editable event plan with calendar conversions and local times for human review; this never saves, shares, or sends it.',
       inputSchema: {
         type: 'object',
         properties: {
           title: { type: 'string', minLength: 1, maxLength: 100 },
-          purpose: { type: 'string', minLength: 1, maxLength: 240 },
-          audience: { type: 'string', minLength: 1, maxLength: 160 },
-          languages: {
-            type: 'array', minItems: 1, maxItems: 4, uniqueItems: true,
-            items: { type: 'string', enum: SUPPORTED_LOCALES },
+          date: { type: 'string', description: 'Gregorian event date in YYYY-MM-DD format.' },
+          eventTitle: { type: 'string', minLength: 1, maxLength: 160 },
+          selectedInstant: { type: 'string', description: 'Chosen ISO UTC time such as 2026-03-21T13:00:00Z.' },
+          timeZones: {
+            type: 'array', minItems: 1, maxItems: 8, uniqueItems: true,
+            items: { type: 'string', description: 'IANA time zone such as Asia/Baghdad or America/Toronto.' },
           },
-          items: {
-            type: 'array',
-            minItems: 1,
-            maxItems: 6,
-            items: {
-              type: 'object',
-              properties: {
-                date: { type: 'string', description: 'Gregorian date in YYYY-MM-DD format.' },
-                time: { type: 'string', description: 'Optional local time such as 10:00.' },
-                activity: { type: 'string', minLength: 1, maxLength: 180 },
-                note: { type: 'string', maxLength: 240 },
-              },
-              required: ['date', 'activity'],
-              additionalProperties: false,
-            },
-          },
-          sourceUrls: {
-            type: 'array', maxItems: 8, uniqueItems: true,
-            items: { type: 'string', description: 'HTTPS source or attribution URL.' },
-          },
+          notes: { type: 'string', maxLength: 500 },
         },
-        required: ['title', 'purpose', 'audience', 'languages', 'items', 'sourceUrls'],
+        required: ['title', 'date', 'eventTitle', 'selectedInstant', 'timeZones'],
         additionalProperties: false,
       },
       annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
       execute(input) {
         if (typeof input.title !== 'string' || !input.title.trim()) throw new Error('title is required.');
-        if (typeof input.purpose !== 'string' || !input.purpose.trim()) throw new Error('purpose is required.');
-        if (typeof input.audience !== 'string' || !input.audience.trim()) throw new Error('audience is required.');
-        if (!Array.isArray(input.languages) || input.languages.length < 1 || input.languages.length > 4
-          || !input.languages.every((language) => typeof language === 'string' && SUPPORTED_LOCALES.includes(language as SupportedLocale))) {
-          throw new Error('languages must contain between 1 and 4 supported language codes.');
+        const date = String(input.date ?? '');
+        parseDateOnly(date);
+        if (typeof input.eventTitle !== 'string' || !input.eventTitle.trim()) throw new Error('eventTitle is required.');
+        if (typeof input.selectedInstant !== 'string' || !UTC_INSTANT_PATTERN.test(input.selectedInstant)
+          || Number.isNaN(Date.parse(input.selectedInstant))) {
+          throw new Error('selectedInstant must be a valid ISO UTC time.');
         }
-        if (!Array.isArray(input.sourceUrls) || input.sourceUrls.length > 8 || !input.sourceUrls.every((source) => {
-          if (typeof source !== 'string') return false;
-          try { return new URL(source).protocol === 'https:'; } catch { return false; }
-        })) {
-          throw new Error('sourceUrls must contain up to 8 HTTPS URLs.');
+        if (!Array.isArray(input.timeZones) || input.timeZones.length < 1 || input.timeZones.length > 8
+          || !input.timeZones.every((zone) => typeof zone === 'string')) {
+          throw new Error('timeZones must contain between 1 and 8 IANA time zones.');
         }
-        if (!Array.isArray(input.items) || input.items.length < 1 || input.items.length > 6) {
-          throw new Error('items must contain between 1 and 6 activities.');
-        }
-        const plan: CulturalPlanDraft = {
+        const selectedInstant = input.selectedInstant;
+        const timeZones = Array.from(new Set(input.timeZones as string[]));
+        const localTimes = compareGlobalTimes([selectedInstant], timeZones, deps.locale)[0].locations;
+        const plan: CalendarPlanDraft = {
           title: input.title.trim(),
-          purpose: input.purpose.trim(),
-          audience: input.audience.trim(),
-          languages: input.languages as string[],
-          items: input.items.map((raw) => {
-            if (!raw || typeof raw !== 'object') throw new Error('Each plan item must be an object.');
-            const item = raw as Record<string, unknown>;
-            const date = String(item.date ?? '');
-            parseDateOnly(date);
-            if (typeof item.activity !== 'string' || !item.activity.trim()) throw new Error('Each plan item needs an activity.');
-            return {
-              date,
-              time: typeof item.time === 'string' ? item.time : undefined,
-              activity: item.activity.trim(),
-              note: typeof item.note === 'string' ? item.note.trim() : undefined,
-            };
-          }),
-          sourceUrls: input.sourceUrls as string[],
-          consentRequired: true,
+          date,
+          eventTitle: input.eventTitle.trim(),
+          selectedInstant,
+          timeZones,
+          notes: typeof input.notes === 'string' ? input.notes.trim() : undefined,
+          calendarContext: createDateContext(date, deps.locale),
+          localTimes,
         };
         deps.stagePlan(plan);
-        return result('Staged an editable cultural preservation brief for human review. Nothing was saved or published.', {
+        return result('Staged an editable calendar event plan for human review. Nothing was saved, shared, or sent.', {
           status: 'draft',
           saved: false,
-          published: false,
-          consentRequired: true,
+          shared: false,
+          sent: false,
           plan,
         });
       },
