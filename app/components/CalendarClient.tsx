@@ -111,6 +111,7 @@ interface CalendarProps {
 
 export default function CalendarClient({ locale }: CalendarProps) {
   const t = useTranslations();
+  const [isMounted, setIsMounted] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [holidays, setHolidays] = useState<Holiday[]>([]);
@@ -120,6 +121,10 @@ export default function CalendarClient({ locale }: CalendarProps) {
 
   // Add new state for month events sheet
   const [showMonthEventsSheet, setShowMonthEventsSheet] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const showDate = (requestedDate: string | null) => {
@@ -590,6 +595,10 @@ export default function CalendarClient({ locale }: CalendarProps) {
       </div>
     );
   }, [locale]);
+
+  if (!isMounted) {
+    return <div aria-hidden="true" className="min-h-[32rem] animate-pulse rounded-xl bg-muted/20" />;
+  }
 
   return (
     <div className={`w-full space-y-6 ${getFontClass(locale)}`}>
