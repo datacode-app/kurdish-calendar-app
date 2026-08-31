@@ -188,6 +188,6 @@ body {
 }
 
 /* Keep the mobile month shortcut from covering an agent-staged review. */
-body:has([aria-label="Cultural preservation brief"]) .month-events-fab {
+body:has([aria-label="Calendar event plan"]) .month-events-fab {
   display: none;
 }

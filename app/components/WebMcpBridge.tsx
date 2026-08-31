@@ -3,14 +3,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCalendarDataUrl } from '@/lib/calendar-data-url';
-import { CULTURAL_HERITAGE } from '@/lib/cultural-heritage';
 import {
   buildKurdishCalendarTools,
-  CULTURAL_PLAN_DRAFT_EVENT,
+  CALENDAR_PLAN_DRAFT_EVENT,
   dispatchCalendarOpenDate,
   registerKurdishCalendarTools,
+  type CalendarPlanDraft,
   type CalendarEvent,
-  type CulturalPlanDraft,
   type SupportedLocale,
   type WebMcpModelContext,
 } from '@/lib/webmcp';
@@ -44,14 +43,13 @@ export default function WebMcpBridge({ locale }: { locale: string }) {
 
   const tools = useMemo(() => buildKurdishCalendarTools({
     events,
-    heritage: CULTURAL_HERITAGE,
     locale: safeLocale,
     openDate: (date) => {
       dispatchCalendarOpenDate(window, date);
       router.push(`/${safeLocale}/calendar?date=${date}`);
     },
-    stagePlan: (plan: CulturalPlanDraft) => {
-      window.dispatchEvent(new CustomEvent<CulturalPlanDraft>(CULTURAL_PLAN_DRAFT_EVENT, { detail: plan }));
+    stagePlan: (plan: CalendarPlanDraft) => {
+      window.dispatchEvent(new CustomEvent<CalendarPlanDraft>(CALENDAR_PLAN_DRAFT_EVENT, { detail: plan }));
     },
   }), [events, router, safeLocale]);
 

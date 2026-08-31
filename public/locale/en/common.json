@@ -177,16 +177,18 @@
   "footer": {
     "madeBy": "Made by"
   },
-  "culturalMemory": {
-    "badge": "Kurdish Cultural Memory · 7 WebMCP tools",
-    "consent": "Consent-first drafts stay private until you decide",
-    "eyebrow": "Built for every Kurdish community",
-    "title": "Preserve living culture across borders and generations",
-    "description": "Explore sourced traditions, translate dates across calendar systems, coordinate diaspora communities across time zones, and prepare editable family or school preservation briefs—with attribution and consent built in.",
+  "agentCalendar": {
+    "badge": "Kurdish Calendar Agent · 5 WebMCP tools",
+    "consent": "The agent prepares; only you copy or share",
+    "eyebrow": "Practical calendar planning",
+    "title": "Ask once. Coordinate Nawroz across calendars and time zones.",
+    "description": "Let your browser agent find Kurdish events, convert dates, compare local times, open the correct day, and stage one editable event plan for your review.",
+    "exampleLabel": "Example request",
+    "examplePrompt": "Plan Nawroz 2026 for my family in Erbil, London, and Toronto.",
     "tags": {
-      "diaspora": "Kurdistan + diaspora",
-      "languages": "4 languages",
-      "archive": "Sourced archive",
+      "events": "Kurdish events",
+      "calendars": "5 calendars",
+      "timeZones": "Global time zones",
       "humanControlled": "Human controlled"
     }
   }

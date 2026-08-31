@@ -5,9 +5,9 @@ import {
   compareGlobalTimes,
   createDateContext,
   dispatchCalendarOpenDate,
+  formatCalendarPlan,
   registerKurdishCalendarTools,
   type CalendarEvent,
-  type CulturalHeritageEntry,
   type WebMcpModelContext,
 } from '../lib/webmcp';
 import { getCalendarDataUrl } from '../lib/calendar-data-url';
@@ -37,32 +37,9 @@ const events: CalendarEvent[] = [
   },
 ];
 
-const heritage: CulturalHeritageEntry[] = [
-  {
-    id: 'nawroz',
-    title: { en: 'Nawroz', ku: 'نەورۆز', ar: 'نوروز', fa: 'نوروز' },
-    summary: {
-      en: 'A spring new year celebration shared across Kurdish communities.',
-      ku: 'جەژنی ساڵی نوێی بەهارە لە کۆمەڵگە کوردییەکان.',
-      ar: 'احتفال ربيعي بالسنة الجديدة لدى المجتمعات الكردية.',
-      fa: 'جشن سال نوی بهاری در میان جوامع کرد.',
-    },
-    regions: ['all-regions', 'diaspora'],
-    themes: ['new-year', 'music', 'family-memory'],
-    preservationPrompts: {
-      en: ['Record how your family celebrates Nawroz.'],
-      ku: ['تۆمار بکە خێزانەکەت چۆن نەورۆز دەگێڕێت.'],
-      ar: ['سجل كيف تحتفل عائلتك بنوروز.'],
-      fa: ['ثبت کنید خانواده‌تان نوروز را چگونه جشن می‌گیرد.'],
-    },
-    sources: [{ label: 'UNESCO Intangible Cultural Heritage', url: 'https://ich.unesco.org/en/RL/00282' }],
-  },
-];
-
 function dependencies(overrides: Partial<Parameters<typeof buildKurdishCalendarTools>[0]> = {}) {
   return {
     events,
-    heritage,
     locale: 'en' as const,
     openDate: vi.fn(),
     stagePlan: vi.fn(),
@@ -71,6 +48,17 @@ function dependencies(overrides: Partial<Parameters<typeof buildKurdishCalendarT
 }
 
 describe('Kurdish Calendar WebMCP tools', () => {
+  it('exposes only the five tools needed for a coherent calendar-planning workflow', () => {
+    const tools = buildKurdishCalendarTools(dependencies());
+    expect(tools.map((tool) => tool.name)).toEqual([
+      'kurdish_calendar_convert_date',
+      'kurdish_calendar_find_events',
+      'kurdish_calendar_compare_global_times',
+      'kurdish_calendar_open_date',
+      'kurdish_calendar_stage_event_plan',
+    ]);
+  });
+
   it('uses the bundled event data when no API base URL is configured', () => {
     expect(getCalendarDataUrl(undefined)).toBe('/data/holidays.json');
     expect(getCalendarDataUrl('undefined')).toBe('/data/holidays.json');
@@ -106,18 +94,6 @@ describe('Kurdish Calendar WebMCP tools', () => {
     });
   });
 
-  it('searches a sourced cultural archive across the global Kurdish community', async () => {
-    const tools = buildKurdishCalendarTools(dependencies());
-    const explore = tools.find((tool) => tool.name === 'kurdish_calendar_explore_heritage');
-    const found = await explore?.execute({ query: 'family', region: 'diaspora', language: 'ku' });
-    expect(found?.structuredContent).toMatchObject({
-      count: 1,
-      entries: [{ id: 'nawroz', title: 'نەورۆز', regions: ['all-regions', 'diaspora'] }],
-    });
-    expect(found?.structuredContent.entries).toEqual(expect.arrayContaining([
-      expect.objectContaining({ sources: [{ label: 'UNESCO Intangible Cultural Heritage', url: 'https://ich.unesco.org/en/RL/00282' }] }),
-    ]));
-  });
 
   it('ranks UTC meeting candidates for Kurdish communities in different countries', () => {
     const comparison = compareGlobalTimes(
@@ -138,33 +114,60 @@ describe('Kurdish Calendar WebMCP tools', () => {
     expect(openDate).toHaveBeenCalledWith('2026-03-21');
   });
 
-  it('stages an editable preservation brief without saving or publishing it', async () => {
+  it('stages a practical diaspora event plan without saving or sharing it', async () => {
     const stagePlan = vi.fn();
     const tools = buildKurdishCalendarTools(dependencies({ stagePlan }));
-    const stage = tools.find((tool) => tool.name === 'kurdish_calendar_stage_preservation_brief');
-    const plan = {
-      title: 'Nawroz across generations',
-      purpose: 'Help diaspora children learn family traditions.',
-      audience: 'Kurdish families in Toronto',
-      languages: ['ku', 'en'],
-      items: [{ date: '2026-03-21', time: '10:00', activity: 'Record a family Nawroz memory', note: 'Ask permission first' }],
-      sourceUrls: ['https://ich.unesco.org/en/RL/00282'],
+    const stage = tools.find((tool) => tool.name === 'kurdish_calendar_stage_event_plan');
+    const input = {
+      title: 'Nawroz across time zones',
+      date: '2026-03-21',
+      eventTitle: 'Nawroz Kurdish New Year',
+      selectedInstant: '2026-03-21T13:00:00Z',
+      timeZones: ['Asia/Baghdad', 'Europe/London', 'America/Toronto'],
+      notes: 'Confirm the final time with the family before sharing.',
     };
-    const result = await stage?.execute(plan);
-    expect(stagePlan).toHaveBeenCalledWith(expect.objectContaining(plan));
+    const result = await stage?.execute(input);
+    expect(stagePlan).toHaveBeenCalledWith(expect.objectContaining({
+      ...input,
+      calendarContext: expect.objectContaining({ date: '2026-03-21' }),
+      localTimes: expect.arrayContaining([
+        expect.objectContaining({ timeZone: 'Asia/Baghdad' }),
+        expect.objectContaining({ timeZone: 'America/Toronto' }),
+      ]),
+    }));
     expect(result?.structuredContent).toMatchObject({
-      status: 'draft', saved: false, published: false, consentRequired: true,
+      status: 'draft', saved: false, shared: false,
     });
-    expect(tools.some((tool) => tool.name.includes('save') || tool.name.includes('publish'))).toBe(false);
   });
 
-  it('registers seven tools with AbortSignal cleanup', () => {
+  it('formats an event plan for explicit human copying', () => {
+    const text = formatCalendarPlan({
+      title: 'Nawroz across time zones',
+      date: '2026-03-21',
+      eventTitle: 'Nawroz Kurdish New Year',
+      selectedInstant: '2026-03-21T13:00:00Z',
+      timeZones: ['Asia/Baghdad', 'America/Toronto'],
+      notes: 'Confirm before sharing.',
+      calendarContext: createDateContext('2026-03-21', 'en'),
+      localTimes: compareGlobalTimes(
+        ['2026-03-21T13:00:00Z'],
+        ['Asia/Baghdad', 'America/Toronto'],
+        'en',
+      )[0].locations,
+    });
+    expect(text).toContain('Nawroz Kurdish New Year');
+    expect(text).toContain('Asia/Baghdad');
+    expect(text).toContain('America/Toronto');
+    expect(text).toContain('Not saved or shared');
+  });
+
+  it('registers five tools with AbortSignal cleanup', () => {
     const signals: AbortSignal[] = [];
     const context: WebMcpModelContext = {
       registerTool: vi.fn(async (_tool, options) => signals.push(options.signal)),
     };
     const cleanup = registerKurdishCalendarTools(context, buildKurdishCalendarTools(dependencies()));
-    expect(context.registerTool).toHaveBeenCalledTimes(7);
+    expect(context.registerTool).toHaveBeenCalledTimes(5);
     expect(signals.every((signal) => !signal.aborted)).toBe(true);
     cleanup();
     expect(signals.every((signal) => signal.aborted)).toBe(true);
