@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
 import {
   buildKurdishCalendarTools,
   CALENDAR_OPEN_DATE_EVENT,
@@ -48,6 +49,13 @@ function dependencies(overrides: Partial<Parameters<typeof buildKurdishCalendarT
 }
 
 describe('Kurdish Calendar WebMCP tools', () => {
+  it('keeps Nawroz separate from coincident religious observances', () => {
+    const data = JSON.parse(readFileSync(new URL('../public/data/holidays.json', import.meta.url), 'utf8')) as { holidays: CalendarEvent[] };
+    const march21 = data.holidays.filter((event) => event.date === '2026-03-21');
+    expect(march21.some((event) => event.event.en === 'Nawroz Kurdish New Year')).toBe(true);
+    expect(march21.some((event) => event.event.en.includes('Nawroz') && event.event.en.includes('Eid'))).toBe(false);
+  });
+
   it('exposes only the five tools needed for a coherent calendar-planning workflow', () => {
     const tools = buildKurdishCalendarTools(dependencies());
     expect(tools.map((tool) => tool.name)).toEqual([

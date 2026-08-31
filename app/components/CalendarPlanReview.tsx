@@ -55,7 +55,7 @@ export default function CalendarPlanReview() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Your browser agent coordinated this event across calendars and time zones. Review every field before copying it; nothing has been saved, shared, or sent.
+            Your browser agent coordinated this event across calendars and time zones. Review the details and edit the title, event, or notes before copying; nothing has been saved, shared, or sent.
           </p>
 
           <div className="grid gap-3 md:grid-cols-2">
@@ -70,7 +70,7 @@ export default function CalendarPlanReview() {
               />
             </label>
             <div className="space-y-1 text-xs font-semibold text-muted-foreground">
-              Gregorian date and selected UTC time
+              Gregorian date and suggested meeting time
               <div className="flex min-h-10 items-center rounded-md border bg-background px-3 text-sm font-normal text-foreground">
                 {plan.date} · {plan.selectedInstant.replace('T', ' ').replace('Z', ' UTC')}
               </div>
